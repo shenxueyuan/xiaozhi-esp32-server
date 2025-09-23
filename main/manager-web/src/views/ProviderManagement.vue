@@ -2,144 +2,113 @@
   <div class="welcome">
     <HeaderBar />
 
-    <div :class="['operation-bar', { 'mobile-operation-bar': isMobile }]">
-      <h2 class="page-title">字段管理</h2>
-      <div class="right-operations" v-if="!isMobile">
+    <div class="operation-bar">
+      <h2 class="page-title">{{ $t('header.providerManagement') }}</h2>
+      <div class="right-operations">
         <el-dropdown trigger="click" @command="handleSelectModelType" @visible-change="handleDropdownVisibleChange">
           <el-button class="category-btn">
-            类别筛选 {{ selectedModelTypeLabel }}<i class="el-icon-arrow-down el-icon--right"
+            {{ $t('providerManagement.categoryFilter') }} {{ selectedModelTypeLabel }}<i class="el-icon-arrow-down el-icon--right"
               :class="{ 'rotate-down': DropdownVisible }"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="">全部</el-dropdown-item>
-            <el-dropdown-item v-for="item in modelTypes" :key="item.value" :command="item.value">
+            <el-dropdown-item command="">{{ $t('common.all') }}</el-dropdown-item>
+            <el-dropdown-item v-for="item in translatedModelTypes" :key="item.value" :command="item.value">
               {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-input placeholder="请输入供应器名称查询" v-model="searchName" class="search-input" @keyup.enter.native="handleSearch"
+        <el-input :placeholder="$t('providerManagement.searchPlaceholder')" v-model="searchName" class="search-input" @keyup.enter.native="handleSearch"
           clearable />
-        <el-button class="btn-search" @click="handleSearch">搜索</el-button>
-      </div>
-    </div>
-
-    <!-- 移动端搜索和筛选区域 -->
-    <div v-if="isMobile" class="mobile-filter-container">
-      <div class="mobile-search-row">
-        <el-input placeholder="请输入供应器名称查询" v-model="searchName" class="mobile-search-input" clearable
-          @keyup.enter.native="handleSearch" size="small">
-          <template slot="suffix">
-            <el-button class="search-btn" @click="handleSearch" type="text" size="mini">
-              <i class="el-icon-search"></i>
-            </el-button>
-          </template>
-        </el-input>
-      </div>
-      <div class="mobile-filter-row">
-        <el-dropdown trigger="click" @command="handleSelectModelType" @visible-change="handleDropdownVisibleChange" class="mobile-dropdown">
-          <el-button class="mobile-category-btn" size="small">
-            类别筛选 {{ selectedModelTypeLabel }}<i class="el-icon-arrow-down el-icon--right"
-              :class="{ 'rotate-down': DropdownVisible }"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="">全部</el-dropdown-item>
-            <el-dropdown-item v-for="item in modelTypes" :key="item.value" :command="item.value">
-              {{ item.label }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <el-button class="btn-search" @click="handleSearch">{{ $t('common.search') }}</el-button>
       </div>
     </div>
 
     <div class="main-wrapper">
       <div class="content-panel">
         <div class="content-area">
-          <el-card :class="['provider-card', { 'mobile-provider-card': isMobile }]" shadow="never">
-            <div class="table-container" :class="{ 'mobile-table': isMobile }">
-              <el-table ref="providersTable" :data="filteredProvidersList" :class="['transparent-table', { 'mobile-data-table': isMobile }]" v-loading="loading"
-                element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
-                element-loading-background="rgba(255, 255, 255, 0.7)" :header-cell-class-name="headerCellClassName">
-                <el-table-column label="选择" align="center" :width="isMobile ? 50 : 120">
-                  <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.selected" :class="{ 'mobile-checkbox': isMobile }"></el-checkbox>
-                  </template>
-                </el-table-column>
+          <el-card class="provider-card" shadow="never">
+            <el-table ref="providersTable" :data="filteredProvidersList" class="transparent-table" v-loading="loading"
+              element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(255, 255, 255, 0.7)" :header-cell-class-name="headerCellClassName">
+              <el-table-column :label="$t('modelConfig.select')" align="center" width="120">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="scope.row.selected"></el-checkbox>
+                </template>
+              </el-table-column>
 
-                <el-table-column label="类别" prop="modelType" align="center" :width="isMobile ? 80 : 200" :show-overflow-tooltip="isMobile">
-                                     <template slot="header" v-if="!isMobile">
-                    <el-dropdown trigger="click" @command="handleSelectModelType"
-                      @visible-change="isDropdownOpen = $event">
-                      <span class="dropdown-trigger" :class="{ 'active': isDropdownOpen }">
-                        类别{{ selectedModelTypeLabel }} <i class="dropdown-arrow"
-                          :class="{ 'is-active': isDropdownOpen }"></i>
-                      </span>
-                      <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="">全部</el-dropdown-item>
-                        <el-dropdown-item v-for="item in modelTypes" :key="item.value" :command="item.value">
-                          {{ item.label }}
-                        </el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
-                  </template>
-                  <template slot-scope="scope">
-                    <el-tag :type="getModelTypeTag(scope.row.modelType)" :size="isMobile ? 'mini' : 'small'">
-                      {{ getModelTypeLabel(scope.row.modelType) }}
-                    </el-tag>
-                  </template>
-                </el-table-column>
+              <el-table-column :label="$t('providerManagement.category')" prop="modelType" align="center" width="200">
+                <template slot="header" slot-scope="scope">
+                  <el-dropdown trigger="click" @command="handleSelectModelType"
+                    @visible-change="isDropdownOpen = $event">
+                    <span class="dropdown-trigger" :class="{ 'active': isDropdownOpen }">
+                      {{ $t('providerManagement.category') }}{{ selectedModelTypeLabel }} <i class="dropdown-arrow"
+                        :class="{ 'is-active': isDropdownOpen }"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="">{{ $t('common.all') }}</el-dropdown-item>
+                      <el-dropdown-item v-for="item in translatedModelTypes" :key="item.value" :command="item.value">
+                        {{ item.label }}
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </template>
+                <template slot-scope="scope">
+                  <el-tag :type="getModelTypeTag(scope.row.modelType)">
+                    {{ getModelTypeLabel(scope.row.modelType) }}
+                  </el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('providerManagement.providerCode')" prop="providerCode" align="center" width="150"></el-table-column>
+              <el-table-column :label="$t('common.name')" prop="name" align="center"></el-table-column>
+              <el-table-column :label="$t('providerManagement.fieldConfig')" align="center">
+                <template slot-scope="scope">
+                  <el-popover placement="top-start" width="400" trigger="hover">
+                    <div v-for="field in scope.row.fields" :key="field.key" class="field-item">
+                      <span class="field-label">{{ field.label }}:</span>
+                      <span class="field-type">{{ field.type }}</span>
+                      <span v-if="isSensitiveField(field.key)" class="sensitive-tag">{{ $t('common.sensitive') }}</span>
+                    </div>
+                    <el-button slot="reference" size="mini" type="text">{{ $t('providerManagement.viewFields') }}</el-button>
+                  </el-popover>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('common.sort')" prop="sort" align="center" width="80"></el-table-column>
+              <el-table-column :label="$t('common.action')" align="center" width="180">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="text" @click="editProvider(scope.row)">{{ $t('common.edit') }}</el-button>
+                  <el-button size="mini" type="text" @click="deleteProvider(scope.row)">{{ $t('common.delete') }}</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
 
-                <el-table-column label="供应器编码" prop="providerCode" align="center" :width="isMobile ? 100 : 150" :show-overflow-tooltip="isMobile"></el-table-column>
-                <el-table-column label="名称" prop="name" align="center" :width="isMobile ? 100 : undefined" :show-overflow-tooltip="isMobile"></el-table-column>
-                <el-table-column v-if="!isMobile" label="字段配置" align="center">
-                  <template slot-scope="scope">
-                    <el-popover placement="top-start" width="400" trigger="hover">
-                      <div v-for="field in scope.row.fields" :key="field.key" class="field-item">
-                        <span class="field-label">{{ field.label }}:</span>
-                        <span class="field-type">{{ field.type }}</span>
-                        <span v-if="isSensitiveField(field.key)" class="sensitive-tag">敏感</span>
-                      </div>
-                      <el-button slot="reference" size="mini" type="text">查看字段</el-button>
-                    </el-popover>
-                  </template>
-                </el-table-column>
-                <el-table-column label="排序" prop="sort" align="center" :width="isMobile ? 60 : 80"></el-table-column>
-                <el-table-column label="操作" align="center" :width="isMobile ? 100 : 180">
-                  <template slot-scope="scope">
-                    <el-button :size="isMobile ? 'mini' : 'mini'" type="text" @click="editProvider(scope.row)" :class="{ 'mobile-btn': isMobile }">编辑</el-button>
-                    <el-button :size="isMobile ? 'mini' : 'mini'" type="text" @click="deleteProvider(scope.row)" :class="{ 'mobile-btn': isMobile }">删除</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-
-            <div :class="['table_bottom', { 'mobile-footer': isMobile }]">
-              <div :class="['ctrl_btn', { 'mobile-actions': isMobile }]">
-                <el-button :size="isMobile ? 'mini' : 'mini'" type="primary" class="select-all-btn" @click="handleSelectAll">
-                  {{ isAllSelected ? '取消全选' : '全选' }}
+            <div class="table_bottom">
+              <div class="ctrl_btn">
+                <el-button size="mini" type="primary" class="select-all-btn" @click="handleSelectAll">
+                  {{ isAllSelected ? $t('common.deselectAll') : $t('common.selectAll') }}
                 </el-button>
-                <el-button :size="isMobile ? 'mini' : 'mini'" type="success" @click="showAddDialog">新增</el-button>
-                <el-button :size="isMobile ? 'mini' : 'mini'" type="danger" icon="el-icon-delete" @click="deleteSelectedProviders">删除
+                <el-button size="mini" type="success" @click="showAddDialog">{{ $t('common.add') }}</el-button>
+                <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteSelectedProviders">{{ $t('common.delete') }}
                 </el-button>
               </div>
-              <div :class="['custom-pagination', { 'mobile-pagination': isMobile }]">
+              <div class="custom-pagination">
                 <el-select v-model="pageSize" @change="handlePageSizeChange" class="page-size-select">
-                  <el-option v-for="item in pageSizeOptions" :key="item" :label="`${item}条/页`" :value="item">
+                  <el-option v-for="item in pageSizeOptions" :key="item" :label="$t('common.perPage', { number: item })" :value="item">
                   </el-option>
                 </el-select>
                 <button class="pagination-btn" :disabled="currentPage === 1" @click="goFirst">
-                  首页
+                  {{ $t('common.firstPage') }}
                 </button>
                 <button class="pagination-btn" :disabled="currentPage === 1" @click="goPrev">
-                  上一页
+                  {{ $t('common.prevPage') }}
                 </button>
                 <button v-for="page in visiblePages" :key="page" class="pagination-btn"
                   :class="{ active: page === currentPage }" @click="goToPage(page)">
                   {{ page }}
                 </button>
                 <button class="pagination-btn" :disabled="currentPage === pageCount" @click="goNext">
-                  下一页
+                  {{ $t('common.nextPage') }}
                 </button>
-                <span :class="['total-text', { 'mobile-total': isMobile }]">共{{ total }}条记录</span>
+                <span class="total-text">{{ $t('common.totalRecords', { number: total }) }}</span>
               </div>
             </div>
           </el-card>
@@ -162,7 +131,6 @@ import Api from "@/apis/api";
 import HeaderBar from "@/components/HeaderBar.vue";
 import ProviderDialog from "@/components/ProviderDialog.vue";
 import VersionFooter from "@/components/VersionFooter.vue";
-import { isMobileDevice } from "@/utils/index";
 
 export default {
   components: { HeaderBar, ProviderDialog, VersionFooter },
@@ -172,14 +140,14 @@ export default {
       searchModelType: "",
       providersList: [],
       modelTypes: [
-        { value: "ASR", label: "语音识别" },
-        { value: "TTS", label: "语音合成" },
-        { value: "LLM", label: "大语言模型" },
-        { value: "VLLM", label: "视觉大语言模型" },
-        { value: "Intent", label: "意图识别" },
-        { value: "Memory", label: "记忆模块" },
-        { value: "VAD", label: "语音活动检测" },
-        { value: "Plugin", label: "插件工具" }
+        { value: "ASR", labelKey: 'providerManagement.modelType.ASR' },
+        { value: "TTS", labelKey: 'providerManagement.modelType.TTS' },
+        { value: "LLM", labelKey: 'providerManagement.modelType.LLM' },
+        { value: "VLLM", labelKey: 'providerManagement.modelType.VLLM' },
+        { value: "Intent", labelKey: 'providerManagement.modelType.Intent' },
+        { value: "Memory", labelKey: 'providerManagement.modelType.Memory' },
+        { value: "VAD", labelKey: 'providerManagement.modelType.VAD' },
+        { value: "Plugin", labelKey: 'providerManagement.modelType.Plugin' }
       ],
       currentPage: 1,
       loading: false,
@@ -202,21 +170,27 @@ export default {
       DropdownVisible: false,
     };
   },
+  created() {
+    this.fetchProviders();
+  },
   computed: {
-    isMobile() {
-      return isMobileDevice();
+    translatedModelTypes() {
+      return this.modelTypes.map(type => ({
+        value: type.value,
+        label: this.$t(type.labelKey)
+      }));
     },
     selectedModelTypeLabel() {
-      if (!this.searchModelType) return "（全部）";
+      if (!this.searchModelType) return `（${this.$t('providerManagement.all')}）`;
       const selectedType = this.modelTypes.find(item => item.value === this.searchModelType);
-      return selectedType ? `（${selectedType.label}）` : "";
+      return selectedType ? `（${this.$t(selectedType.labelKey)}）` : "";
     },
     pageCount() {
       return Math.ceil(this.total / this.pageSize);
     },
     visiblePages() {
       const pages = [];
-      const maxVisible = this.isMobile ? 2 : 3;
+      const maxVisible = 3;
       let start = Math.max(1, this.currentPage - 1);
       let end = Math.min(this.pageCount, start + maxVisible - 1);
 
@@ -244,9 +218,6 @@ export default {
       // const start = (this.currentPage - 1) * this.pageSize;
       // return list.slice(start, start + this.pageSize);
     }
-  },
-  created() {
-    this.fetchProviders();
   },
   methods: {
     fetchProviders() {
@@ -294,7 +265,7 @@ export default {
       });
     },
     showAddDialog() {
-      this.dialogTitle = "新增供应器";
+      this.dialogTitle = this.$t('common.addProvider');
       this.providerForm = {
         id: null,
         modelType: "",
@@ -306,7 +277,7 @@ export default {
       this.dialogVisible = true;
     },
     editProvider(row) {
-      this.dialogTitle = "编辑供应器";
+      this.dialogTitle = this.$t('common.editProvider');
       this.providerForm = {
         ...row,
         fields: JSON.parse(JSON.stringify(row.fields))
@@ -322,9 +293,9 @@ export default {
           if (data.code === 0) {
             this.fetchProviders(); // 刷新表格
             this.$message.success({
-              message: "修改成功",
-              showClose: true
-            });
+            message: this.$t('common.updateSuccess'),
+            showClose: true
+          });
           }
         });
       } else {
@@ -333,9 +304,9 @@ export default {
           if (data.code === 0) {
             this.fetchProviders(); // 刷新表格
             this.$message.success({
-              message: "新增成功",
-              showClose: true
-            });
+            message: this.$t('common.addSuccess'),
+            showClose: true
+          });
             this.total += 1;
           }
         });
@@ -348,7 +319,7 @@ export default {
       const selectedRows = this.providersList.filter(row => row.selected);
       if (selectedRows.length === 0) {
         this.$message.warning({
-          message: "请先选择需要删除的供应器",
+          message: this.$t('providerManagement.selectToDelete'),
           showClose: true
         });
         return;
@@ -359,9 +330,9 @@ export default {
       const providers = Array.isArray(row) ? row : [row];
       const providerCount = providers.length;
 
-      this.$confirm(`确定要删除选中的${providerCount}个供应器吗？`, '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('providerManagement.confirmDelete', { count: providerCount }), this.$t('common.warning'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning',
       }).then(() => {
         const ids = providers.map(provider => provider.id);
@@ -372,12 +343,12 @@ export default {
             this.fetchProviders(); // 刷新表格
 
             this.$message.success({
-              message: `成功删除${providerCount}个参数`,
+              message: this.$t('common.deleteSuccess'),
               showClose: true
             });
           } else {
             this.$message.error({
-              message: data.msg || '删除失败，请重试',
+              message: data.msg || this.$t('common.deleteFailure'),
               showClose: true
             });
           }
@@ -385,7 +356,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除',
+          message: this.$t('common.deleteCancelled'),
           showClose: true,
           duration: 1000
         });
@@ -404,7 +375,7 @@ export default {
     },
     getModelTypeLabel(type) {
       const typeItem = this.modelTypes.find(item => item.value === type);
-      return typeItem ? typeItem.label : type;
+      return typeItem ? this.$t(typeItem.labelKey) : type;
     },
     isSensitiveField(fieldKey) {
       if (typeof fieldKey !== 'string') return false;
@@ -422,6 +393,26 @@ export default {
         return "custom-selection-header";
       }
       return "";
+    },
+    selectionCellClassName() {
+      return "custom-selection-cell";
+    },
+    updateSelectionHeaderText() {
+      // 确保表格已渲染
+      this.$nextTick(() => {
+        if (this.$refs.providersTable && this.$refs.providersTable.$el) {
+          const headerCheckbox = this.$refs.providersTable.$el.querySelector('.custom-selection-header .el-checkbox .el-checkbox__label');
+          if (headerCheckbox) {
+            headerCheckbox.textContent = this.$t('modelConfig.select');
+          }
+        }
+      });
+    },
+    mounted() {
+      this.updateSelectionHeaderText();
+    },
+    updated() {
+      this.updateSelectionHeaderText();
     },
     goFirst() {
       this.currentPage = 1;
@@ -464,12 +455,6 @@ export default {
   -webkit-background-size: cover;
   -o-background-size: cover;
   overflow: hidden;
-
-  @media (max-width: 768px) {
-    min-width: unset;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
 }
 
 .main-wrapper {
@@ -483,14 +468,6 @@ export default {
   background: rgba(237, 242, 255, 0.5);
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 768px) {
-    margin: 5px 16px;
-    max-height: none;
-    min-height: auto;
-    height: auto;
-    flex: 1;
-  }
 }
 
 .operation-bar {
@@ -498,103 +475,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-
-  &.mobile-operation-bar {
-    padding: 12px 16px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-}
-
-// 移动端筛选容器
-.mobile-filter-container {
-  padding: 0 16px 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  .mobile-search-row {
-    width: 100%;
-
-    .mobile-search-input {
-      width: 100%;
-
-      :deep(.el-input__inner) {
-        height: 32px;
-        border-radius: 16px;
-        background-color: rgba(255, 255, 255, 0.9);
-        border: 1px solid #e4e7ed;
-        font-size: 14px;
-        padding-right: 35px;
-      }
-
-      :deep(.el-input__suffix) {
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-
-      .search-btn {
-        background: transparent !important;
-        border: none !important;
-        color: #909399 !important;
-        padding: 0 !important;
-        width: 24px !important;
-        height: 24px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-
-        &:hover {
-          color: #5f70f3 !important;
-          background: transparent !important;
-          transform: none !important;
-          box-shadow: none !important;
-        }
-
-        &:focus {
-          background: transparent !important;
-          box-shadow: none !important;
-        }
-
-        i {
-          font-size: 14px;
-        }
-      }
-    }
-  }
-
-  .mobile-filter-row {
-    display: flex;
-    justify-content: flex-start;
-
-    .mobile-dropdown {
-      width: auto;
-    }
-
-    .mobile-category-btn {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid #e4e7ed;
-      border-radius: 16px;
-      height: 32px;
-      padding: 0 12px;
-      font-size: 14px;
-      color: #606266;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 1);
-        border-color: #5f70f3;
-        color: #5f70f3;
-      }
-
-      .el-icon-arrow-down {
-        margin-left: 5px;
-      }
-    }
-  }
 }
 
 .page-title {
@@ -1020,5 +900,27 @@ export default {
 
 .dropdown-trigger.active {
   color: #409EFF;
+}
+
+/* 确保选择列标题样式正确 */
+.custom-selection-header {
+  position: relative;
+}
+
+:deep(.custom-selection-header .el-checkbox) {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+:deep(.custom-selection-header .el-checkbox__label) {
+  position: relative;
+  white-space: nowrap;
+}
+
+:deep(.custom-selection-cell) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

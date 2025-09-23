@@ -1,26 +1,24 @@
 <template>
-    <el-dialog :title="title" :visible.sync="dialogVisible" :width="isMobile ? '95%' : '30%'" @close="handleClose">
-        <el-form :model="form" :rules="rules" ref="form" :label-width="isMobile ? '80px' : '100px'">
-            <el-form-item label="字典标签" prop="dictLabel">
-                <el-input v-model="form.dictLabel" placeholder="请输入字典标签" :style="{ height: isMobile ? '40px' : 'auto' }"></el-input>
+    <el-dialog :title="title" :visible.sync="dialogVisible" width="30%" @close="handleClose">
+        <el-form :model="form" :rules="rules" ref="form" label-width="auto">
+            <el-form-item :label="$t('dictDataDialog.dictLabel')" prop="dictLabel">
+                <el-input v-model="form.dictLabel" :placeholder="$t('dictDataDialog.dictLabelPlaceholder')"></el-input>
             </el-form-item>
-            <el-form-item label="字典值" prop="dictValue">
-                <el-input v-model="form.dictValue" placeholder="请输入字典值" :style="{ height: isMobile ? '40px' : 'auto' }"></el-input>
+            <el-form-item :label="$t('dictDataDialog.dictValue')" prop="dictValue">
+                <el-input v-model="form.dictValue" :placeholder="$t('dictDataDialog.dictValuePlaceholder')"></el-input>
             </el-form-item>
-            <el-form-item label="排序" prop="sort">
-                <el-input-number v-model="form.sort" :min="0" :max="999" style="width: 100%;" :size="isMobile ? 'small' : 'medium'"></el-input-number>
+            <el-form-item :label="$t('dictDataDialog.sort')" prop="sort">
+                <el-input-number v-model="form.sort" :min="0" :max="999" style="width: 100%;"></el-input-number>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="handleClose" :size="isMobile ? 'small' : 'medium'">取 消</el-button>
-            <el-button type="primary" @click="handleSave" :size="isMobile ? 'small' : 'medium'">确 定</el-button>
+            <el-button @click="handleClose">{{ $t('button.cancel') }}</el-button>
+            <el-button type="primary" @click="handleSave">{{ $t('button.save') }}</el-button>
         </div>
     </el-dialog>
 </template>
 
 <script>
-import { isMobileDevice } from "@/utils/index";
-
 export default {
     name: 'DictDataDialog',
     props: {
@@ -30,7 +28,7 @@ export default {
         },
         title: {
             type: String,
-            default: '新增字典数据'
+            default: () => this.$t('dictDataDialog.addDictData')
         },
         dictData: {
             type: Object,
@@ -52,14 +50,9 @@ export default {
                 sort: 0
             },
             rules: {
-                dictLabel: [{ required: true, message: '请输入字典标签', trigger: 'blur' }],
-                dictValue: [{ required: true, message: '请输入字典值', trigger: 'blur' }]
+                dictLabel: [{ required: true, message: this.$t('dictDataDialog.requiredDictLabel'), trigger: 'blur' }],
+                dictValue: [{ required: true, message: this.$t('dictDataDialog.requiredDictValue'), trigger: 'blur' }]
             }
-        }
-    },
-    computed: {
-        isMobile() {
-            return isMobileDevice();
         }
     },
     watch: {

@@ -2,94 +2,89 @@
     <div class="welcome">
         <HeaderBar />
 
-        <div :class="['operation-bar', { 'mobile-operation-bar': isMobile }]">
-            <h2 class="page-title">参数管理</h2>
-            <div class="right-operations" v-if="!isMobile">
-                <el-input placeholder="请输入参数编码或备注查询" v-model="searchCode" class="search-input"
-                    @keyup.enter.native="handleSearch" clearable />
-                <el-button class="btn-search" @click="handleSearch">搜索</el-button>
+        <div class="operation-bar">
+            <h2 class="page-title">{{ $t('paramManagement.pageTitle') }}</h2>
+            <div class="right-operations">
+                <el-input :placeholder="$t('paramManagement.searchPlaceholder')" v-model="searchCode"
+                    class="search-input" @keyup.enter.native="handleSearch" clearable />
+                <el-button class="btn-search" @click="handleSearch">{{ $t('paramManagement.search') }}</el-button>
             </div>
-        </div>
-
-        <!-- 移动端搜索框 -->
-        <div v-if="isMobile" class="mobile-search-container">
-            <el-input placeholder="请输入参数编码或备注查询" v-model="searchCode" class="mobile-search-input" clearable
-                @keyup.enter.native="handleSearch" size="small">
-                <template slot="suffix">
-                    <el-button class="search-btn" @click="handleSearch" type="text" size="mini">
-                        <i class="el-icon-search"></i>
-                    </el-button>
-                </template>
-            </el-input>
         </div>
 
         <div class="main-wrapper">
             <div class="content-panel">
                 <div class="content-area">
-                    <el-card :class="['params-card', { 'mobile-table': isMobile }]" shadow="never">
-                        <div class="table-container" :class="{ 'mobile-table': isMobile }">
-                            <el-table ref="paramsTable" :data="paramsList" :class="['transparent-table', { 'mobile-data-table': isMobile }]" v-loading="loading"
-                                element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
-                                element-loading-background="rgba(255, 255, 255, 0.7)"
-                                :header-cell-class-name="headerCellClassName">
-                            <el-table-column label="选择" align="center" :width="isMobile ? 50 : 120">
+                    <el-card class="params-card" shadow="never">
+                        <el-table ref="paramsTable" :data="paramsList" class="transparent-table" v-loading="loading"
+                            element-loading-text="Loading" element-loading-spinner="el-icon-loading"
+                            element-loading-background="rgba(255, 255, 255, 0.7)"
+                            :header-cell-class-name="headerCellClassName">
+                            <el-table-column :label="$t('modelConfig.select')" align="center" width="120">
                                 <template slot-scope="scope">
-                                    <el-checkbox v-model="scope.row.selected" :class="{ 'mobile-checkbox': isMobile }"></el-checkbox>
+                                    <el-checkbox v-model="scope.row.selected"></el-checkbox>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="参数编码" prop="paramCode" align="center" :width="isMobile ? 120 : undefined" :show-overflow-tooltip="isMobile"></el-table-column>
-                            <el-table-column label="参数值" prop="paramValue" align="center" :width="isMobile ? 120 : undefined" show-overflow-tooltip>
+                            <el-table-column :label="$t('paramManagement.paramCode')" prop="paramCode"
+                                align="center"></el-table-column>
+                            <el-table-column :label="$t('paramManagement.paramValue')" prop="paramValue" align="center"
+                                show-overflow-tooltip>
                                 <template slot-scope="scope">
                                     <div v-if="isSensitiveParam(scope.row.paramCode)">
                                         <span v-if="!scope.row.showValue">{{ maskSensitiveValue(scope.row.paramValue)
                                         }}</span>
                                         <span v-else>{{ scope.row.paramValue }}</span>
-                                        <el-button :size="isMobile ? 'mini' : 'mini'" type="text" @click="toggleSensitiveValue(scope.row)" :class="{ 'mobile-btn': isMobile }">
-                                            {{ scope.row.showValue ? '隐藏' : '查看' }}
+                                        <el-button size="mini" type="text" @click="toggleSensitiveValue(scope.row)">
+                                            {{ scope.row.showValue ? $t('paramManagement.hide') :
+                                                $t('paramManagement.view') }}
                                         </el-button>
                                     </div>
                                     <span v-else>{{ scope.row.paramValue }}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="备注" prop="remark" align="center" :width="isMobile ? 100 : undefined" show-overflow-tooltip></el-table-column>
-                            <el-table-column label="操作" align="center" :width="isMobile ? 100 : undefined">
+                            <el-table-column :label="$t('paramManagement.remark')" prop="remark"
+                                align="center"></el-table-column>
+                            <el-table-column :label="$t('paramManagement.operation')" align="center">
                                 <template slot-scope="scope">
-                                    <el-button :size="isMobile ? 'mini' : 'mini'" type="text" @click="editParam(scope.row)" :class="{ 'mobile-btn': isMobile }">编辑</el-button>
-                                    <el-button :size="isMobile ? 'mini' : 'mini'" type="text" @click="deleteParam(scope.row)" :class="{ 'mobile-btn': isMobile }">删除</el-button>
+                                    <el-button size="mini" type="text" @click="editParam(scope.row)">{{
+                                        $t('paramManagement.edit') }}</el-button>
+                                    <el-button size="mini" type="text" @click="deleteParam(scope.row)">{{
+                                        $t('paramManagement.delete') }}</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
-                        </div>
 
-                        <div :class="['table_bottom', { 'mobile-footer': isMobile }]">
-                            <div :class="['ctrl_btn', { 'mobile-actions': isMobile }]">
-                                <el-button :size="isMobile ? 'mini' : 'mini'" type="primary" class="select-all-btn" @click="handleSelectAll">
-                                    {{ isAllSelected ? '取消全选' : '全选' }}
+                        <div class="table_bottom">
+                            <div class="ctrl_btn">
+                                <el-button size="mini" type="primary" class="select-all-btn" @click="handleSelectAll">
+                                    {{ isAllSelected ? $t('paramManagement.deselectAll') :
+                                        $t('paramManagement.selectAll') }}
                                 </el-button>
-                                <el-button :size="isMobile ? 'mini' : 'mini'" type="success" @click="showAddDialog">新增</el-button>
-                                <el-button :size="isMobile ? 'mini' : 'mini'" type="danger" icon="el-icon-delete"
-                                    @click="deleteSelectedParams">删除</el-button>
+                                <el-button size="mini" type="success" @click="showAddDialog">{{
+                                    $t('paramManagement.add') }}</el-button>
+                                <el-button size="mini" type="danger" icon="el-icon-delete"
+                                    @click="deleteSelectedParams">{{
+                                        $t('paramManagement.delete') }}</el-button>
                             </div>
-                            <div :class="['custom-pagination', { 'mobile-pagination': isMobile }]">
+                            <div class="custom-pagination">
                                 <el-select v-model="pageSize" @change="handlePageSizeChange" class="page-size-select">
-                                    <el-option v-for="item in pageSizeOptions" :key="item" :label="`${item}条/页`"
-                                        :value="item">
+                                    <el-option v-for="item in pageSizeOptions" :key="item"
+                                        :label="`${item}${$t('paramManagement.itemsPerPage')}`" :value="item">
                                     </el-option>
                                 </el-select>
                                 <button class="pagination-btn" :disabled="currentPage === 1" @click="goFirst">
-                                    首页
+                                    {{ $t('paramManagement.firstPage') }}
                                 </button>
                                 <button class="pagination-btn" :disabled="currentPage === 1" @click="goPrev">
-                                    上一页
+                                    {{ $t('paramManagement.prevPage') }}
                                 </button>
                                 <button v-for="page in visiblePages" :key="page" class="pagination-btn"
                                     :class="{ active: page === currentPage }" @click="goToPage(page)">
                                     {{ page }}
                                 </button>
                                 <button class="pagination-btn" :disabled="currentPage === pageCount" @click="goNext">
-                                    下一页
+                                    {{ $t('paramManagement.nextPage') }}
                                 </button>
-                                <span :class="['total-text', { 'mobile-total': isMobile }]">共{{ total }}条记录</span>
+                                <span class="total-text">{{ $t('paramManagement.totalRecords', { total }) }}</span>
                             </div>
                         </div>
                     </el-card>
@@ -98,8 +93,8 @@
         </div>
 
         <!-- 新增/编辑参数对话框 -->
-        <param-dialog :title="dialogTitle" :visible.sync="dialogVisible" :form="paramForm" @submit="handleSubmit"
-            @cancel="dialogVisible = false" />
+        <param-dialog ref="paramDialog" :title="dialogTitle" :visible.sync="dialogVisible" :form="paramForm"
+            @submit="handleSubmit" @cancel="dialogVisible = false" />
         <el-footer>
             <version-footer />
         </el-footer>
@@ -111,7 +106,6 @@ import Api from "@/apis/api";
 import HeaderBar from "@/components/HeaderBar.vue";
 import ParamDialog from "@/components/ParamDialog.vue";
 import VersionFooter from "@/components/VersionFooter.vue";
-import { isMobileDevice } from "@/utils/index";
 export default {
     components: { HeaderBar, ParamDialog, VersionFooter },
     data() {
@@ -131,6 +125,7 @@ export default {
                 id: null,
                 paramCode: "",
                 paramValue: "",
+                valueType: "string",
                 remark: ""
             },
         };
@@ -141,15 +136,12 @@ export default {
     },
 
     computed: {
-        isMobile() {
-            return isMobileDevice();
-        },
         pageCount() {
             return Math.ceil(this.total / this.pageSize);
         },
         visiblePages() {
             const pages = [];
-            const maxVisible = this.isMobile ? 2 : 3;
+            const maxVisible = 3;
             let start = Math.max(1, this.currentPage - 1);
             let end = Math.min(this.pageCount, start + maxVisible - 1);
 
@@ -182,13 +174,14 @@ export default {
                     if (data.code === 0) {
                         this.paramsList = data.data.list.map(item => ({
                             ...item,
+                            valueType: item.valueType || "string",
                             selected: false,
                             showValue: false
                         }));
                         this.total = data.data.total;
                     } else {
                         this.$message.error({
-                            message: data.msg || '获取参数列表失败',
+                            message: data.msg || this.$t('paramManagement.getParamsListFailed'),
                             showClose: true
                         });
                     }
@@ -206,129 +199,139 @@ export default {
             });
         },
         showAddDialog() {
-            this.dialogTitle = "新增参数";
+            this.dialogTitle = this.$t('paramManagement.addParam');
             this.paramForm = {
                 id: null,
                 paramCode: "",
                 paramValue: "",
+                valueType: "string", // 默认值
                 remark: ""
             };
             this.dialogVisible = true;
         },
         editParam(row) {
-            this.dialogTitle = "编辑参数";
-            this.paramForm = { ...row };
+            this.dialogTitle = this.$t('paramManagement.editParam');
+            this.paramForm = {
+                id: row.id,
+                paramCode: row.paramCode,
+                paramValue: row.paramValue,
+                valueType: row.valueType || "string", // 确保有值
+                remark: row.remark
+            };
             this.dialogVisible = true;
         },
-
-        handleSubmit({ form, done }) {
+        handleSubmit(form) {
             if (form.id) {
-                // 编辑
+                // 更新参数
                 Api.admin.updateParam(form, ({ data }) => {
-                    if (data.code === 0) {
-                        this.$message.success({
-                            message: "修改成功",
-                            showClose: true
-                        });
-                        this.dialogVisible = false;
-                        this.fetchParams();
-                    }
-                    done && done();
-                });
-            } else {
-                // 新增
-                Api.admin.addParam(form, ({ data }) => {
-                    if (data.code === 0) {
-                        this.$message.success({
-                            message: "新增成功",
-                            showClose: true
-                        });
-                        this.dialogVisible = false;
-                        this.fetchParams();
-                    }
-                    done && done();
-                });
-            }
-        },
-
-        deleteSelectedParams() {
-            const selectedRows = this.paramsList.filter(row => row.selected);
-            if (selectedRows.length === 0) {
-                this.$message.warning({
-                    message: "请先选择需要删除的参数",
-                    showClose: true
-                });
-                return;
-            }
-            this.deleteParam(selectedRows);
-        },
-        deleteParam(row) {
-            // 处理单个参数或参数数组
-            const params = Array.isArray(row) ? row : [row];
-
-            if (Array.isArray(row) && row.length === 0) {
-                this.$message.warning({
-                    message: "请先选择需要删除的参数",
-                    showClose: true
-                });
-                return;
-            }
-
-            const paramCount = params.length;
-            this.$confirm(`确定要删除选中的${paramCount}个参数吗？`, '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning',
-                distinguishCancelAndClose: true
-            }).then(() => {
-                const ids = params.map(param => param.id);
-                if (ids.some(id => isNaN(id))) {
-                    this.$message.error({
-                        message: '存在无效的参数ID',
+                    this.dialogVisible = false;
+                    this.fetchParams();
+                    this.$message.success({
+                        message: this.$t('paramManagement.updateSuccess'),
                         showClose: true
                     });
-                    return;
-                }
-
-                Api.admin.deleteParam(ids, ({ data }) => {
+                }, ({ data }) => {
+                    this.$message.error({
+                        message: data.msg || this.$t('paramManagement.updateFailed'),
+                        showClose: true
+                    });
+                    // 调用ParamDialog的resetSaving方法重置保存状态
+                    if (this.$refs.paramDialog && typeof this.$refs.paramDialog.resetSaving === 'function') {
+                        this.$refs.paramDialog.resetSaving();
+                    }
+                });
+            } else {
+                // 新增参数
+                Api.admin.addParam(form, ({ data }) => {
                     if (data.code === 0) {
+                        this.dialogVisible = false;
+                        this.fetchParams();
                         this.$message.success({
-                            message: `成功删除${paramCount}个参数`,
+                            message: this.$t('paramManagement.addSuccess'),
                             showClose: true
                         });
-                        this.fetchParams();
                     } else {
                         this.$message.error({
-                            message: data.msg || '删除失败，请重试',
+                            message: data.msg || this.$t('paramManagement.addFailed'),
+                            showClose: true
+                        });
+                        // 调用ParamDialog的resetSaving方法重置保存状态
+                        if (this.$refs.paramDialog && typeof this.$refs.paramDialog.resetSaving === 'function') {
+                            this.$refs.paramDialog.resetSaving();
+                        }
+                    }
+                });
+            }
+        },
+        deleteSelectedParams() {
+            const selectedParams = this.paramsList.filter(row => row.selected);
+            if (selectedParams.length === 0) {
+                this.$message.warning({
+                    message: this.$t('paramManagement.selectParamsFirst'),
+                    showClose: true
+                });
+                return;
+            }
+            this.deleteParams(selectedParams);
+        },
+        deleteParam(row) {
+            if (!row.id) {
+                this.$message.warning({
+                    message: this.$t('paramManagement.selectParamsFirst'),
+                    showClose: true
+                });
+                return;
+            }
+            this.deleteParams([row]);
+        },
+        deleteParams(params) {
+            const paramCount = params.length;
+            const paramIds = params.map(param => param.id).filter(id => id);
+            if (paramIds.length === 0) {
+                this.$message.error({
+                    message: this.$t('paramManagement.invalidParamId'),
+                    showClose: true
+                });
+                return;
+            }
+            this.$confirm(this.$t('paramManagement.confirmBatchDelete', { paramCount }), this.$t('message.warning'), {
+                confirmButtonText: this.$t('button.ok'),
+                cancelButtonText: this.$t('button.cancel'),
+                type: 'warning'
+            }).then(() => {
+                Api.admin.deleteParam(paramIds, ({ data }) => {
+                    if (data.code === 0) {
+                        this.fetchParams();
+                        this.$message.success({
+                            message: this.$t('paramManagement.batchDeleteSuccess', { paramCount }),
+                            showClose: true
+                        });
+                    } else {
+                        this.$message.error({
+                            message: data.msg || this.$t('paramManagement.deleteFailed'),
                             showClose: true
                         });
                     }
                 });
-            }).catch(action => {
-                if (action === 'cancel') {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除操作',
-                        duration: 1000
-                    });
-                } else {
-                    this.$message({
-                        type: 'info',
-                        message: '操作已关闭',
-                        duration: 1000
-                    });
-                }
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: this.$t('paramManagement.operationCancelled'),
+                    duration: 1000
+                });
             });
         },
-        headerCellClassName({ columnIndex }) {
-            if (columnIndex === 0) {
-                return "custom-selection-header";
+        goToPage(page) {
+            if (page !== this.currentPage) {
+                this.currentPage = page;
+                this.fetchParams();
             }
-            return "";
         },
         goFirst() {
-            this.currentPage = 1;
-            this.fetchParams();
+            if (this.currentPage !== 1) {
+                this.currentPage = 1;
+                this.fetchParams();
+            }
         },
         goPrev() {
             if (this.currentPage > 1) {
@@ -342,22 +345,22 @@ export default {
                 this.fetchParams();
             }
         },
-        goToPage(page) {
-            this.currentPage = page;
-            this.fetchParams();
-        },
         isSensitiveParam(paramCode) {
-            return this.sensitive_keys.some(key => paramCode.toLowerCase().includes(key.toLowerCase()));
+            return this.sensitive_keys.some(key => paramCode.toLowerCase().includes(key));
         },
         maskSensitiveValue(value) {
-            if (!value) return '';
-            if (value.length <= 8) return '****';
-            return value.substring(0, 4) + '****' + value.substring(value.length - 4);
+            if (value.length <= 4) {
+                return '****';
+            }
+            return value.substring(0, 2) + '****' + value.substring(value.length - 2);
         },
         toggleSensitiveValue(row) {
-            this.$set(row, 'showValue', !row.showValue);
+            row.showValue = !row.showValue;
         },
-    },
+        headerCellClassName() {
+            return 'header-cell';
+        }
+    }
 };
 </script>
 
@@ -734,163 +737,5 @@ export default {
     color: #6b8cff !important;
     font-size: 14px;
     margin-top: 8px;
-}
-
-// 移动端适配样式
-@media screen and (max-width: 768px) {
-    .welcome {
-        min-width: unset;
-    }
-
-    .operation-bar.mobile-operation-bar {
-        padding: 12px 16px;
-    }
-
-    .page-title {
-        font-size: 20px;
-    }
-
-    // 移动端搜索样式（与其他页面一致）
-    .mobile-search-container {
-        margin: 0 16px 8px 16px;
-        width: calc(100% - 32px);
-    }
-
-    .mobile-search-input {
-        width: 100%;
-    }
-
-    .mobile-search-input ::v-deep .el-input__inner {
-        height: 32px;
-        border-radius: 16px;
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid #d9d9d9;
-        font-size: 12px;
-        padding-right: 40px;
-    }
-
-    .mobile-search-input ::v-deep .el-input__suffix {
-        right: 8px;
-        top: 0;
-        height: 32px;
-        display: flex;
-        align-items: center;
-    }
-
-    .search-btn {
-        background: transparent !important;
-        border: none !important;
-        color: #6b8cff !important;
-        padding: 4px !important;
-        margin: 0 !important;
-        height: 24px !important;
-        width: 24px !important;
-    }
-
-    .search-btn:hover {
-        background: rgba(107, 140, 255, 0.1) !important;
-        border-radius: 50% !important;
-    }
-
-    .search-btn i {
-        font-size: 16px;
-    }
-
-    .main-wrapper {
-        margin: 5px 12px;
-    }
-
-    .content-area {
-        min-width: unset;
-    }
-
-    .params-card.mobile-table {
-        border-radius: 12px;
-        overflow: hidden;
-    }
-
-    .table-container.mobile-table {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin: 0 -16px;
-        padding: 0 16px;
-    }
-
-    .transparent-table.mobile-data-table {
-        min-width: 600px;
-        font-size: 11px;
-    }
-
-    .transparent-table.mobile-data-table ::v-deep .el-table__header th {
-        padding: 6px 4px;
-        font-size: 11px;
-    }
-
-    .transparent-table.mobile-data-table ::v-deep .el-table__body td {
-        padding: 4px 4px;
-        font-size: 11px;
-    }
-
-    .mobile-checkbox ::v-deep .el-checkbox__inner {
-        transform: scale(0.8);
-    }
-
-    .mobile-btn {
-        font-size: 10px;
-        margin: 0 2px;
-    }
-
-    .table_bottom.mobile-footer {
-        flex-direction: column;
-        gap: 8px;
-        align-items: center;
-        padding: 8px 0;
-        margin-top: 8px;
-    }
-
-    .ctrl_btn.mobile-actions {
-        justify-content: center;
-        width: 100%;
-        gap: 8px;
-    }
-
-    .ctrl_btn.mobile-actions .el-button {
-        min-width: 60px;
-        height: 28px;
-        font-size: 11px;
-        padding: 0 8px;
-    }
-
-    .custom-pagination.mobile-pagination {
-        flex-direction: row;
-        align-items: center;
-        gap: 4px;
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .custom-pagination.mobile-pagination .page-size-select {
-        width: 80px;
-        margin: 0;
-        order: -1;
-        margin-bottom: 4px;
-    }
-
-    .custom-pagination.mobile-pagination .pagination-btn {
-        min-width: 28px !important;
-        height: 26px !important;
-        padding: 0 6px !important;
-        font-size: 11px !important;
-        margin: 1px;
-    }
-
-    .custom-pagination.mobile-pagination .total-text.mobile-total {
-        width: 100%;
-        text-align: center;
-        margin: 4px 0 0 0;
-        font-size: 11px;
-        color: #666;
-    }
 }
 </style>
