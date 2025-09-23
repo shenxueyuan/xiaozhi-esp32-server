@@ -10,14 +10,18 @@
     transition: all 0.5s ease;
 }
 
+
 /* 主题1: 流动渐变波浪 (默认) */
+
 .welcome.theme-flow {
     background: linear-gradient(-45deg, #4A90A4, #83C5BE, #FFDDD2, #5fb3c7, #6BB6AA, #74A9BC);
     background-size: 400% 400%;
     animation: gradient-flow 15s ease infinite;
 }
 
+
 /* 主题2: 优雅光晕 */
+
 .welcome.theme-bubbles {
     background: linear-gradient(45deg, #83C5BE 0%, #6BB6AA 25%, #4A90A4 75%, #74A9BC 100%);
     background-size: 300% 300%;
@@ -31,11 +35,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        radial-gradient(circle at 25% 25%, rgba(255, 221, 210, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(107, 182, 170, 0.12) 0%, transparent 60%),
-        radial-gradient(circle at 85% 15%, rgba(131, 197, 190, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 15% 85%, rgba(255, 221, 210, 0.1) 0%, transparent 55%);
+    background: radial-gradient(circle at 25% 25%, rgba(255, 221, 210, 0.15) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(107, 182, 170, 0.12) 0%, transparent 60%), radial-gradient(circle at 85% 15%, rgba(131, 197, 190, 0.08) 0%, transparent 40%), radial-gradient(circle at 15% 85%, rgba(255, 221, 210, 0.1) 0%, transparent 55%);
     animation: elegant-drift 15s ease-in-out infinite reverse;
     pointer-events: none;
 }
@@ -54,7 +54,9 @@
     pointer-events: none;
 }
 
+
 /* 主题3: 粒子星空 */
+
 .welcome.theme-particles {
     background: linear-gradient(180deg, #2d3748 0%, #4A90A4 50%, #5fb3c7 100%);
 }
@@ -71,18 +73,15 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(2px 2px at 40% 60%, rgba(255, 221, 210, 0.6), transparent),
-        radial-gradient(1px 1px at 90% 40%, rgba(131, 197, 190, 0.8), transparent),
-        radial-gradient(1px 1px at 60% 90%, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.9), transparent);
+    background-image: radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.8), transparent), radial-gradient(2px 2px at 40% 60%, rgba(255, 221, 210, 0.6), transparent), radial-gradient(1px 1px at 90% 40%, rgba(131, 197, 190, 0.8), transparent), radial-gradient(1px 1px at 60% 90%, rgba(255, 255, 255, 0.6), transparent), radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.9), transparent);
     background-size: 200px 200px, 300px 300px, 150px 150px, 250px 250px, 180px 180px;
     animation: particles-twinkle 8s linear infinite;
     pointer-events: none;
 }
 
+
 /* 主题4: 现代几何 */
+
 .welcome.theme-geometric {
     background: linear-gradient(135deg, #4A90A4 0%, #83C5BE 100%);
     position: relative;
@@ -95,10 +94,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-        linear-gradient(30deg, transparent 40%, rgba(255, 221, 210, 0.08) 40%, rgba(255, 221, 210, 0.08) 60%, transparent 60%),
-        linear-gradient(150deg, transparent 40%, rgba(107, 182, 170, 0.06) 40%, rgba(107, 182, 170, 0.06) 60%, transparent 60%),
-        linear-gradient(90deg, transparent 48%, rgba(116, 169, 188, 0.05) 48%, rgba(116, 169, 188, 0.05) 52%, transparent 52%);
+    background-image: linear-gradient(30deg, transparent 40%, rgba(255, 221, 210, 0.08) 40%, rgba(255, 221, 210, 0.08) 60%, transparent 60%), linear-gradient(150deg, transparent 40%, rgba(107, 182, 170, 0.06) 40%, rgba(107, 182, 170, 0.06) 60%, transparent 60%), linear-gradient(90deg, transparent 48%, rgba(116, 169, 188, 0.05) 48%, rgba(116, 169, 188, 0.05) 52%, transparent 52%);
     background-size: 120px 120px, 200px 200px, 80px 80px;
     animation: modern-geometric 25s linear infinite;
     pointer-events: none;
@@ -111,14 +107,14 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        conic-gradient(from 45deg at 20% 30%, transparent 0deg, rgba(131, 197, 190, 0.03) 60deg, transparent 120deg),
-        conic-gradient(from 135deg at 80% 70%, transparent 0deg, rgba(255, 221, 210, 0.04) 90deg, transparent 180deg);
+    background: conic-gradient(from 45deg at 20% 30%, transparent 0deg, rgba(131, 197, 190, 0.03) 60deg, transparent 120deg), conic-gradient(from 135deg at 80% 70%, transparent 0deg, rgba(255, 221, 210, 0.04) 90deg, transparent 180deg);
     animation: geometric-rotation 30s linear infinite;
     pointer-events: none;
 }
 
+
 /* 主题5: 呼吸光晕 */
+
 .welcome.theme-breathing {
     background: radial-gradient(ellipse at center, #83C5BE 0%, #4A90A4 50%, #2d3748 100%);
 }
@@ -361,7 +357,9 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 优雅流动动画 */
+
 @keyframes elegant-flow {
     0% {
         background-position: 0% 50%;
@@ -380,9 +378,12 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 优雅漂移动画 */
+
 @keyframes elegant-drift {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(0) translateY(0) rotate(0deg);
         opacity: 1;
     }
@@ -400,9 +401,12 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 轻柔脉冲动画 */
+
 @keyframes gentle-pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
         opacity: 0.3;
     }
@@ -412,9 +416,12 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 粒子闪烁动画 */
+
 @keyframes particles-twinkle {
-    0%, 100% {
+    0%,
+    100% {
         opacity: 0.3;
         transform: scale(1);
     }
@@ -432,7 +439,9 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 现代几何移动动画 */
+
 @keyframes modern-geometric {
     0% {
         background-position: 0 0, 0 0, 0 0;
@@ -456,7 +465,9 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 几何旋转动画 */
+
 @keyframes geometric-rotation {
     0% {
         transform: rotate(0deg);
@@ -466,9 +477,12 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 呼吸脉冲动画 */
+
 @keyframes breathing-pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
         opacity: 0.3;
     }
@@ -478,7 +492,9 @@ img[alt="验证码"]:active {
     }
 }
 
+
 /* 不同主题下的标题颜色适配 */
+
 .welcome.theme-flow .app-title {
     color: #2d3748 !important;
     text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3) !important;
@@ -504,7 +520,9 @@ img[alt="验证码"]:active {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
 }
 
+
 /* 不同主题下的主题选择器样式适配 */
+
 .welcome.theme-particles .theme-button,
 .welcome.theme-breathing .theme-button {
     background: rgba(0, 0, 0, 0.7) !important;
@@ -518,7 +536,9 @@ img[alt="验证码"]:active {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
+
 /* 主题选择器样式 */
+
 .theme-selector {
     position: relative;
     z-index: 100;
@@ -568,11 +588,18 @@ img[alt="验证码"]:active {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    background-position: center;
+    /* 从顶部中心对齐 */
+    -webkit-background-size: cover;
+    /* 兼容老版本WebKit浏览器 */
+    -o-background-size: cover;
+    /* 兼容老版本Opera浏览器 */
+    >>>>>>>merge/20250923
 }
 
 .login-text {
     font-weight: 700;
-    font-size: 32px;
+    font-size: 25px;
     text-align: left;
     color: #3d4566;
 }
@@ -694,9 +721,6 @@ img[alt="验证码"]:active {
 }
 
 
-/* .login-person 样式已移除，因为不再使用左侧图片 */
-
-
 /* 移动端适配样式 */
 
 @media screen and (max-width: 768px) {
@@ -720,10 +744,6 @@ img[alt="验证码"]:active {
         backdrop-filter: blur(10px);
         background-color: rgba(255, 255, 255, 0.95);
     }
-    .login-person {
-        /* 在移动端隐藏大图 */
-        display: none;
-    }
     .input-box {
         margin-top: 18px;
         height: 45px;
@@ -737,54 +757,7 @@ img[alt="验证码"]:active {
         line-height: 45px;
         border-radius: 12px;
     }
-    /* 调整表单容器内的间距 */
-    .el-main {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0;
-    }
-    /* 调整验证码区域样式 - 改为左右结构 */
-    .mobile-captcha {
-        margin-top: 15px !important;
-        flex-direction: row !important;
-        align-items: center !important;
-    }
-    /* 移动端手机号输入区域优化 */
-    .mobile-flex {
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 8px !important;
-        width: 100% !important;
-    }
-    .mobile-flex .el-select {
-        width: 90px !important;
-        margin-right: 0 !important;
-        flex-shrink: 0 !important;
-    }
-    .mobile-flex .el-input {
-        flex: 1 !important;
-        min-width: 0 !important;
-    }
-    /* 移动端区号选择器样式优化 */
-    .mobile-flex .el-select .el-input {
-        font-size: 13px !important;
-    }
-    .mobile-flex .el-select .el-input__inner {
-        padding-left: 8px !important;
-        padding-right: 20px !important;
-    }
-    /* 移动端Element UI组件优化 */
-    .input-box .mobile-flex .el-select .el-input__inner {
-        border: none !important;
-        background: transparent !important;
-        height: 48px !important;
-        line-height: 48px !important;
-    }
-    .input-box .mobile-flex .el-input .el-input__inner {
-        border: none !important;
-        background: transparent !important;
-        height: 48px !important;
-        padding-left: 4px !important;
-    }
+}
+
+
 }

@@ -2,94 +2,86 @@
   <div class="welcome">
     <HeaderBar />
 
-    <div :class="['operation-bar', { 'mobile-operation-bar': isMobile }]">
-      <h2 class="page-title">用户管理</h2>
-      <div :class="['right-operations', { 'mobile-right-operations': isMobile }]" v-if="!isMobile">
-        <el-input placeholder="请输入手机号码查询" v-model="searchPhone" class="search-input" clearable
+    <div class="operation-bar">
+      <h2 class="page-title">{{ $t('header.userManagement') }}</h2>
+      <div class="right-operations">
+        <el-input :placeholder="$t('user.searchPhone')" v-model="searchPhone" class="search-input" clearable
           @keyup.enter.native="handleSearch" />
-        <el-button class="btn-search" @click="handleSearch">搜索</el-button>
+        <el-button class="btn-search" @click="handleSearch">{{ $t('user.search') }}</el-button>
       </div>
-    </div>
-
-    <!-- 移动端搜索框 -->
-    <div v-if="isMobile" class="mobile-search-container">
-      <el-input placeholder="请输入手机号码查询" v-model="searchPhone" class="mobile-search-input" clearable
-        @keyup.enter.native="handleSearch" size="small">
-        <template slot="suffix">
-          <el-button class="search-btn" @click="handleSearch" type="text" size="mini">
-            <i class="el-icon-search"></i>
-          </el-button>
-        </template>
-      </el-input>
     </div>
 
     <div class="main-wrapper">
       <div class="content-panel">
-        <div :class="['content-area', { 'mobile-content-area': isMobile }]">
+        <div class="content-area">
           <el-card class="user-card" shadow="never">
-            <div :class="['table-container', { 'mobile-table-container': isMobile }]">
-              <el-table ref="userTable" :data="userList" :class="['transparent-table', { 'mobile-table': isMobile }]" v-loading="loading"
-                element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
-                element-loading-background="rgba(255, 255, 255, 0.7)">
-                <el-table-column label="选择" align="center" :width="isMobile ? '60' : '120'">
-                  <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.selected"></el-checkbox>
-                  </template>
-                </el-table-column>
-                <el-table-column label="用户Id" prop="userid" align="center" :min-width="isMobile ? '120' : '140'"></el-table-column>
-                <el-table-column label="手机号码" prop="mobile" align="center" :min-width="isMobile ? '120' : '140'"></el-table-column>
-                <el-table-column label="设备数量" prop="deviceCount" align="center" :width="isMobile ? '80' : '100'"></el-table-column>
-                <el-table-column label="注册时间" prop="createDate" align="center" :min-width="isMobile ? '100' : '140'" v-if="!isMobile"></el-table-column>
-                <el-table-column label="状态" prop="status" align="center" :width="isMobile ? '80' : '100'">
-                  <template slot-scope="scope">
-                    <el-tag v-if="scope.row.status === 1" type="success" :size="isMobile ? 'mini' : 'small'">正常</el-tag>
-                    <el-tag v-else type="danger" :size="isMobile ? 'mini' : 'small'">禁用</el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" align="center" :min-width="isMobile ? '180' : '240'">
-                  <template slot-scope="scope">
-                    <el-button :size="isMobile ? 'mini' : 'small'" type="text" @click="resetPassword(scope.row)">重置密码</el-button>
-                    <el-button :size="isMobile ? 'mini' : 'small'" type="text" v-if="scope.row.status === 1"
-                      @click="handleChangeStatus(scope.row, 0)">禁用账户</el-button>
-                    <el-button :size="isMobile ? 'mini' : 'small'" type="text" v-if="scope.row.status === 0"
-                      @click="handleChangeStatus(scope.row, 1)">恢复账号</el-button>
-                    <el-button :size="isMobile ? 'mini' : 'small'" type="text" @click="deleteUser(scope.row)">删除用户</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
+            <el-table ref="userTable" :data="userList" class="transparent-table" v-loading="loading"
+              :element-loading-text="$t('modelConfig.loading')" element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(255, 255, 255, 0.7)">
+              <el-table-column :label="$t('modelConfig.select')" align="center" width="120">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="scope.row.selected"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('user.userid')" prop="userid" align="center"></el-table-column>
+              <el-table-column :label="$t('user.mobile')" prop="mobile" align="center"></el-table-column>
+              <el-table-column :label="$t('user.deviceCount')" prop="deviceCount" align="center"></el-table-column>
+              <el-table-column :label="$t('user.createDate')" prop="createDate" align="center"></el-table-column>
+              <el-table-column :label="$t('user.status')" prop="status" align="center">
+                <template slot-scope="scope">
+                  <el-tag v-if="scope.row.status === 1" type="success">{{ $t('user.normal') }}</el-tag>
+                  <el-tag v-else type="danger">{{ $t('user.disabled') }}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('modelConfig.action')" align="center" width="300px">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="text" @click="resetPassword(scope.row)">{{ $t('user.resetPassword')
+                    }}</el-button>
+                  <el-button size="mini" type="text" v-if="scope.row.status === 1"
+                    @click="handleChangeStatus(scope.row, 0)">{{ $t('user.disableAccount') }}</el-button>
+                  <el-button size="mini" type="text" v-if="scope.row.status === 0"
+                    @click="handleChangeStatus(scope.row, 1)">{{ $t('user.enableAccount') }}</el-button>
+                  <el-button size="mini" type="text" @click="deleteUser(scope.row)">{{ $t('user.deleteUser')
+                    }}</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
 
-            <div :class="['table_bottom', { 'mobile-table-bottom': isMobile }]">
-              <div :class="['ctrl_btn', { 'mobile-ctrl-btn': isMobile }]">
-                <el-button :size="isMobile ? 'mini' : 'small'" type="primary" class="select-all-btn" @click="handleSelectAll">
-                  {{ isAllSelected ? '取消全选' : '全选' }}
+            <div class="table_bottom">
+              <div class="ctrl_btn">
+                <el-button size="mini" type="primary" class="select-all-btn" @click="handleSelectAll">
+                  {{ isAllSelected ? $t('user.deselectAll') : $t('user.selectAll') }}
                 </el-button>
-                <el-button :size="isMobile ? 'mini' : 'small'" type="success" icon="el-icon-circle-check" @click="batchEnable">启用</el-button>
-                <el-button :size="isMobile ? 'mini' : 'small'" type="warning" @click="batchDisable"><i
-                    class="el-icon-remove-outline rotated-icon"></i>禁用</el-button>
-                <el-button :size="isMobile ? 'mini' : 'small'" type="danger" icon="el-icon-delete" @click="batchDelete">删除</el-button>
+                <el-button size="mini" type="success" icon="el-icon-circle-check" @click="batchEnable">{{
+                  $t('user.enable')
+                  }}</el-button>
+                <el-button size="mini" type="warning" @click="batchDisable"><i
+                    class="el-icon-remove-outline rotated-icon"></i>{{
+                      $t('user.disable') }}</el-button>
+                <el-button size="mini" type="danger" icon="el-icon-delete" @click="batchDelete">{{ $t('user.delete')
+                  }}</el-button>
               </div>
-
-              <div :class="['custom-pagination', { 'mobile-pagination': isMobile }]">
-                <el-select v-model="pageSize" @change="handlePageSizeChange" :class="['page-size-select', { 'mobile-page-size-select': isMobile }]">
-                  <el-option v-for="item in pageSizeOptions" :key="item" :label="`${item}条/页`" :value="item">
+              <div class="custom-pagination">
+                <el-select v-model="pageSize" @change="handlePageSizeChange"
+                  :class="['page-size-select', { 'page-size-select-en': $i18n.locale === 'en' }]">
+                  <el-option v-for="item in pageSizeOptions" :key="item"
+                    :label="$t('modelConfig.itemsPerPage', { items: item })" :value="item">
                   </el-option>
                 </el-select>
 
-                <button :class="['pagination-btn', { 'mobile-pagination-btn': isMobile }]" :disabled="currentPage === 1" @click="goFirst">
-                  首页
+                <button class="pagination-btn" :disabled="currentPage === 1" @click="goFirst">
+                  {{ $t('modelConfig.firstPage') }}
                 </button>
-                <button :class="['pagination-btn', { 'mobile-pagination-btn': isMobile }]" :disabled="currentPage === 1" @click="goPrev">
-                  上一页
+                <button class="pagination-btn" :disabled="currentPage === 1" @click="goPrev">
+                  {{ $t('modelConfig.prevPage') }}
                 </button>
-                <button v-for="page in visiblePages" :key="page" :class="['pagination-btn', { 'mobile-pagination-btn': isMobile, active: page === currentPage }]"
-                  @click="goToPage(page)">
+                <button v-for="page in visiblePages" :key="page" class="pagination-btn"
+                  :class="{ active: page === currentPage }" @click="goToPage(page)">
                   {{ page }}
+                </button> <button class="pagination-btn" :disabled="currentPage === pageCount" @click="goNext">
+                  {{ $t('modelConfig.nextPage') }}
                 </button>
-                <button :class="['pagination-btn', { 'mobile-pagination-btn': isMobile }]" :disabled="currentPage === pageCount" @click="goNext">
-                  下一页
-                </button>
-                <span :class="['total-text', { 'mobile-total-text': isMobile }]">共{{ total }}条记录</span>
+                <span class="total-text">{{ $t('modelConfig.totalRecords', { total: total }) }}</span>
               </div>
             </div>
           </el-card>
@@ -109,8 +101,7 @@ import Api from "@/apis/api";
 import HeaderBar from "@/components/HeaderBar.vue";
 import VersionFooter from "@/components/VersionFooter.vue";
 import ViewPasswordDialog from "@/components/ViewPasswordDialog.vue";
-import { isMobileDevice } from "@/utils/index";
-
+import i18n from '@/i18n';
 export default {
   components: { HeaderBar, ViewPasswordDialog, VersionFooter },
   data() {
@@ -131,15 +122,12 @@ export default {
     this.fetchUsers();
   },
   computed: {
-    isMobile() {
-      return isMobileDevice();
-    },
     pageCount() {
       return Math.ceil(this.total / this.pageSize);
     },
     visiblePages() {
       const pages = [];
-      const maxVisible = this.isMobile ? 2 : 3; // 移动端显示更少页码
+      const maxVisible = 3;
       let start = Math.max(1, this.currentPage - 1);
       let end = Math.min(this.pageCount, start + maxVisible - 1);
 
@@ -151,7 +139,7 @@ export default {
         pages.push(i);
       }
       return pages;
-    },
+    }
   },
   methods: {
     handlePageSizeChange(val) {
@@ -193,19 +181,19 @@ export default {
     batchDelete() {
       const selectedUsers = this.userList.filter(user => user.selected);
       if (selectedUsers.length === 0) {
-        this.$message.warning("请先选择需要删除的用户");
+        this.$message.warning(this.$t('user.selectUsersFirst'));
         return;
       }
 
-      this.$confirm(`确定要删除选中的${selectedUsers.length}个用户吗？`, "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t('user.confirmDeleteSelected', { count: selectedUsers.length }), this.$t('common.warning'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: "warning",
       })
         .then(async () => {
           const loading = this.$loading({
             lock: true,
-            text: "正在删除中...",
+            text: this.$t('user.deleting'),
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.7)",
           });
@@ -230,29 +218,29 @@ export default {
 
             if (failCount === 0) {
               this.$message.success({
-                message: `成功删除${successCount}个用户`,
+                message: this.$t('user.deleteSuccess', { count: successCount }),
                 showClose: true
               });
             } else if (successCount === 0) {
               this.$message.error({
-                message: '删除失败，请重试',
+                message: this.$t('user.deleteFailed'),
                 showClose: true
               });
             } else {
               this.$message.warning(
-                `成功删除${successCount}个用户，${failCount}个删除失败`
+                this.$t('user.partialDelete', { successCount: successCount, failCount: failCount })
               );
             }
 
             this.fetchUsers();
           } catch (error) {
-            this.$message.error("删除过程中发生错误");
+            this.$message.error(this.$t('user.deleteError'));
           } finally {
             loading.close();
           }
         })
         .catch(() => {
-          this.$message.info("已取消删除");
+          this.$message.info(this.$t('user.deleteCancelled'));
         });
     },
     batchEnable() {
@@ -264,45 +252,44 @@ export default {
       this.handleChangeStatus(selectedUsers, 0);
     },
     resetPassword(row) {
-      this.$confirm("重置后将会生成新密码，是否继续？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm(this.$t('user.confirmResetPassword'), this.$t('common.warning'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
+        type: 'warning'
       }).then(() => {
         Api.admin.resetUserPassword(row.userid, ({ data }) => {
           if (data.code === 0) {
-            this.currentPassword = data.data;
-            this.showViewPassword = true;
-            this.$message.success({
-              message: "密码已重置，请通知用户使用新密码登录",
-              showClose: true
+            // 显示生成的默认密码
+            this.$alert(this.$t('user.resetPasswordSuccess') + '\n\n' + this.$t('user.generatedPassword') + ': ' + data.data, this.$t('common.success'), {
+              confirmButtonText: this.$t('common.confirm'),
+              dangerouslyUseHTMLString: true
             });
+            this.fetchUsers();
+          } else {
+            this.$message.error(data.msg || this.$t('user.operationFailed'));
           }
         });
+      }).catch(() => {
+        this.$message.info(this.$t('common.deleteCancelled'));
       });
     },
     deleteUser(row) {
-      this.$confirm("确定要删除该用户吗？", "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          Api.admin.deleteUser(row.userid, ({ data }) => {
-            if (data.code === 0) {
-              this.$message.success({
-                message: "删除成功",
-                showClose: true
-              });
-              this.fetchUsers();
-            } else {
-              this.$message.error({
-                message: data.msg || "删除失败",
-                showClose: true
-              });
-            }
-          });
-        })
-        .catch(() => { });
+      this.$confirm(this.$t('user.confirmDeleteUser'), this.$t('common.warning'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
+        type: 'warning'
+      }).then(() => {
+        Api.admin.deleteUser(row.userid, ({ data }) => {
+          if (data.code === 0) {
+            this.$message.success(this.$t('user.deleteUserSuccess'));
+            this.fetchUsers();
+          } else {
+            this.$message.error(data.msg || this.$t('user.operationFailed'));
+          }
+        });
+      }).catch(() => {
+        this.$message.info(this.$t('common.deleteCancelled'));
+      });
     },
     goFirst() {
       this.currentPage = 1;
@@ -327,30 +314,30 @@ export default {
     handleChangeStatus(row, status) {
       // 处理单个用户或用户数组
       const users = Array.isArray(row) ? row : [row];
-      const confirmText = status === 0 ? '禁用' : '启用';
+      const actionText = status === 0 ? this.$t('user.disable') : this.$t('user.enable');
       const userCount = users.length;
 
-      this.$confirm(`确定要${confirmText}选中的${userCount}个用户吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('user.confirmStatusChange', { action: actionText, count: userCount }), this.$t('common.warning'), {
+        confirmButtonText: this.$t('common.confirm'),
+        cancelButtonText: this.$t('common.cancel'),
         type: 'warning'
       }).then(() => {
         const userIds = users.map(user => user.userid);
         if (userIds.some(id => isNaN(id))) {
-          this.$message.error('存在无效的用户ID');
+          this.$message.error(this.$t('user.invalidUserId'));
           return;
         }
 
         Api.user.changeUserStatus(status, userIds, ({ data }) => {
           if (data.code === 0) {
             this.$message.success({
-              message: `成功${confirmText}${userCount}个用户`,
+              message: this.$t('user.statusChangeSuccess', { action: actionText, count: userCount }),
               showClose: true
             });
             this.fetchUsers(); // 刷新用户列表
           } else {
             this.$message.error({
-              message: '操作失败，请重试',
+              message: this.$t('user.operationFailed'),
               showClose: true
             });
           }
@@ -358,6 +345,21 @@ export default {
       }).catch(() => {
         // 用户取消操作
       });
+    },
+    // 这个方法已被batchDelete替代，保留用于向后兼容
+    handleBatchDelete() {
+      this.batchDelete();
+    },
+    // This method has been fixed to use existing functionality
+    handleBatchStatusChange(status) {
+      const selectedUsers = this.userList.filter(user => user.selected);
+      if (selectedUsers.length === 0) {
+        this.$message.warning(this.$t('user.selectUsersFirst'));
+        return;
+      }
+
+      // Call the existing handleChangeStatus method which already handles both single and multiple users
+      this.handleChangeStatus(selectedUsers, status);
     },
   },
 };
@@ -396,10 +398,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-
-  &.mobile-operation-bar {
-    padding: 12px 16px;
-  }
 }
 
 .page-title {
@@ -437,52 +435,6 @@ export default {
   box-shadow: 0 6px 20px rgba(102, 187, 106, 0.4);
 }
 
-// 移动端搜索样式（与模型配置页面一致）
-.mobile-search-container {
-  margin: 0 16px 8px 16px;
-  width: calc(100% - 32px);
-}
-
-.mobile-search-input {
-  width: 100%;
-}
-
-.mobile-search-input ::v-deep .el-input__inner {
-  height: 32px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #d9d9d9;
-  font-size: 12px;
-  padding-right: 40px;
-}
-
-.mobile-search-input ::v-deep .el-input__suffix {
-  right: 8px;
-  top: 0;
-  height: 32px;
-  display: flex;
-  align-items: center;
-}
-
-.search-btn {
-  background: transparent !important;
-  border: none !important;
-  color: #6b8cff !important;
-  padding: 4px !important;
-  margin: 0 !important;
-  height: 24px !important;
-  width: 24px !important;
-}
-
-.search-btn:hover {
-  background: rgba(107, 140, 255, 0.1) !important;
-  border-radius: 50% !important;
-}
-
-.search-btn i {
-  font-size: 16px;
-}
-
 .content-panel {
   flex: 1;
   display: flex;
@@ -501,20 +453,6 @@ export default {
   background-color: white;
   display: flex;
   flex-direction: column;
-
-  &.mobile-content-area {
-    min-width: 100%;
-    overflow-x: visible;
-  }
-}
-
-.table-container {
-  overflow-x: auto;
-
-  &.mobile-table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
 }
 
 .user-card {
@@ -540,27 +478,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
-
-  &.mobile-table-bottom {
-    flex-direction: column;
-    gap: 8px;
-    align-items: stretch;
-    padding: 0 8px;
-    margin-top: 8px;
-  }
 }
 
 .ctrl_btn {
   display: flex;
   gap: 8px;
   padding-left: 26px;
-
-  &.mobile-ctrl-btn {
-    padding-left: 0;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
 
   .el-button {
     min-width: 72px;
@@ -613,28 +536,8 @@ export default {
   align-items: center;
   gap: 8px;
 
-  &.mobile-pagination {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 4px;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 0;
-  }
-
   .el-select {
     margin-right: 8px;
-  }
-
-  .page-size-select {
-    width: 100px;
-    margin-right: 10px;
-
-    &.mobile-page-size-select {
-      width: 80px;
-      margin-right: 4px;
-      margin-bottom: 0;
-    }
   }
 
   .pagination-btn:first-child,
@@ -651,13 +554,6 @@ export default {
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
-
-    &.mobile-pagination-btn {
-      min-width: 40px;
-      height: 24px;
-      padding: 0 6px;
-      font-size: 11px;
-    }
 
     &:hover {
       background: #d7dce6;
@@ -681,12 +577,6 @@ export default {
     cursor: pointer;
     transition: all 0.3s ease;
 
-    &.mobile-pagination-btn {
-      min-width: 20px;
-      height: 24px;
-      font-size: 11px;
-    }
-
     &:hover {
       background: rgba(245, 247, 250, 0.3);
     }
@@ -706,13 +596,6 @@ export default {
     color: #909399;
     font-size: 14px;
     margin-left: 10px;
-
-    &.mobile-total-text {
-      margin-left: 8px;
-      text-align: center;
-      font-size: 11px;
-      order: 999; // 让总数文字排在最后
-    }
   }
 }
 
@@ -837,7 +720,59 @@ export default {
   }
 }
 
+.page-size-select {
+  width: 100px;
+  margin-right: 10px;
 
+  :deep(.el-input__inner) {
+    height: 32px;
+    line-height: 32px;
+    border-radius: 4px;
+    border: 1px solid #e4e7ed;
+    background: #dee7ff;
+    color: #606266;
+    font-size: 14px;
+  }
+
+  &.page-size-select-en {
+    width: 130px;
+
+    :deep(.el-input__inner) {
+      height: 36px;
+      line-height: 36px;
+      font-size: 15px;
+    }
+  }
+
+  :deep(.el-input__suffix) {
+    right: 6px;
+    width: 15px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 6px;
+    border-radius: 4px;
+  }
+
+  :deep(.el-input__suffix-inner) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  :deep(.el-icon-arrow-up:before) {
+    content: "";
+    display: inline-block;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 9px solid #606266;
+    position: relative;
+    transform: rotate(0deg);
+    transition: transform 0.3s;
+  }
+}
 
 .el-table {
   --table-max-height: calc(100vh - 40vh);

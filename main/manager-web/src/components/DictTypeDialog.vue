@@ -1,23 +1,21 @@
 <template>
-    <el-dialog :title="title" :visible.sync="dialogVisible" :width="isMobile ? '95%' : '30%'" @close="handleClose">
-        <el-form :model="form" :rules="rules" ref="form" :label-width="isMobile ? '80px' : '120px'">
-            <el-form-item label="字典类型名称" prop="dictName">
-                <el-input v-model="form.dictName" placeholder="请输入字典类型名称" :style="{ height: isMobile ? '40px' : 'auto' }"></el-input>
+    <el-dialog :title="title" :visible.sync="dialogVisible"  width="30%" @close="handleClose">
+        <el-form :model="form" :rules="rules" ref="form" label-width="auto">
+            <el-form-item :label="$t('dictTypeDialog.dictName')" prop="dictName">
+                <el-input v-model="form.dictName" :placeholder="$t('dictTypeDialog.dictNamePlaceholder')"></el-input>
             </el-form-item>
-            <el-form-item label="字典类型编码" prop="dictType">
-                <el-input v-model="form.dictType" placeholder="请输入字典类型编码" :style="{ height: isMobile ? '40px' : 'auto' }"></el-input>
+            <el-form-item :label="$t('dictTypeDialog.dictType')" prop="dictType">
+                <el-input v-model="form.dictType" :placeholder="$t('dictTypeDialog.dictTypePlaceholder')"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="handleClose" :size="isMobile ? 'small' : 'medium'">取 消</el-button>
-            <el-button type="primary" @click="handleSave" :size="isMobile ? 'small' : 'medium'">确 定</el-button>
+            <el-button @click="handleClose">{{ $t('button.cancel') }}</el-button>
+            <el-button type="primary" @click="handleSave">{{ $t('button.save') }}</el-button>
         </div>
     </el-dialog>
 </template>
 
 <script>
-import { isMobileDevice } from "@/utils/index";
-
 export default {
     name: 'DictTypeDialog',
     props: {
@@ -27,7 +25,7 @@ export default {
         },
         title: {
             type: String,
-            default: '新增字典类型'
+            default: () => this.$t('dictTypeDialog.addDictType')
         },
         dictTypeData: {
             type: Object,
@@ -43,14 +41,9 @@ export default {
                 dictType: ''
             },
             rules: {
-                dictName: [{ required: true, message: '请输入字典类型名称', trigger: 'blur' }],
-                dictType: [{ required: true, message: '请输入字典类型编码', trigger: 'blur' }]
+                dictName: [{ required: true, message: this.$t('dictTypeDialog.requiredDictName'), trigger: 'blur' }],
+                dictType: [{ required: true, message: this.$t('dictTypeDialog.requiredDictType'), trigger: 'blur' }]
             }
-        }
-    },
-    computed: {
-        isMobile() {
-            return isMobileDevice();
         }
     },
     watch: {

@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import xiaozhi.common.constant.Constant;
+import xiaozhi.common.exception.ErrorCode;
 import xiaozhi.common.exception.RenException;
 import xiaozhi.common.redis.RedisKeys;
 import xiaozhi.common.redis.RedisUtils;
@@ -49,7 +50,7 @@ public class ALiYunSmsService implements SmsService {
             redisUtils.delete(todayCountKey);
             // 错误 message
             log.error(e.getMessage());
-            throw new RenException("短信发送失败");
+            throw new RenException(ErrorCode.SMS_SEND_FAILED);
         }
 
     }
@@ -113,7 +114,7 @@ public class ALiYunSmsService implements SmsService {
         }catch (Exception e){
             // 错误 message
             log.error(e.getMessage());
-            throw new RenException("短信连接建立失败");
+            throw new RenException(ErrorCode.SMS_CONNECTION_FAILED);
         }
     }
 }

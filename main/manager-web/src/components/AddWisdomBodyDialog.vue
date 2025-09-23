@@ -4,23 +4,23 @@
       <div class="header-icon">
         <img loading="lazy" src="@/assets/home/equipment.png" alt="" />
       </div>
-      <span class="header-title">创建心理助手</span>
+      {{ $t('addAgentDialog.title') }}
     </div>
     <div class="dialog-divider"></div>
     <div class="dialog-content">
       <div class="input-label">
-        <span class="required">*</span> 助手名称：
+        <span class="required">*</span> {{ $t('addAgentDialog.agentName') }}：
       </div>
       <div class="input-container">
-        <el-input ref="inputRef" placeholder="请输入心理助手名称.." v-model="wisdomBodyName" @keyup.enter.native="confirm" />
+        <el-input ref="inputRef" :placeholder="$t('addAgentDialog.placeholder')" v-model="wisdomBodyName" @keyup.enter.native="confirm" />
       </div>
     </div>
     <div class="dialog-footer">
       <div class="dialog-btn confirm-btn" @click="confirm">
-        确定
+        {{ $t('addAgentDialog.confirm') }}
       </div>
       <div class="dialog-btn cancel-btn" @click="cancel">
-        取消
+        {{ $t('addAgentDialog.cancel') }}
       </div>
     </div>
   </el-dialog>
@@ -60,12 +60,12 @@ export default {
     },
     confirm() {
       if (!this.wisdomBodyName.trim()) {
-        this.$message.error('请输入智能体名称');
+        this.$message.error(this.$t('addAgentDialog.nameRequired'));
         return;
       }
       Api.agent.addAgent(this.wisdomBodyName, (res) => {
         this.$message.success({
-          message: '添加成功',
+          message: this.$t('addAgentDialog.addSuccess'),
           showClose: true
         });
         this.$emit('confirm', res);

@@ -3,89 +3,89 @@
     class="center-dialog" :modal="false">
     <div style="margin: 0 18px; text-align: left; padding: 10px; border-radius: 10px;">
       <div style="font-size: 30px; color: #3d4566; margin-top: -10px; margin-bottom: 10px; text-align: center;">
-        {{ modelData.duplicateMode ? '创建副本' : '修改模型' }}
+        {{ modelData.duplicateMode ? $t('modelConfigDialog.duplicateModel') : $t('modelConfigDialog.editModel') }}
       </div>
 
       <button class="custom-close-btn" @click="dialogVisible = false">
         ×
       </button>
 
-      <div :class="['section-header', { 'mobile-section-header': isMobile }]">
-        <div :class="['section-title', { 'mobile-section-title': isMobile }]">模型信息</div>
-        <div :class="['switch-group', { 'mobile-switch-group': isMobile }]">
-          <div class="switch-item">
-            <span :class="['switch-label', { 'mobile-switch-label': isMobile }]">是否启用</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="font-size: 20px; font-weight: bold; color: #3d4566;">{{ $t('modelConfigDialog.modelInfo') }}</div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <div style="display: flex; align-items: center;">
+            <span style="margin-right: 8px;">{{ $t('modelConfigDialog.enable') }}</span>
             <el-switch v-model="form.isEnabled" :active-value="1" :inactive-value="0" class="custom-switch"></el-switch>
           </div>
-          <div style="display: none;" class="switch-item">
-            <span :class="['switch-label', { 'mobile-switch-label': isMobile }]">设为默认</span>
+          <div style="display: none; align-items: center;">
+            <span style="margin-right: 8px;">{{ $t('modelConfigDialog.setDefault') }}</span>
             <el-switch v-model="form.isDefault" :active-value="1" :inactive-value="0" class="custom-switch"></el-switch>
           </div>
         </div>
       </div>
 
-      <div class="section-divider"></div>
+      <div style="height: 2px; background: #e9e9e9; margin-bottom: 22px;"></div>
 
-      <el-form :model="form" ref="form" :label-width="isMobile ? '80px' : '100px'" label-position="left" :class="['custom-form', { 'mobile-form': isMobile }]">
-        <div :class="['form-row', { 'mobile-form-row': isMobile }]">
-          <el-form-item label="模型名称" prop="name" :class="['form-item', { 'mobile-form-item': isMobile }]">
-            <el-input v-model="form.modelName" placeholder="请输入模型名称" :class="['custom-input-bg', { 'mobile-input': isMobile }]"></el-input>
+      <el-form :model="form" ref="form" label-width="auto" label-position="left" class="custom-form">
+        <div style="display: flex; gap: 20px; margin-bottom: 0;">
+          <el-form-item :label="$t('modelConfigDialog.modelName')" prop="name" style="flex: 1;">
+            <el-input v-model="form.modelName" :placeholder="$t('modelConfigDialog.enterModelName')" class="custom-input-bg"></el-input>
           </el-form-item>
-          <el-form-item label="模型编码" prop="code" :class="['form-item', { 'mobile-form-item': isMobile }]">
-            <el-input v-model="form.modelCode" placeholder="请输入模型编码" :class="['custom-input-bg', { 'mobile-input': isMobile }]"></el-input>
+          <el-form-item :label="$t('modelConfigDialog.modelCode')" prop="code" style="flex: 1;">
+            <el-input v-model="form.modelCode" :placeholder="$t('modelConfigDialog.enterModelCode')" class="custom-input-bg"></el-input>
           </el-form-item>
         </div>
 
-        <div :class="['form-row', { 'mobile-form-row': isMobile }]">
-          <el-form-item label="供应器" prop="supplier" :class="['form-item', { 'mobile-form-item': isMobile }]">
-            <el-select v-model="form.configJson.type" placeholder="请选择" class="custom-select custom-input-bg"
+        <div style="display: flex; gap: 20px; margin-bottom: 0;">
+          <el-form-item :label="$t('modelConfigDialog.supplier')" prop="supplier" style="flex: 1;">
+            <el-select v-model="form.configJson.type" :placeholder="$t('modelConfigDialog.selectSupplier')" class="custom-select custom-input-bg"
               style="width: 100%;" @focus="loadProviders" filterable>
               <el-option v-for="item in providers" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
-          <el-form-item label="排序号" prop="sort" :class="['form-item', { 'mobile-form-item': isMobile }]">
-            <el-input v-model.number="form.sort" type="number" placeholder="请输入排序号" :class="['custom-input-bg', { 'mobile-input': isMobile }]"></el-input>
+          <el-form-item :label="$t('modelConfigDialog.sortOrder')" prop="sort" style="flex: 1;">
+            <el-input v-model.number="form.sort" type="number" :placeholder="$t('modelConfigDialog.enterSortOrder')" class="custom-input-bg"></el-input>
           </el-form-item>
         </div>
 
-        <el-form-item label="文档地址" prop="docUrl" :class="['form-item-full', { 'mobile-form-item': isMobile }]">
-          <el-input v-model="form.docLink" placeholder="请输入文档地址" :class="['custom-input-bg', { 'mobile-input': isMobile }]"></el-input>
+        <el-form-item :label="$t('modelConfigDialog.docLink')" prop="docUrl" style="margin-bottom: 27px;">
+          <el-input v-model="form.docLink" :placeholder="$t('modelConfigDialog.enterDocLink')" class="custom-input-bg"></el-input>
         </el-form-item>
 
-        <el-form-item label="备注" prop="remark" :class="['form-item-full prop-remark', { 'mobile-form-item': isMobile }]">
-          <el-input v-model="form.remark" type="textarea" :rows="3" placeholder="请输入模型备注" :autosize="{ minRows: 3, maxRows: 5 }"
-            :class="['custom-input-bg', { 'mobile-textarea': isMobile }]"></el-input>
+        <el-form-item :label="$t('modelConfigDialog.remark')" prop="remark" class="prop-remark">
+          <el-input v-model="form.remark" type="textarea" :rows="3" :placeholder="$t('modelConfigDialog.enterRemark')" :autosize="{ minRows: 3, maxRows: 5 }"
+            class="custom-input-bg"></el-input>
         </el-form-item>
       </el-form>
 
+      <div style="font-size: 20px; font-weight: bold; color: #3d4566; margin-bottom: 15px;">{{ $t('modelConfigDialog.callInfo') }}</div>
+      <div style="height: 2px; background: #e9e9e9; margin-bottom: 22px;"></div>
 
-      <div class="section-divider"></div>
-
-      <el-form :model="form.configJson" ref="callInfoForm" :label-width="isMobile ? '80px' : 'auto'" :class="['custom-form', { 'mobile-form': isMobile }]">
+      <el-form :model="form.configJson" ref="callInfoForm" label-width="auto" class="custom-form">
         <template v-for="(row, rowIndex) in chunkedCallInfoFields">
-          <div :key="rowIndex" :class="['form-row', { 'mobile-form-row': isMobile }]">
+          <div :key="rowIndex" style="display: flex; gap: 20px; margin-bottom: 0;">
             <el-form-item v-for="field in row" :key="field.prop" :label="field.label" :prop="field.prop"
-              :class="['form-item', { 'mobile-form-item': isMobile }]">
+              style="flex: 1;">
               <template v-if="field.type === 'json-textarea'">
-                <el-input v-model="fieldJsonMap[field.prop]" type="textarea" :rows="3" placeholder="请输入JSON格式变量(示例:{'key':'value'})"
-                  :class="['custom-input-bg', { 'mobile-textarea': isMobile }]" @change="(val) => handleJsonChange(field.prop, val)"></el-input>
+                <el-input v-model="fieldJsonMap[field.prop]" type="textarea" :rows="3" :placeholder="$t('modelConfigDialog.enterJsonExample')"
+                  class="custom-input-bg" @change="(val) => handleJsonChange(field.prop, val)"></el-input>
               </template>
               <el-input v-else v-model="form.configJson[field.prop]" :placeholder="field.placeholder" :type="field.type"
-                :class="['custom-input-bg', { 'mobile-input': isMobile }]" :show-password="field.type === 'password'"></el-input>
+                class="custom-input-bg" :show-password="field.type === 'password'"></el-input>
             </el-form-item>
           </div>
         </template>
       </el-form>
     </div>
 
-    <div :class="['dialog-footer', { 'mobile-footer': isMobile }]">
+    <div style="display: flex;justify-content: center;">
       <el-button
         type="primary"
         @click="handleSave"
-        :class="['save-btn', { 'mobile-save-btn': isMobile }]"
+        class="save-btn"
         :loading="saving"
         :disabled="saving">
-        保存
+        {{ $t('modelConfigDialog.save') }}
       </el-button>
     </div>
   </el-dialog>
@@ -93,7 +93,6 @@
 
 <script>
 import Api from '@/apis/api';
-import { isMobileDevice } from '@/utils/index';
 
 export default {
   name: "ModelEditDialog",
@@ -132,16 +131,7 @@ export default {
     };
   },
   computed: {
-    isMobile() {
-      return isMobileDevice();
-    },
     chunkedCallInfoFields() {
-      // 移动端使用单列布局
-      if (this.isMobile) {
-        return this.dynamicCallInfoFields.map(field => [field]);
-      }
-
-      // PC端使用双列布局
       const chunkSize = 2;
       const result = [];
       for (let i = 0; i < this.dynamicCallInfoFields.length; i += chunkSize) {
@@ -149,6 +139,10 @@ export default {
       }
       return result;
     },
+    // 检测是否为移动设备
+    isMobile() {
+      return window.innerWidth <= 768;
+    }
   },
   watch: {
     modelType() {
@@ -202,8 +196,8 @@ export default {
             const model = data.data;
 
             if (this.modelData.duplicateMode) {
-              model.modelName = this.modelData.modelName + '_副本';
-              model.modelCode = this.modelData.modelCode + '_副本';
+              model.modelName = this.modelData.modelName + this.$t('modelConfigDialog.copySuffix');
+              model.modelCode = this.modelData.modelCode + this.$t('modelConfigDialog.copySuffix');
             }
             this.pendingProviderType = model.configJson.type;
             this.pendingModelData = model;
@@ -373,126 +367,6 @@ export default {
   justify-content: center;
 }
 
-// 弹窗内容容器
-.dialog-content {
-  margin: 0 18px;
-  text-align: left;
-  padding: 10px;
-  border-radius: 10px;
-
-  &.mobile-content {
-    margin: 0 12px;
-    padding: 8px;
-  }
-}
-
-// 弹窗标题
-.dialog-title {
-  font-size: 30px;
-  color: #3d4566;
-  margin-top: -10px;
-  margin-bottom: 10px;
-  text-align: center;
-
-  &.mobile-title {
-    font-size: 24px;
-    margin-bottom: 15px;
-  }
-}
-
-// 区块头部
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-
-  &.mobile-section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-}
-
-.section-title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #3d4566;
-
-  &.mobile-section-title {
-    font-size: 18px;
-  }
-}
-
-.switch-group {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-
-  &.mobile-switch-group {
-    gap: 15px;
-  }
-}
-
-.switch-item {
-  display: flex;
-  align-items: center;
-}
-
-.switch-label {
-  margin-right: 8px;
-
-  &.mobile-switch-label {
-    font-size: 14px;
-  }
-}
-
-// 分割线
-.section-divider {
-  height: 2px;
-  background: #e9e9e9;
-  margin-bottom: 22px;
-}
-
-// 表单行
-.form-row {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 0;
-
-  &.mobile-form-row {
-    flex-direction: column;
-    gap: 0;
-  }
-}
-
-.form-item {
-  flex: 1;
-
-  &.mobile-form-item {
-    flex: none;
-    width: 100%;
-  }
-}
-
-.form-item-full {
-  margin-bottom: 27px;
-
-  &.mobile-form-item {
-    margin-bottom: 20px;
-  }
-}
-
-// 底部按钮区域
-.dialog-footer {
-  display: flex;
-  justify-content: center;
-
-  &.mobile-footer {
-    padding: 10px 0;
-  }
-}
-
 .custom-close-btn {
   position: absolute;
   top: 20px;
@@ -552,10 +426,6 @@ export default {
 
 .custom-form .el-form-item {
   margin-bottom: 20px;
-
-  &.mobile-form-item {
-    margin-bottom: 16px;
-  }
 }
 
 .custom-form .el-form-item__label {
@@ -563,12 +433,6 @@ export default {
   font-weight: normal;
   text-align: right;
   padding-right: 20px;
-}
-
-.custom-form.mobile-form .el-form-item__label {
-  text-align: left;
-  padding-right: 10px;
-  font-size: 14px;
 }
 
 .custom-form .el-form-item.prop-remark .el-form-item__label {
@@ -627,18 +491,6 @@ export default {
   background-color: #c0ccda;
   width: 35px;
   padding: 0 20px;
-}
-
-// 移动端媒体查询
-@media screen and (max-width: 768px) {
-  .custom-dialog {
-    border-radius: 15px;
-  }
-
-  .dialog-content {
-    max-height: 85vh;
-    overflow-y: auto;
-  }
 }
 
 .custom-switch .el-switch__core:after {

@@ -8,20 +8,20 @@
         <div class="add-device">
           <div class="add-device-bg">
             <div class="hellow-text" style="margin-top: 30px;">
-              <span class="wave-emoji">🌱</span> 你好，小新
+              <span class="wave-emoji">🌱</span> {{ $t('home.greeting') }}
             </div>
             <div class="hellow-text">
-              让我们一起
+              {{ $t('home.wish') }}
               <div style="display: inline-block;color: #4A90A4;">
-                成长与陪伴！ <span class="sparkle-emoji">🌟</span>
+                <span class="sparkle-emoji">🌟</span>
               </div>
             </div>
             <div class="hi-hint">
-              Together for growth and care <span class="heart-emoji">💚</span>
+              {{ $t('home.subtitle') }} <span class="heart-emoji">💚</span>
             </div>
             <div class="add-device-btn" @click="showAddDialog">
               <div class="add-btn-content">
-                <span class="add-btn-text">创建心理助手</span>
+                <span class="add-btn-text">{{ $t('home.addAgent') }}</span>
                 <i class="el-icon-plus add-btn-icon"></i>
               </div>
             </div>
@@ -149,21 +149,21 @@ export default {
     },
     // 删除智能体
     handleDeleteAgent(agentId) {
-      this.$confirm('确定要删除该智能体吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('home.confirmDeleteAgent'), '提示', {
+        confirmButtonText: this.$t('button.ok'),
+        cancelButtonText: this.$t('button.cancel'),
         type: 'warning'
       }).then(() => {
         Api.agent.deleteAgent(agentId, (res) => {
           if (res.data.code === 0) {
             this.$message.success({
-              message: '删除成功',
+              message: this.$t('home.deleteSuccess'),
               showClose: true
             });
             this.fetchAgentList(); // 刷新列表
           } else {
             this.$message.error({
-              message: res.data.msg || '删除失败',
+              message: res.data.msg || this.$t('home.deleteFailed'),
               showClose: true
             });
           }

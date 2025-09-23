@@ -2,126 +2,108 @@
     <div class="welcome">
         <HeaderBar />
 
-        <div :class="['operation-bar', { 'mobile-operation-bar': isMobile }]">
-            <h2 class="page-title">字典管理</h2>
-            <div class="action-group" v-if="!isMobile">
+        <div class="operation-bar">
+            <h2 class="page-title">{{ $t('dictManagement.pageTitle') }}</h2>
+            <div class="action-group">
                 <div class="search-group">
-                    <el-input placeholder="请输入字典值标签查询" v-model="search" class="search-input" clearable
+                    <el-input :placeholder="$t('dictManagement.searchPlaceholder')" v-model="search" class="search-input" clearable
                         @keyup.enter.native="handleSearch" style="width: 240px" />
                     <el-button class="btn-search" @click="handleSearch">
-                        搜索
+                        {{ $t('dictManagement.search') }}
                     </el-button>
                 </div>
             </div>
         </div>
 
-        <!-- 移动端搜索框 -->
-        <div v-if="isMobile" class="mobile-search-container">
-            <el-input placeholder="请输入字典值标签查询" v-model="search" class="mobile-search-input" clearable
-                @keyup.enter.native="handleSearch" size="small">
-                <template slot="suffix">
-                    <el-button class="search-btn" @click="handleSearch" type="text" size="mini">
-                        <i class="el-icon-search"></i>
-                    </el-button>
-                </template>
-            </el-input>
-        </div>
-
         <!-- 主体内容 -->
         <div class="main-wrapper">
-            <div :class="['content-panel', { 'mobile-content-panel': isMobile }]">
+            <div class="content-panel">
                 <!-- 左侧字典类型列表 -->
-                <div :class="['dict-type-panel', { 'mobile-dict-type-panel': isMobile }]">
+                <div class="dict-type-panel">
                     <div class="dict-type-header">
-                        <el-button type="success" :size="isMobile ? 'mini' : 'mini'" @click="showAddDictTypeDialog">新增字典类型</el-button>
-                        <el-button type="danger" :size="isMobile ? 'mini' : 'mini'" @click="batchDeleteDictType"
+                        <el-button type="success" size="mini" @click="showAddDictTypeDialog">{{ $t('dictManagement.addDictType') }}</el-button>
+                        <el-button type="danger" size="mini" @click="batchDeleteDictType"
                             :disabled="selectedDictTypes.length === 0">
-                            批量删除字典类型
+                            {{ $t('dictManagement.batchDeleteDictType') }}
                         </el-button>
                     </div>
-                    <div :class="['dict-type-table-container', { 'mobile-table-container': isMobile }]">
-                        <el-table ref="dictTypeTable" :data="dictTypeList" style="width: 100%" v-loading="dictTypeLoading"
-                            element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
-                            element-loading-background="rgba(255, 255, 255, 0.7)" @row-click="handleDictTypeRowClick"
-                            @selection-change="handleDictTypeSelectionChange" :row-class-name="tableRowClassName"
-                            :class="['dict-type-table', { 'mobile-dict-type-table': isMobile }]">
-                            <el-table-column type="selection" :width="isMobile ? 40 : 55" align="center"></el-table-column>
-                            <el-table-column label="字典类型名称" prop="dictName" align="center" :show-overflow-tooltip="isMobile"></el-table-column>
-                            <el-table-column label="操作" :width="isMobile ? 80 : 100" align="center">
-                                <template slot-scope="scope">
-                                    <el-button type="text" :size="isMobile ? 'mini' : 'mini'" @click.stop="editDictType(scope.row)" :class="{ 'mobile-btn': isMobile }">编辑</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
+                    <el-table ref="dictTypeTable" :data="dictTypeList" style="width: 100%" v-loading="dictTypeLoading"
+                        element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
+                        element-loading-background="rgba(255, 255, 255, 0.7)" @row-click="handleDictTypeRowClick"
+                        @selection-change="handleDictTypeSelectionChange" :row-class-name="tableRowClassName"
+                        class="dict-type-table" :header-cell-class-name="headerCellClassName">
+                        <el-table-column type="selection" width="70" align="center" :cell-class-name="selectionCellClassName"></el-table-column>
+                        <el-table-column :label="$t('dictManagement.dictTypeName')" prop="dictName" align="center"></el-table-column>
+                        <el-table-column :label="$t('dictManagement.operation')" width="100" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="text" size="mini" @click.stop="editDictType(scope.row)">{{ $t('dictManagement.edit') }}</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </div>
 
                 <!-- 右侧字典数据列表 -->
-                <div :class="['content-area', { 'mobile-content-area': isMobile }]">
-                    <el-card :class="['dict-data-card', { 'mobile-dict-data-card': isMobile }]" shadow="never">
-                        <div class="table-container" :class="{ 'mobile-table': isMobile }">
-                            <el-table ref="dictDataTable" :data="dictDataList" style="width: 100%"
-                                v-loading="dictDataLoading" element-loading-text="拼命加载中"
-                                element-loading-spinner="el-icon-loading"
-                                element-loading-background="rgba(255, 255, 255, 0.7)"
-                                :class="['data-table', { 'mobile-data-table': isMobile }]"
-                                header-row-class-name="table-header">
-                                <el-table-column label="选择" align="center" :width="isMobile ? 40 : 55">
-                                    <template slot-scope="scope">
-                                        <el-checkbox v-model="scope.row.selected" :class="{ 'mobile-checkbox': isMobile }"></el-checkbox>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="字典标签" prop="dictLabel" align="center" :width="isMobile ? 100 : undefined" :show-overflow-tooltip="isMobile"></el-table-column>
-                                <el-table-column label="字典值" prop="dictValue" align="center" :width="isMobile ? 100 : undefined" :show-overflow-tooltip="isMobile"></el-table-column>
-                                <el-table-column label="排序" prop="sort" align="center" :width="isMobile ? 60 : undefined"></el-table-column>
-                                <el-table-column label="操作" align="center" :width="isMobile ? 100 : 180">
-                                    <template slot-scope="scope">
-                                        <el-button type="text" :size="isMobile ? 'mini' : 'mini'" @click="editDictData(scope.row)"
-                                            :class="['edit-btn', { 'mobile-btn': isMobile }]">
-                                            修改
-                                        </el-button>
-                                        <el-button type="text" :size="isMobile ? 'mini' : 'mini'" @click="deleteDictData(scope.row)"
-                                            :class="['delete-btn', { 'mobile-btn': isMobile }]">
-                                            删除
-                                        </el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </div>
-
-                        <div :class="['table-footer', { 'mobile-footer': isMobile }]">
-                            <div :class="['batch-actions', { 'mobile-actions': isMobile }]">
-                                <el-button :size="isMobile ? 'mini' : 'mini'" type="primary" @click="selectAllDictData">
-                                    {{ isAllDictDataSelected ? '取消全选' : '全选' }}
+                <div class="content-area">
+                    <el-card class="dict-data-card" shadow="never">
+                        <el-table ref="dictDataTable" :data="dictDataList" style="width: 100%"
+                            v-loading="dictDataLoading" element-loading-text="拼命加载中"
+                            element-loading-spinner="el-icon-loading"
+                            element-loading-background="rgba(255, 255, 255, 0.7)" class="data-table"
+                            header-row-class-name="table-header">
+                            <el-table-column :label="$t('modelConfig.select')" align="center" width="70">
+                                <template slot-scope="scope">
+                                    <el-checkbox v-model="scope.row.selected"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column :label="$t('dictManagement.dictLabel')" prop="dictLabel" align="center"></el-table-column>
+                            <el-table-column :label="$t('dictManagement.dictValue')" prop="dictValue" align="center"></el-table-column>
+                            <el-table-column :label="$t('dictManagement.sort')" prop="sort" align="center"></el-table-column>
+                            <el-table-column :label="$t('dictManagement.operation')" align="center" width="180px">
+                                <template slot-scope="scope">
+                                    <el-button type="text" size="mini" @click="editDictData(scope.row)"
+                                        class="edit-btn">
+                                        {{ $t('dictManagement.edit') }}
+                                    </el-button>
+                                    <el-button type="text" size="mini" @click="deleteDictData(scope.row)"
+                                        class="delete-btn">
+                                        {{ $t('dictManagement.delete') }}
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <div class="table-footer">
+                            <div class="batch-actions">
+                                <el-button size="mini" type="primary" @click="selectAllDictData">
+                                    {{ isAllDictDataSelected ? $t('dictManagement.deselectAll') : $t('dictManagement.selectAll') }}
                                 </el-button>
-                                <el-button type="success" :size="isMobile ? 'mini' : 'mini'" @click="showAddDictDataDialog" class="add-btn">
-                                    新增字典数据
+                                <el-button type="success" size="mini" @click="showAddDictDataDialog" class="add-btn">
+                                    {{ $t('dictManagement.addDictData') }}
                                 </el-button>
-                                <el-button :size="isMobile ? 'mini' : 'mini'" type="danger" icon="el-icon-delete" @click="batchDeleteDictData">
-                                    批量删除字典数据
+                                <el-button size="mini" type="danger" icon="el-icon-delete" @click="batchDeleteDictData">
+                                    {{ $t('dictManagement.batchDeleteDictData') }}
                                 </el-button>
                             </div>
-                            <div :class="['custom-pagination', { 'mobile-pagination': isMobile }]">
+                            <div class="custom-pagination">
                                 <el-select v-model="pageSize" @change="handlePageSizeChange" class="page-size-select">
-                                    <el-option v-for="item in pageSizeOptions" :key="item" :label="`${item}条/页`"
+                                    <el-option v-for="item in pageSizeOptions" :key="item" :label="$t('dictManagement.itemsPerPage', { items: item })"
                                         :value="item">
                                     </el-option>
                                 </el-select>
 
                                 <button class="pagination-btn" :disabled="currentPage === 1" @click="goFirst">
-                                    首页
+                                    {{ $t('dictManagement.firstPage') }}
                                 </button>
                                 <button class="pagination-btn" :disabled="currentPage === 1" @click="goPrev">
-                                    上一页
+                                    {{ $t('dictManagement.prevPage') }}
                                 </button>
                                 <button v-for="page in visiblePages" :key="page" class="pagination-btn"
                                     :class="{ active: page === currentPage }" @click="goToPage(page)">
                                     {{ page }}
                                 </button>
                                 <button class="pagination-btn" :disabled="currentPage === pageCount" @click="goNext">
-                                    下一页
+                                    {{ $t('dictManagement.nextPage') }}
                                 </button>
-                                <span :class="['total-text', { 'mobile-total': isMobile }]">共{{ total }}条记录</span>
+                                <span class="total-text">{{ $t('dictManagement.totalRecords', { total }) }}</span>
                             </div>
                         </div>
                     </el-card>
@@ -148,8 +130,6 @@ import DictDataDialog from '@/components/DictDataDialog.vue'
 import DictTypeDialog from '@/components/DictTypeDialog.vue'
 import HeaderBar from '@/components/HeaderBar.vue'
 import VersionFooter from '@/components/VersionFooter.vue'
-import { isMobileDevice } from "@/utils/index";
-
 export default {
     name: 'DictManagement',
     components: {
@@ -194,29 +174,6 @@ export default {
             total: 0
         }
     },
-    computed: {
-        isMobile() {
-            return isMobileDevice();
-        },
-        pageCount() {
-            return Math.ceil(this.total / this.pageSize);
-        },
-        visiblePages() {
-            const pages = [];
-            const maxVisible = this.isMobile ? 2 : 3;
-            let start = Math.max(1, this.currentPage - 1);
-            let end = Math.min(this.pageCount, start + maxVisible - 1);
-
-            if (end - start + 1 < maxVisible) {
-                start = Math.max(1, end - maxVisible + 1);
-            }
-
-            for (let i = start; i <= end; i++) {
-                pages.push(i);
-            }
-            return pages;
-        }
-    },
     created() {
         this.loadDictTypeList()
     },
@@ -254,7 +211,7 @@ export default {
             return row === this.selectedDictType ? 'current-row' : ''
         },
         showAddDictTypeDialog() {
-            this.dictTypeDialogTitle = '新增字典类型'
+            this.dictTypeDialogTitle = this.$t('dictManagement.addDictType')
             this.dictTypeForm = {
                 id: null,
                 dictName: '',
@@ -263,7 +220,7 @@ export default {
             this.dictTypeDialogVisible = true
         },
         editDictType(row) {
-            this.dictTypeDialogTitle = '编辑字典类型'
+            this.dictTypeDialogTitle = this.$t('dictManagement.editDictType')
             this.dictTypeForm = { ...row }
             this.dictTypeDialogVisible = true
         },
@@ -271,7 +228,7 @@ export default {
             const api = formData.id ? dictApi.updateDictType : dictApi.addDictType
             api(formData, ({ data }) => {
                 if (data.code === 0) {
-                    this.$message.success('保存成功')
+                    this.$message.success(this.$t('dictManagement.saveSuccess'))
                     this.dictTypeDialogVisible = false
                     this.loadDictTypeList()
                 }
@@ -279,19 +236,19 @@ export default {
         },
         batchDeleteDictType() {
             if (this.selectedDictTypes.length === 0) {
-                this.$message.warning('请选择要删除的字典类型')
+                this.$message.warning(this.$t('dictManagement.selectDictTypeToDelete'))
                 return
             }
 
-            this.$confirm('确定要删除选中的字典类型吗?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('dictManagement.confirmDeleteDictType'), this.$t('dictManagement.confirm'), {
+                confirmButtonText: this.$t('dictManagement.confirm'),
+                cancelButtonText: this.$t('dictManagement.cancel'),
                 type: 'warning'
             }).then(() => {
                 const ids = this.selectedDictTypes.map(item => item.id)
                 dictApi.deleteDictType(ids, ({ data }) => {
                     if (data.code === 0) {
-                        this.$message.success('删除成功')
+                        this.$message.success(this.$t('dictManagement.deleteSuccess'))
                         this.loadDictTypeList()
                     }
                 })
@@ -316,8 +273,8 @@ export default {
                     }))
                     this.total = data.data.total
                 } else {
-                    this.$message.error(data.msg || '获取字典数据失败')
-                }
+                        this.$message.error(data.msg || this.$t('dictManagement.getDictDataFailed'))
+                    }
                 this.dictDataLoading = false
             })
         },
@@ -329,10 +286,10 @@ export default {
         },
         showAddDictDataDialog() {
             if (!this.selectedDictType) {
-                this.$message.warning('请先选择字典类型')
+                this.$message.warning(this.$t('dictManagement.selectDictTypeFirst'))
                 return
             }
-            this.dictDataDialogTitle = '新增字典数据'
+            this.dictDataDialogTitle = this.$t('dictManagement.addDictData')
             this.dictDataForm = {
                 id: null,
                 dictTypeId: this.selectedDictType.id,
@@ -343,7 +300,7 @@ export default {
             this.dictDataDialogVisible = true
         },
         editDictData(row) {
-            this.dictDataDialogTitle = '编辑字典数据'
+            this.dictDataDialogTitle = this.$t('dictManagement.editDictData')
             this.dictDataForm = { ...row }
             this.dictDataDialogVisible = true
         },
@@ -351,21 +308,21 @@ export default {
             const api = formData.id ? dictApi.updateDictData : dictApi.addDictData
             api(formData, ({ data }) => {
                 if (data.code === 0) {
-                    this.$message.success('保存成功')
+                    this.$message.success(this.$t('dictManagement.saveSuccess'))
                     this.dictDataDialogVisible = false
                     this.loadDictDataList(formData.dictTypeId)
                 }
             })
         },
         deleteDictData(row) {
-            this.$confirm('确定要删除该字典数据吗?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('dictManagement.confirmDeleteDictData'), this.$t('dictManagement.confirm'), {
+                confirmButtonText: this.$t('dictManagement.confirm'),
+                cancelButtonText: this.$t('dictManagement.cancel'),
                 type: 'warning'
             }).then(() => {
                 dictApi.deleteDictData([row.id], ({ data }) => {
                     if (data.code === 0) {
-                        this.$message.success('删除成功')
+                        this.$message.success(this.$t('dictManagement.deleteSuccess'))
                         this.loadDictDataList(row.dictTypeId)
                     }
                 })
@@ -374,19 +331,19 @@ export default {
         batchDeleteDictData() {
             const selectedRows = this.dictDataList.filter(row => row.selected)
             if (selectedRows.length === 0) {
-                this.$message.warning('请选择要删除的字典数据')
+                this.$message.warning(this.$t('dictManagement.selectDictDataToDelete'))
                 return
             }
 
-            this.$confirm(`确定要删除选中的${selectedRows.length}个字典数据吗?`, '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+            this.$confirm(this.$t('dictManagement.confirmBatchDeleteDictData', { count: selectedRows.length }), this.$t('dictManagement.confirm'), {
+                confirmButtonText: this.$t('dictManagement.confirm'),
+                cancelButtonText: this.$t('dictManagement.cancel'),
                 type: 'warning'
             }).then(() => {
                 const ids = selectedRows.map(item => item.id)
                 dictApi.deleteDictData(ids, ({ data }) => {
                     if (data.code === 0) {
-                        this.$message.success('删除成功')
+                        this.$message.success(this.$t('dictManagement.deleteSuccess'))
                         this.loadDictDataList(this.selectedDictType.id)
                     }
                 })
@@ -405,6 +362,14 @@ export default {
             this.pageSize = val;
             this.currentPage = 1;
             this.loadDictDataList(this.selectedDictType?.id);
+        },
+        
+        // 更新选择列表头翻译文本
+        updateSelectionHeaderText() {
+            const thElement = document.querySelector(`.el-table__header th:nth-child(1) .cell`);
+            if (thElement) {
+                thElement.setAttribute('data-content', this.$t('modelConfig.select'));
+            }
         },
         goFirst() {
             this.currentPage = 1;
@@ -425,6 +390,56 @@ export default {
         goToPage(page) {
             this.currentPage = page;
             this.loadDictDataList(this.selectedDictType?.id);
+        },
+        // 表头单元格样式类名，用于选择列
+        headerCellClassName({ columnIndex }) {
+            if (columnIndex === 0) {
+                return 'custom-selection-header';
+            }
+            return '';
+        },
+        // 单元格样式类名，用于设置选择列表头的翻译文本
+        selectionCellClassName({ row, column, rowIndex, columnIndex }) {
+            // 只对表头行设置data-content
+            if (rowIndex === undefined) {
+                setTimeout(() => {
+                    this.updateSelectionHeaderText();
+                }, 0);
+            }
+            return '';
+        }
+    },
+    
+    mounted() {
+        // 在组件挂载后确保表头翻译文本正确显示
+        setTimeout(() => {
+            this.updateSelectionHeaderText();
+        }, 100);
+    },
+    
+    updated() {
+        // 在组件更新后重新设置表头翻译文本
+        this.updateSelectionHeaderText();
+    },
+    
+    computed: {
+        pageCount() {
+            return Math.ceil(this.total / this.pageSize);
+        },
+        visiblePages() {
+            const pages = [];
+            const maxVisible = 3;
+            let start = Math.max(1, this.currentPage - 1);
+            let end = Math.min(this.pageCount, start + maxVisible - 1);
+
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
         }
     }
 }
@@ -443,12 +458,6 @@ export default {
     -webkit-background-size: cover;
     -o-background-size: cover;
     overflow: hidden;
-
-    @media (max-width: 768px) {
-        min-width: unset;
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
 }
 
 .main-wrapper {
@@ -462,14 +471,6 @@ export default {
     background: rgba(237, 242, 255, 0.5);
     display: flex;
     flex-direction: column;
-
-    @media (max-width: 768px) {
-        margin: 5px 16px;
-        max-height: none;
-        min-height: auto;
-        height: auto;
-        flex: 1;
-    }
 }
 
 .operation-bar {
@@ -477,67 +478,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 16px 24px;
-
-    &.mobile-operation-bar {
-        padding: 12px 16px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-}
-
-// 移动端搜索容器
-.mobile-search-container {
-    padding: 0 16px 12px 16px;
-
-    .mobile-search-input {
-        width: 100%;
-
-        :deep(.el-input__inner) {
-            height: 32px;
-            border-radius: 16px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid #e4e7ed;
-            font-size: 14px;
-            padding-right: 35px;
-        }
-
-        :deep(.el-input__suffix) {
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .search-btn {
-            background: transparent !important;
-            border: none !important;
-            color: #909399 !important;
-            padding: 0 !important;
-            width: 24px !important;
-            height: 24px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            margin: 0 !important;
-            box-shadow: none !important;
-
-            &:hover {
-                color: #5f70f3 !important;
-                background: transparent !important;
-                transform: none !important;
-                box-shadow: none !important;
-            }
-
-            &:focus {
-                background: transparent !important;
-                box-shadow: none !important;
-            }
-
-            i {
-                font-size: 14px;
-            }
-        }
-    }
 }
 
 .page-title {
@@ -591,13 +531,6 @@ export default {
     border-radius: 15px;
     background: transparent;
     border: 1px solid #fff;
-
-    &.mobile-content-panel {
-        flex-direction: column;
-        overflow: visible;
-        height: auto;
-        min-height: 0;
-    }
 }
 
 .dict-type-panel {
@@ -606,25 +539,6 @@ export default {
     border-right: 1px solid #ebeef5;
     display: flex;
     flex-direction: column;
-
-    &.mobile-dict-type-panel {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ebeef5;
-        max-height: none;
-        height: auto;
-    }
-}
-
-.dict-type-table-container {
-    flex: 1;
-    overflow-y: auto;
-
-    &.mobile-table-container {
-        max-height: none;
-        overflow-y: visible;
-        flex: none;
-    }
 }
 
 .dict-type-header {
@@ -635,21 +549,8 @@ export default {
 }
 
 .dict-type-table {
-    &.mobile-dict-type-table {
-        font-size: 12px;
-
-        :deep(.el-table__header) {
-            font-size: 12px;
-        }
-
-        :deep(.el-table__body) {
-            font-size: 12px;
-        }
-
-        :deep(.el-checkbox) {
-            transform: scale(0.8);
-        }
-    }
+    flex: 1;
+    overflow-y: auto;
 }
 
 .content-area {
@@ -661,15 +562,6 @@ export default {
     background-color: white;
     display: flex;
     flex-direction: column;
-
-    &.mobile-content-area {
-        min-width: unset;
-        padding: 16px;
-        height: auto;
-        flex: 1;
-        overflow: visible;
-        min-height: 0;
-    }
 }
 
 .dict-data-card {
@@ -680,18 +572,6 @@ export default {
     border: none;
     box-shadow: none;
     overflow: hidden;
-
-    &.mobile-dict-data-card {
-        overflow: visible;
-        height: auto;
-        min-height: 0;
-    }
-}
-
-.table-container {
-    &.mobile-table {
-        overflow-x: auto;
-    }
 }
 
 .data-table {
@@ -704,43 +584,11 @@ export default {
     :deep(.el-table__body-wrapper) {
         max-height: calc(var(--table-max-height) - 40px);
         overflow-y: auto;
-
-        @media (max-width: 768px) {
-            max-height: none;
-            overflow-y: visible;
-        }
     }
 
     :deep(.el-table__body) {
         tr:last-child td {
             border-bottom: none;
-        }
-    }
-
-    &.mobile-data-table {
-        min-width: 400px;
-        font-size: 12px;
-        max-height: none;
-
-        :deep(.el-table__header) {
-            font-size: 12px;
-        }
-
-        :deep(.el-table__body) {
-            font-size: 12px;
-        }
-
-        :deep(.el-table__body-wrapper) {
-            max-height: none;
-            overflow-y: visible;
-        }
-
-        :deep(.el-table__cell) {
-            padding: 8px 4px;
-        }
-
-        :deep(.el-checkbox) {
-            transform: scale(0.8);
         }
     }
 }
@@ -765,13 +613,6 @@ export default {
     min-height: 60px;
     background: white;
     margin-top: 10px;
-
-    &.mobile-footer {
-        flex-direction: column;
-        gap: 12px;
-        padding: 8px 0;
-        min-height: auto;
-    }
 }
 
 .batch-actions {
@@ -810,20 +651,6 @@ export default {
     .el-button--danger {
         background: #fd5b63;
         color: white;
-    }
-
-    &.mobile-actions {
-        padding-left: 0;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 4px;
-
-        .el-button {
-            min-width: 60px;
-            height: 28px;
-            padding: 5px 8px;
-            font-size: 11px;
-        }
     }
 }
 
@@ -892,41 +719,6 @@ export default {
         color: #909399;
         font-size: 14px;
         margin-left: 10px;
-    }
-
-    &.mobile-pagination {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 4px;
-
-        .el-select {
-            width: 80px;
-            margin-right: 4px;
-        }
-
-        .pagination-btn:first-child,
-        .pagination-btn:nth-child(2),
-        .pagination-btn:nth-child(3),
-        .pagination-btn:nth-last-child(2) {
-            min-width: 40px;
-            height: 24px;
-            padding: 0 8px;
-            font-size: 11px;
-        }
-
-        .pagination-btn:not(:first-child):not(:nth-child(2)):not(:nth-child(3)):not(:nth-last-child(2)) {
-            min-width: 20px;
-            height: 24px;
-            font-size: 11px;
-        }
-
-        .total-text {
-            font-size: 11px;
-            margin-left: 4px;
-            width: 100%;
-            text-align: center;
-            margin-top: 4px;
-        }
     }
 }
 
@@ -1069,6 +861,29 @@ export default {
     background-color: transparent !important;
 }
 
+::v-deep .el-table .custom-selection-header .cell .el-checkbox__inner {
+    display: none !important;
+}
+
+::v-deep .el-table .custom-selection-header .cell::before {
+    content: attr(data-content);
+    display: block;
+    text-align: center;
+    line-height: 32px;
+    color: black;
+    margin-top: 0;
+    height: 32px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.custom-selection-header .cell {
+    position: relative;
+}
+
 :deep(.el-table thead) {
     color: #000000;
 }
@@ -1093,21 +908,5 @@ export default {
 :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
     background-color: #5f70f3 !important;
     border-color: #5f70f3 !important;
-}
-
-// 移动端按钮样式
-.mobile-btn {
-    font-size: 11px !important;
-    padding: 4px 6px !important;
-    height: 24px !important;
-    line-height: 1 !important;
-}
-
-.mobile-checkbox {
-    transform: scale(0.8);
-}
-
-.mobile-total {
-    font-size: 11px !important;
 }
 </style>
