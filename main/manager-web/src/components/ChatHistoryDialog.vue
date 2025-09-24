@@ -509,7 +509,7 @@ export default {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid #eee;
-        padding: 8px 12px;
+        padding: 12px 16px;
         max-height: 30vh;
         min-height: 140px;
         overflow-y: auto;
@@ -518,8 +518,8 @@ export default {
         overflow-x: auto;
         gap: 12px;
         background: #f8f9fa;
-        border-radius: 8px;
-        margin: 8px;
+        border-radius: 0;
+        margin: 0;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
@@ -604,8 +604,8 @@ export default {
         min-height: 0;
         max-height: calc(80vh - 48px);
         background: #fafbfc;
-        margin: 0 8px 8px 8px;
-        border-radius: 8px;
+        margin: 0;
+        border-radius: 0;
         box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
     }
 
