@@ -510,9 +510,9 @@ export default {
         border-right: none;
         border-bottom: 1px solid #eee;
         padding: 8px 12px;
-        max-height: 20vh;
-        min-height: 100px;
-        overflow-y: hidden;
+        max-height: 30vh;
+        min-height: 140px;
+        overflow-y: auto;
         display: flex;
         flex-direction: row;
         overflow-x: auto;
@@ -642,7 +642,6 @@ export default {
         background: #409eff;
         color: white;
     }
-
 
     .audio-icon {
         font-size: 16px;
