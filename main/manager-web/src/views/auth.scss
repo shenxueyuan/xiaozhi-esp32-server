@@ -756,4 +756,54 @@ img[alt="验证码"]:active {
         line-height: 45px;
         border-radius: 12px;
     }
+    
+    /* 移动端手机号输入框优化 */
+    .input-box .el-select {
+        width: 90px !important;
+        margin-right: 8px !important;
+    }
+    
+    .input-box .el-select .el-input__inner {
+        font-size: 12px !important;
+        padding: 0 6px !important;
+    }
+    
+    .input-box .el-input {
+        flex: 1 !important;
+    }
+    
+    /* 移动端验证码区域优化 */
+    .captcha-container img {
+        width: 80px !important;
+        height: 35px !important;
+        border-radius: 8px !important;
+    }
+    
+    /* 验证码输入框在移动端占更多空间 */
+    .input-box[style*="width: calc(100% - 130px)"] {
+        width: calc(100% - 90px) !important;
+    }
+    
+    /* 移动端发送验证码按钮优化 */
+    .send-captcha-btn {
+        width: 90px !important;
+        height: 35px !important;
+        font-size: 12px !important;
+        padding: 0 8px !important;
+    }
+    
+    /* 移动端手机号输入框内部布局优化 */
+    .mobile-flex {
+        flex-direction: row !important;
+        gap: 8px !important;
+    }
+    
+    .mobile-flex .el-select {
+        width: 90px !important;
+        margin-right: 0 !important;
+    }
+    
+    .mobile-flex .el-input {
+        flex: 1 !important;
+    }
 }
