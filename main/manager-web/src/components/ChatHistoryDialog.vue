@@ -133,7 +133,7 @@ export default {
          * 从 content 字段中提取聊天内容
          * 如果 content 是 JSON 格式（如 {"speaker": "未知说话人", "content": "现在几点了。"}），则提取 content 字段
          * 如果 content 是普通字符串，则直接返回
-         * 
+         *
          * @param {string} content 原始内容
          * @returns {string} 提取的聊天内容
          */
@@ -509,34 +509,57 @@ export default {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid #eee;
-        padding: 6px 8px;
-        max-height: 25vh;
-        min-height: 120px;
-        overflow-y: auto;
+        padding: 8px 12px;
+        max-height: 20vh;
+        min-height: 100px;
+        overflow-y: hidden;
         display: flex;
         flex-direction: row;
         overflow-x: auto;
-        gap: 8px;
+        gap: 12px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .session-item {
-        padding: 6px;
+        padding: 8px;
         margin-bottom: 0;
-        border-radius: 6px;
+        border-radius: 12px;
         flex-shrink: 0;
-        min-width: 80px;
-        max-width: 100px;
+        min-width: 70px;
+        max-width: 80px;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
+        background: white;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .session-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .session-item.active {
+        border-color: #409eff;
+        background: #e6f7ff;
+        transform: translateY(-1px);
     }
 
     .session-item .avatar {
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         margin-right: 0;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .session-info {
@@ -545,55 +568,81 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 2px;
+        gap: 4px;
+        width: 100%;
     }
 
     .session-time {
-        font-size: 10px;
-        color: #666;
+        font-size: 11px;
+        color: #333;
+        font-weight: 500;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 100%;
+        line-height: 1.2;
     }
 
     .message-count {
         font-size: 10px;
-        background: #409eff;
+        background: linear-gradient(135deg, #409eff, #67c23a);
         color: white;
-        border-radius: 8px;
-        padding: 1px 4px;
-        min-width: 16px;
+        border-radius: 10px;
+        padding: 2px 6px;
+        min-width: 18px;
         text-align: center;
+        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
 
     .chat-content {
         flex: 1;
-        padding: 12px;
+        padding: 16px;
         overflow-y: auto;
         height: auto;
         min-height: 0;
-        max-height: calc(75vh - 48px);
+        max-height: calc(80vh - 48px);
+        background: #fafbfc;
+        margin: 0 8px 8px 8px;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
     }
 
     .message-item {
-        margin-bottom: 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
     }
 
     .message-item .avatar {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        flex-shrink: 0;
     }
 
     .message-content {
-        max-width: 80%;
-        padding: 8px 12px;
-        margin: 0 8px;
+        flex: 1;
+        background: white;
+        padding: 12px 16px;
+        border-radius: 18px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         font-size: 14px;
-        line-height: 18px;
-        border-radius: 6px;
+        line-height: 1.4;
+        word-break: break-word;
     }
+
+    .user-message {
+        flex-direction: row-reverse;
+    }
+
+    .user-message .message-content {
+        background: #409eff;
+        color: white;
+    }
+
 
     .audio-icon {
         font-size: 16px;
