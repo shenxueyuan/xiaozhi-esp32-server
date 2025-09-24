@@ -102,7 +102,7 @@
           </el-dropdown-menu>
         </el-dropdown>
 
-        <img loading="lazy" alt="" src="@/assets/home/avatar.png" class="avatar-img" />
+        <img loading="lazy" alt="" src="@/assets/home/avatar.png" class="avatar-img" style="width: 32px; height: 32px; border-radius: 50%;" />
         <el-dropdown trigger="click" class="user-dropdown" @visible-change="handleUserDropdownVisibleChange">
           <span class="el-dropdown-link">
             {{ userInfo.username || '加载中...' }}
