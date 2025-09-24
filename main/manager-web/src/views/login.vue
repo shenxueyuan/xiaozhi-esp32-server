@@ -73,9 +73,9 @@
             <!-- 手机号登录 -->
             <template v-else>
               <div class="input-box">
-                <div style="display: flex; align-items: center; width: 100%">
-                  <el-select v-model="form.areaCode" style="width: 220px; margin-right: 10px">
-                    <el-option v-for="item in mobileAreaList" :key="item.key" :label="`${item.name} (${item.key})`"
+                <div style="display: flex; align-items: center; width: 100%" :class="{'mobile-flex': isMobile}">
+                  <el-select v-model="form.areaCode" :style="isMobile ? 'width: 90px; margin-right: 8px;' : 'width: 220px; margin-right: 10px;'">
+                    <el-option v-for="item in mobileAreaList" :key="item.key" :label="isMobile ? item.key : `${item.name} (${item.key})`"
                       :value="item.key" />
                   </el-select>
                   <el-input v-model="form.mobile" :placeholder="$t('login.mobilePlaceholder')" />
