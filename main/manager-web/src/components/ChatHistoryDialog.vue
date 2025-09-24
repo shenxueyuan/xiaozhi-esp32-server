@@ -509,44 +509,64 @@ export default {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid #eee;
-        padding: 8px 12px;
-        max-height: 40vh;
-        min-height: 200px;
+        padding: 6px 8px;
+        max-height: 25vh;
+        min-height: 120px;
         overflow-y: auto;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 8px;
     }
 
     .session-item {
-        padding: 8px;
-        margin-bottom: 6px;
+        padding: 6px;
+        margin-bottom: 0;
         border-radius: 6px;
+        flex-shrink: 0;
+        min-width: 80px;
+        max-width: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 
     .session-item .avatar {
-        width: 32px;
-        height: 32px;
-        margin-right: 8px;
+        width: 28px;
+        height: 28px;
+        margin-right: 0;
+        margin-bottom: 4px;
     }
 
     .session-info {
         flex: 1;
         min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
     }
 
     .session-time {
-        font-size: 12px;
-        height: 24px;
-        line-height: 24px;
-        width: calc(100% - 25px);
+        font-size: 10px;
+        color: #666;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
     }
 
     .message-count {
-        font-size: 12px;
-        width: 18px;
-        height: 18px;
-        line-height: 18px;
-        margin-top: 3px;
-        margin-left: 4px;
+        font-size: 10px;
+        background: #409eff;
+        color: white;
+        border-radius: 8px;
+        padding: 1px 4px;
+        min-width: 16px;
+        text-align: center;
     }
+
 
     .chat-content {
         flex: 1;
@@ -554,6 +574,7 @@ export default {
         overflow-y: auto;
         height: auto;
         min-height: 0;
+        max-height: calc(75vh - 48px);
     }
 
     .message-item {
