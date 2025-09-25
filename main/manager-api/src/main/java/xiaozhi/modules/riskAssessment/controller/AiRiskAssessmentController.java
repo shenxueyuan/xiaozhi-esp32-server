@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xiaozhi.common.page.PageData;
@@ -32,8 +33,9 @@ public class AiRiskAssessmentController {
 
     @GetMapping("/report/generate")
     @Operation(summary = "生成风险评估报告")
-    public Result<RiskAssessmentVO> generateReport(@RequestParam("day") Integer day) {
-        RiskAssessmentVO result = aiRiskAssessmentService.generateReport(day);
+    @RequiresPermissions("sys:role:normal")
+    public Result<RiskAssessmentVO> generateReport(@RequestParam("day") Integer day, @RequestParam("userId") String userId) {
+        RiskAssessmentVO result = aiRiskAssessmentService.generateReport(day, userId);
         return new Result<RiskAssessmentVO>().ok(result);
     }
 
