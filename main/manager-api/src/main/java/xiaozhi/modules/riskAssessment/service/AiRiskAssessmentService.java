@@ -116,5 +116,5 @@ public interface AiRiskAssessmentService extends BaseService<AiRiskAssessmentEnt
      * @param day 最近多少天
      * @return 分析报告
      */
-    RiskAssessmentVO generateReport(Integer day);
+    RiskAssessmentVO generateReport(Integer day, String userId);
 }

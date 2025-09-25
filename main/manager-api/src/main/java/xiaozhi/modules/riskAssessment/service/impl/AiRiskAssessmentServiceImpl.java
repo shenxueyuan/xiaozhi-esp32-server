@@ -198,11 +198,11 @@ public class AiRiskAssessmentServiceImpl extends
         return convertToDTO(entity);
     }
 
-    public RiskAssessmentVO generateReport(Integer day) {
+    @Override
+    public RiskAssessmentVO generateReport(Integer day, String userId) {
         LocalDateTime startTime = LocalDateTime.now().minusDays(day);
         LocalDateTime endTime = LocalDateTime.now();
-        UserDetail user = SecurityUser.getUser();
-        List<AgentEntity> agentList = agentDao.selectList(new QueryWrapper<AgentEntity>().eq("user_id", user.getId()));
+        List<AgentEntity> agentList = agentDao.selectList(new QueryWrapper<AgentEntity>().eq("user_id", userId));
         if (agentList == null || agentList.isEmpty()) {
             return null;
         }
@@ -219,11 +219,11 @@ public class AiRiskAssessmentServiceImpl extends
                     .collect(Collectors.joining("\n")))
                     .orElse("无")))
             .responseMode("blocking")
-            .user(String.valueOf(user.getId()))
+            .user(userId)
             .build();
         CompletionMessageResponse response = aiClient.completionMessageBlocking(request, ApiKeyEnum.RISK_ASSESMENT_REPORT.apiKey());
         AiRiskAssessmentDTO dto = JSONObject.parseObject(response.getAnswer(), AiRiskAssessmentDTO.class);
-        dto.setUserId(user.getId());
+        dto.setUserId(Long.valueOf(userId));
         dto.setStartTime(startTime);
         dto.setEndTime(endTime);
         AiRiskAssessmentEntity entity = convertToEntity(dto);
