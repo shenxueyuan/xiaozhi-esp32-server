@@ -83,7 +83,7 @@ public class SwaggerConfig {
     public GroupedOpenApi mobileApi() {
         return GroupedOpenApi.builder()
             .group("mobile")
-            .pathsToMatch("/mobile/**")
+            .pathsToMatch("/mobile/**", "risk/**")
             .build();
     }
 

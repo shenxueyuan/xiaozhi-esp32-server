@@ -49,3 +49,5 @@ spring:
           max-idle: 8
           min-idle: 0
         shutdown-timeout: 100ms
+
+ai_api_url: http://106.15.33.103:8080/v1
