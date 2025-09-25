@@ -201,6 +201,85 @@ export default {
     overflow: hidden;
 }
 
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+    .welcome {
+        min-width: unset;
+        min-height: unset;
+        height: 100vh;
+    }
+
+    .main-wrapper {
+        margin: 5px 10px;
+        min-height: calc(100vh - 20vh);
+        max-height: 85vh;
+    }
+
+    .operation-bar {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        margin: 0;
+    }
+
+    .content-area {
+        min-width: unset;
+        overflow-x: auto;
+    }
+
+    .voice-print-card {
+        ::v-deep .el-card__body {
+            padding: 10px;
+        }
+    }
+
+    /* 表格在移动端的适配 */
+    .transparent-table {
+        ::v-deep .el-table {
+            font-size: 12px;
+        }
+
+        ::v-deep .el-table__header th {
+            padding: 8px 4px;
+            font-size: 12px;
+        }
+
+        ::v-deep .el-table__body td {
+            padding: 8px 4px;
+            font-size: 12px;
+        }
+
+        ::v-deep .el-table__body .cell {
+            word-break: break-all;
+            line-height: 1.4;
+        }
+    }
+
+    .table_bottom {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .ctrl_btn {
+        padding-left: 0;
+        justify-content: center;
+
+        .el-button {
+            min-width: 60px;
+            height: 28px;
+            font-size: 11px;
+            padding: 4px 8px;
+        }
+    }
+}
+
 .main-wrapper {
     margin: 5px 22px;
     border-radius: 15px;
