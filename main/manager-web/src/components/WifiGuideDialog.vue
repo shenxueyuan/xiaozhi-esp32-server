@@ -44,37 +44,25 @@ export default {
     return {
       dialogVisible: false,
       currentStep: 1,
-      isMobile: false,
-      images: [
-        {
-          src: require('@/assets/conwifi/con_wifi_1.PNG'),
-          alt: '联网步骤1',
-          caption: this.$t('wifiGuide.step1') || '步骤1：打开设备设置'
-        },
-        {
-          src: require('@/assets/conwifi/con_wifi_2.PNG'),
-          alt: '联网步骤2',
-          caption: this.$t('wifiGuide.step2') || '步骤2：选择WiFi网络'
-        },
-        {
-          src: require('@/assets/conwifi/con_wifi_3.PNG'),
-          alt: '联网步骤3',
-          caption: this.$t('wifiGuide.step3') || '步骤3：输入WiFi密码'
-        },
-        {
-          src: require('@/assets/conwifi/con_wifi_4.PNG'),
-          alt: '联网步骤4',
-          caption: this.$t('wifiGuide.step4') || '步骤4：等待连接'
-        },
-        {
-          src: require('@/assets/conwifi/con_wifi_5.PNG'),
-          alt: '联网步骤5',
-          caption: this.$t('wifiGuide.step5') || '步骤5：连接成功'
-        }
-      ]
+      isMobile: false
     };
   },
   computed: {
+    images() {
+      const imagePaths = [
+        { name: 'con_wifi_1.PNG', step: 'step1' },
+        { name: 'con_wifi_2.PNG', step: 'step2' },
+        { name: 'con_wifi_3.PNG', step: 'step3' },
+        { name: 'con_wifi_4.PNG', step: 'step4' },
+        { name: 'con_wifi_5.PNG', step: 'step5' }
+      ];
+      
+      return imagePaths.map((img, index) => ({
+        src: this.getImageUrl(img.name),
+        alt: `联网步骤${index + 1}`,
+        caption: this.$t(`wifiGuide.${img.step}`)
+      }));
+    },
     carouselHeight() {
       return this.isMobile ? '400px' : '500px';
     }
@@ -100,6 +88,14 @@ export default {
     window.removeEventListener('resize', this.checkScreenSize);
   },
   methods: {
+    getImageUrl(imageName) {
+      try {
+        return require(`@/assets/conwifi/${imageName}`);
+      } catch (e) {
+        console.error(`Failed to load image: ${imageName}`, e);
+        return '';
+      }
+    },
     checkScreenSize() {
       this.isMobile = window.innerWidth <= 768;
     },
