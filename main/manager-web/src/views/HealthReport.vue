@@ -1,20 +1,19 @@
 <template>
   <div class="welcome">
     <HeaderBar />
-
+    
     <div class="health-report-page" v-loading="loading" element-loading-text="正在生成报告...">
       <!-- 页面头部 -->
       <div class="page-header">
         <div class="header-left">
-          <el-button
-            type="text"
-            icon="el-icon-arrow-left"
+          <el-button 
+            type="text" 
+            icon="el-icon-arrow-left" 
             @click="goBack"
             class="back-btn"
           >
             返回设备管理
           </el-button>
-          <h1 class="page-title">心理健康报告</h1>
         </div>
         <div class="header-actions">
           <el-button type="primary" icon="el-icon-download" @click="exportPDF">导出PDF</el-button>
@@ -22,52 +21,90 @@
         </div>
       </div>
 
-      <!-- 设备信息卡片 -->
-      <div class="device-info-card">
-        <div class="device-details">
-          <h2 class="device-name">{{ deviceInfo.deviceName || '设备' }}</h2>
-          <p class="device-mac">MAC: {{ deviceInfo.macAddress }}</p>
-          <p class="device-model">型号: {{ deviceInfo.model }}</p>
-        </div>
-        <div class="report-meta">
-          <div class="meta-item">
-            <span class="meta-label">分析周期</span>
-            <span class="meta-value">最近30天</span>
+      <!-- 报告容器 -->
+      <div class="report-container" v-if="reportData">
+        <!-- 报告头部 - 证书样式 -->
+        <div class="report-header">
+          <div class="certificate-border">
+            <div class="header-decoration">
+              <div class="decoration-line"></div>
+              <div class="decoration-icon">🏆</div>
+              <div class="decoration-line"></div>
+            </div>
+            <h1 class="report-title">心理健康评估报告</h1>
+            <h2 class="report-subtitle">Psychological Health Assessment Report</h2>
+            <div class="report-meta">
+              <div class="meta-row">
+                <span class="meta-label">报告编号：</span>
+                <span class="meta-value">{{ reportData.id || 'N/A' }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">评估周期：</span>
+                <span class="meta-value">{{ formatDateRange(reportData.startTime, reportData.endTime) }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">生成时间：</span>
+                <span class="meta-value">{{ formatDate(new Date()) }}</span>
+              </div>
+            </div>
           </div>
-          <div class="meta-item">
-            <span class="meta-label">生成时间</span>
-            <span class="meta-value">{{ formatDate(reportData?.generatedAt) }}</span>
-          </div>
         </div>
-      </div>
 
-      <!-- 报告内容 -->
-      <div class="report-content" v-if="reportData">
-        <!-- 概览卡片 -->
-        <div class="overview-section">
-          <h3 class="section-title">健康概览</h3>
-          <div class="overview-cards">
-            <div class="overview-card score-card">
-              <div class="card-icon">
-                <i class="el-icon-medal"></i>
+        <!-- 评估结果概览 - 突出显示 -->
+        <div class="assessment-overview">
+          <div class="overview-header">
+            <h3 class="section-title">
+              <i class="el-icon-s-data"></i>
+              评估结果概览
+            </h3>
+          </div>
+          
+          <div class="result-cards">
+            <!-- 风险分类卡片 -->
+            <div class="result-card primary-card">
+              <div class="card-header">
+                <div class="card-icon risk-icon" :class="getRiskIconClass(reportData.riskLevel)">
+                  <i :class="getRiskIcon(reportData.riskLevel)"></i>
+                </div>
+                <div class="card-title-group">
+                  <h4 class="card-title">风险分类评估</h4>
+                  <p class="card-subtitle">Risk Classification</p>
+                </div>
               </div>
               <div class="card-content">
-                <h4 class="card-title">综合评分</h4>
-                <div class="score-value">{{ reportData.overallScore }}</div>
-                <div class="score-label">{{ getScoreLabel(reportData.overallScore) }}</div>
+                <div class="primary-result">
+                  <span class="result-label">一级分类</span>
+                  <span class="result-value primary" :class="getRiskClass(reportData.riskLevel)">
+                    {{ reportData.firstClassify || '未分类' }}
+                  </span>
+                </div>
+                <div class="secondary-result" v-if="reportData.secondClassify">
+                  <span class="result-label">二级分类</span>
+                  <span class="result-value secondary">{{ reportData.secondClassify }}</span>
+                </div>
               </div>
             </div>
 
-            <div class="overview-card risk-card">
-              <div class="card-icon" :class="getRiskIconClass(reportData.riskLevel)">
-                <i :class="getRiskIcon(reportData.riskLevel)"></i>
+            <!-- 综合评分卡片 -->
+            <div class="result-card score-card">
+              <div class="card-header">
+                <div class="card-icon score-icon">
+                  <i class="el-icon-trophy"></i>
+                </div>
+                <div class="card-title-group">
+                  <h4 class="card-title">综合评分</h4>
+                  <p class="card-subtitle">Overall Score</p>
+                </div>
               </div>
               <div class="card-content">
-                <h4 class="card-title">风险等级</h4>
-                <div class="risk-value" :class="getRiskClass(reportData.riskLevel)">
-                  {{ getRiskText(reportData.riskLevel) }}
+                <div class="score-display">
+                  <div class="score-number">{{ reportData.overallScore }}</div>
+                  <div class="score-total">/100</div>
                 </div>
-                <div class="risk-desc">{{ getRiskDescription(reportData.riskLevel) }}</div>
+                <div class="score-label">{{ getScoreLabel(reportData.overallScore) }}</div>
+                <div class="score-bar">
+                  <div class="score-progress" :style="{ width: reportData.overallScore + '%' }"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -110,58 +147,113 @@
           </div>
         </div>
 
-        <!-- 风险分析 -->
-        <div class="risk-analysis-section" v-if="reportData.riskReasons && reportData.riskReasons.length > 0">
-          <h3 class="section-title">风险分析</h3>
-          <div class="risk-info">
-            <div class="risk-classify">
-              <div class="classify-item">
-                <span class="classify-label">一级分类：</span>
-                <span class="classify-value">{{ reportData.firstClassify || '未分类' }}</span>
-              </div>
-              <div class="classify-item" v-if="reportData.secondClassify">
-                <span class="classify-label">二级分类：</span>
-                <span class="classify-value">{{ reportData.secondClassify }}</span>
-              </div>
+        <!-- 详细分析报告 -->
+        <div class="detailed-analysis" v-if="reportData.riskReasons && reportData.riskReasons.length > 0">
+          <div class="analysis-header">
+            <h3 class="section-title">
+              <i class="el-icon-document"></i>
+              详细分析报告
+            </h3>
+            <div class="analysis-badge">
+              <span class="badge-text">专业评估</span>
             </div>
-            <div class="risk-reasons">
-              <h4 class="reasons-title">风险原因</h4>
-              <ul class="reasons-list">
-                <li v-for="(reason, index) in reportData.riskReasons" :key="index" class="reason-item">
-                  {{ reason }}
-                </li>
-              </ul>
+          </div>
+          
+          <div class="analysis-content-wrapper">
+            <div class="risk-factors">
+              <h4 class="subsection-title">
+                <span class="title-icon">⚠️</span>
+                风险因素识别
+              </h4>
+              <div class="factors-list">
+                <div 
+                  v-for="(reason, index) in reportData.riskReasons" 
+                  :key="index" 
+                  class="factor-item"
+                >
+                  <div class="factor-number">{{ index + 1 }}</div>
+                  <div class="factor-content">
+                    <p class="factor-text">{{ reason }}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 专业建议 -->
+        <!-- 专业建议与干预措施 -->
         <div class="recommendations-section" v-if="reportData.recommendations">
-          <h3 class="section-title">个性化建议</h3>
-          <div class="recommendations-grid">
-            <div
-              v-for="(recommendation, index) in reportData.recommendations"
-              :key="index"
-              class="recommendation-card"
-            >
-              <div class="recommendation-icon">
-                <i :class="getRecommendationIcon(recommendation.type)"></i>
-              </div>
-              <div class="recommendation-content">
-                <h4 class="recommendation-title">{{ recommendation.title }}</h4>
-                <p class="recommendation-desc">{{ recommendation.description }}</p>
-                <div class="recommendation-tags">
-                  <el-tag
-                    v-for="tag in recommendation.tags"
-                    :key="tag"
-                    size="mini"
-                    type="info"
-                  >
-                    {{ tag }}
-                  </el-tag>
+          <div class="recommendations-header">
+            <h3 class="section-title">
+              <i class="el-icon-star-on"></i>
+              专业建议与干预措施
+            </h3>
+            <div class="recommendations-badge">
+              <span class="badge-text">专家推荐</span>
+            </div>
+          </div>
+          
+          <div class="recommendations-content">
+            <div class="recommendations-intro">
+              <p class="intro-text">
+                基于您的心理健康评估结果，我们的专业团队为您制定了以下个性化建议和干预措施，
+                请结合自身情况，循序渐进地实施这些建议。
+              </p>
+            </div>
+            
+            <div class="recommendations-list">
+              <div 
+                v-for="(recommendation, index) in reportData.recommendations" 
+                :key="index"
+                class="recommendation-item"
+              >
+                <div class="recommendation-header">
+                  <div class="recommendation-number">{{ index + 1 }}</div>
+                  <div class="recommendation-icon">
+                    <i :class="getRecommendationIcon(recommendation.type)"></i>
+                  </div>
+                  <h4 class="recommendation-title">{{ recommendation.title }}</h4>
+                </div>
+                <div class="recommendation-body">
+                  <p class="recommendation-desc">{{ recommendation.description }}</p>
+                  <div class="recommendation-tags">
+                    <el-tag 
+                      v-for="tag in recommendation.tags" 
+                      :key="tag" 
+                      size="small" 
+                      effect="plain"
+                    >
+                      {{ tag }}
+                    </el-tag>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- 报告结尾 - 证书样式 -->
+        <div class="report-footer">
+          <div class="footer-content">
+            <div class="signature-section">
+              <div class="signature-line">
+                <span class="signature-label">评估机构：</span>
+                <span class="signature-value">心理健康评估中心</span>
+              </div>
+              <div class="signature-line">
+                <span class="signature-label">报告日期：</span>
+                <span class="signature-value">{{ formatDate(new Date()) }}</span>
+              </div>
+            </div>
+            <div class="official-seal">
+              <div class="seal-circle">
+                <div class="seal-text">官方认证</div>
+                <div class="seal-subtext">CERTIFIED</div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-note">
+            <p>本报告仅供参考，如需专业心理咨询，请联系相关专业机构。</p>
           </div>
         </div>
       </div>
@@ -554,6 +646,13 @@ export default {
       return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
     },
 
+    formatDateRange(startTime, endTime) {
+      if (!startTime || !endTime) return '最近30天';
+      const start = this.formatDate(startTime);
+      const end = this.formatDate(endTime);
+      return `${start} 至 ${end}`;
+    },
+
     exportPDF() {
       this.$message.info('PDF导出功能开发中...');
     },
@@ -650,6 +749,26 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   min-height: calc(100vh - 120px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* 报告容器 - 证书样式 */
+.report-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  }
 }
 
 /* 页面头部 */
@@ -658,34 +777,291 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #E6F7FF;
+  padding: 0 20px;
 
   .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
     .back-btn {
       font-size: 14px;
-      color: #409EFF;
-
+      color: #667eea;
+      
       &:hover {
-        color: #66B1FF;
+        color: #764ba2;
       }
-    }
-
-    .page-title {
-      font-size: 28px;
-      font-weight: 600;
-      color: #333;
-      margin: 0;
     }
   }
 
   .header-actions {
     display: flex;
     gap: 12px;
+  }
+}
+
+/* 报告头部 - 证书样式 */
+.report-header {
+  padding: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  position: relative;
+
+  .certificate-border {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 40px 20px;
+    position: relative;
+    
+    &::before, &::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+    }
+    
+    &::before {
+      top: -30px;
+      left: -30px;
+    }
+    
+    &::after {
+      bottom: -30px;
+      right: -30px;
+    }
+  }
+
+  .header-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    
+    .decoration-line {
+      width: 80px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    
+    .decoration-icon {
+      font-size: 32px;
+      margin: 0 20px;
+    }
+  }
+
+  .report-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .report-subtitle {
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0 0 30px 0;
+    opacity: 0.9;
+    font-style: italic;
+  }
+
+  .report-meta {
+    .meta-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+      
+      .meta-label {
+        font-weight: 500;
+        margin-right: 8px;
+      }
+      
+      .meta-value {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+/* 评估结果概览 */
+.assessment-overview {
+  padding: 40px;
+  background: #fafbfc;
+  border-bottom: 1px solid #e8ecf0;
+
+  .overview-header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      i {
+        color: #667eea;
+      }
+    }
+  }
+
+  .result-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .result-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    &.primary-card {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+
+      .card-title, .card-subtitle {
+        color: white;
+      }
+
+      .result-label {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        font-size: 24px;
+
+        &.risk-icon {
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+        }
+
+        &.score-icon {
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          color: white;
+        }
+      }
+
+      .card-title-group {
+        .card-title {
+          font-size: 18px;
+          font-weight: 600;
+          margin: 0 0 4px 0;
+          color: #2c3e50;
+        }
+
+        .card-subtitle {
+          font-size: 12px;
+          color: #7f8c8d;
+          margin: 0;
+          font-style: italic;
+        }
+      }
+    }
+
+    .card-content {
+      .primary-result, .secondary-result {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+
+        .result-label {
+          font-size: 14px;
+          color: #7f8c8d;
+        }
+
+        .result-value {
+          font-weight: 600;
+          font-size: 16px;
+
+          &.primary {
+            font-size: 18px;
+          }
+
+          &.risk-high {
+            color: #e74c3c;
+          }
+
+          &.risk-medium {
+            color: #f39c12;
+          }
+
+          &.risk-low {
+            color: #27ae60;
+          }
+        }
+      }
+
+      .score-display {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        margin-bottom: 12px;
+
+        .score-number {
+          font-size: 48px;
+          font-weight: 700;
+          color: #667eea;
+          line-height: 1;
+        }
+
+        .score-total {
+          font-size: 24px;
+          color: #95a5a6;
+          margin-left: 4px;
+        }
+      }
+
+      .score-label {
+        text-align: center;
+        font-size: 14px;
+        color: #7f8c8d;
+        margin-bottom: 16px;
+      }
+
+      .score-bar {
+        height: 8px;
+        background: #ecf0f1;
+        border-radius: 4px;
+        overflow: hidden;
+
+        .score-progress {
+          height: 100%;
+          background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+          border-radius: 4px;
+          transition: width 0.8s ease;
+        }
+      }
+    }
   }
 }
 
@@ -923,13 +1299,108 @@ export default {
   }
 }
 
-/* 风险分析区域 */
-.risk-analysis-section {
+/* 详细分析报告 */
+.detailed-analysis {
+  padding: 40px;
   background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 40px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  .analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f8f9fa;
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      i {
+        color: #667eea;
+      }
+    }
+
+    .analysis-badge {
+      .badge-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  .analysis-content-wrapper {
+    .risk-factors {
+      .subsection-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0 0 24px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .title-icon {
+          font-size: 24px;
+        }
+      }
+
+      .factors-list {
+        .factor-item {
+          display: flex;
+          margin-bottom: 24px;
+          padding: 20px;
+          background: #f8f9fa;
+          border-radius: 12px;
+          border-left: 4px solid #e74c3c;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: #f1f3f4;
+            transform: translateX(4px);
+          }
+
+          .factor-number {
+            width: 32px;
+            height: 32px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 16px;
+            flex-shrink: 0;
+          }
+
+          .factor-content {
+            flex: 1;
+
+            .factor-text {
+              margin: 0;
+              line-height: 1.6;
+              color: #2c3e50;
+              font-size: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
   .risk-info {
     .risk-classify {
@@ -997,66 +1468,211 @@ export default {
   }
 }
 
-/* 建议区域 */
+/* 专业建议与干预措施 */
 .recommendations-section {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  background: #fafbfc;
+  border-top: 1px solid #e8ecf0;
 
-  .recommendations-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-  }
-
-  .recommendation-card {
-    background: #F8F9FA;
-    border-radius: 12px;
-    padding: 20px;
+  .recommendations-header {
     display: flex;
-    gap: 16px;
-    transition: transform 0.3s ease;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f8f9fa;
 
-    &:hover {
-      transform: translateY(-2px);
-    }
-
-    .recommendation-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4A90E2, #7ED321);
-      color: white;
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin: 0;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
+      gap: 8px;
+
+      i {
+        color: #f39c12;
+      }
     }
 
-    .recommendation-content {
-      flex: 1;
-
-      .recommendation-title {
-        font-size: 16px;
+    .recommendations-badge {
+      .badge-text {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
         font-weight: 600;
-        color: #333;
-        margin: 0 0 8px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
+    }
+  }
 
-      .recommendation-desc {
-        font-size: 14px;
-        color: #666;
-        line-height: 1.5;
-        margin: 0 0 12px 0;
+  .recommendations-content {
+    .recommendations-intro {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border-left: 4px solid #f39c12;
+
+      .intro-text {
+        margin: 0;
+        line-height: 1.6;
+        color: #2c3e50;
+        font-size: 15px;
       }
+    }
 
-      .recommendation-tags {
+    .recommendations-list {
+      .recommendation-item {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e8ecf0;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendation-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 16px;
+
+          .recommendation-number {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            margin-right: 12px;
+            flex-shrink: 0;
+          }
+
+          .recommendation-icon {
+            width: 36px;
+            height: 36px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: #667eea;
+            font-size: 18px;
+          }
+
+          .recommendation-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+          }
+        }
+
+        .recommendation-body {
+          .recommendation-desc {
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            color: #5a6c7d;
+            font-size: 15px;
+          }
+
+          .recommendation-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 报告结尾 - 证书样式 */
+.report-footer {
+  padding: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+
+    .signature-section {
+      text-align: left;
+
+      .signature-line {
         display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 14px;
+
+        .signature-label {
+          font-weight: 500;
+          margin-right: 8px;
+          opacity: 0.9;
+        }
+
+        .signature-value {
+          font-weight: 600;
+        }
       }
+    }
+
+    .official-seal {
+      .seal-circle {
+        width: 80px;
+        height: 80px;
+        border: 3px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+
+        .seal-text {
+          font-size: 12px;
+          font-weight: 600;
+          line-height: 1;
+        }
+
+        .seal-subtext {
+          font-size: 8px;
+          opacity: 0.8;
+          margin-top: 2px;
+        }
+      }
+    }
+  }
+
+  .footer-note {
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding-top: 20px;
+
+    p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.8;
+      line-height: 1.4;
     }
   }
 }
@@ -1065,48 +1681,226 @@ export default {
 @media screen and (max-width: 768px) {
   .health-report-page {
     padding: 10px;
+    background: #f8f9fa;
   }
 
   .page-header {
     flex-direction: column;
     gap: 16px;
     text-align: center;
+    padding: 0 10px;
+  }
 
-    .header-left {
-      flex-direction: column;
-      gap: 8px;
+  .report-container {
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+
+  .report-header {
+    padding: 20px;
+
+    .certificate-border {
+      padding: 20px 10px;
+
+      &::before, &::after {
+        width: 40px;
+        height: 40px;
+      }
+
+      &::before {
+        top: -20px;
+        left: -20px;
+      }
+
+      &::after {
+        bottom: -20px;
+        right: -20px;
+      }
     }
 
-    .page-title {
+    .report-title {
       font-size: 24px;
     }
+
+    .report-subtitle {
+      font-size: 14px;
+    }
+
+    .header-decoration {
+      .decoration-line {
+        width: 50px;
+      }
+
+      .decoration-icon {
+        font-size: 24px;
+        margin: 0 10px;
+      }
+    }
   }
 
-  .device-info-card {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
+  .assessment-overview {
+    padding: 20px;
+
+    .result-cards {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .result-card {
+      padding: 20px;
+
+      .card-header {
+        .card-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 20px;
+        }
+
+        .card-title-group {
+          .card-title {
+            font-size: 16px;
+          }
+        }
+      }
+
+      .card-content {
+        .score-display {
+          .score-number {
+            font-size: 36px;
+          }
+
+          .score-total {
+            font-size: 18px;
+          }
+        }
+      }
+    }
   }
 
-  .analysis-content {
-    grid-template-columns: 1fr !important;
-    gap: 20px;
+  .analysis-section {
+    padding: 20px;
+
+    .analysis-content {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .radar-chart, .trend-chart {
+      height: 250px !important;
+    }
   }
 
-  .radar-chart, .trend-chart {
-    height: 300px !important;
+  .detailed-analysis {
+    padding: 20px;
+
+    .analysis-header {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+
+      .section-title {
+        font-size: 20px;
+      }
+    }
+
+    .factors-list {
+      .factor-item {
+        padding: 16px;
+
+        .factor-number {
+          width: 28px;
+          height: 28px;
+          font-size: 12px;
+        }
+
+        .factor-content {
+          .factor-text {
+            font-size: 14px;
+          }
+        }
+      }
+    }
   }
 
-  .recommendations-grid {
-    grid-template-columns: 1fr !important;
+  .recommendations-section {
+    padding: 20px;
+
+    .recommendations-header {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+
+      .section-title {
+        font-size: 20px;
+      }
+    }
+
+    .recommendations-content {
+      .recommendations-intro {
+        padding: 16px;
+
+        .intro-text {
+          font-size: 14px;
+        }
+      }
+
+      .recommendations-list {
+        .recommendation-item {
+          padding: 16px;
+
+          .recommendation-header {
+            .recommendation-number {
+              width: 32px;
+              height: 32px;
+              font-size: 14px;
+            }
+
+            .recommendation-icon {
+              width: 32px;
+              height: 32px;
+              font-size: 16px;
+            }
+
+            .recommendation-title {
+              font-size: 16px;
+            }
+          }
+
+          .recommendation-body {
+            .recommendation-desc {
+              font-size: 14px;
+            }
+          }
+        }
+      }
+    }
   }
 
-  .recommendation-card {
-    flex-direction: column;
-    text-align: center;
+  .report-footer {
+    padding: 20px;
 
-    .recommendation-icon {
-      align-self: center;
+    .footer-content {
+      flex-direction: column;
+      gap: 20px;
+
+      .signature-section {
+        text-align: center;
+      }
+
+      .official-seal {
+        .seal-circle {
+          width: 60px;
+          height: 60px;
+
+          .seal-text {
+            font-size: 10px;
+          }
+
+          .seal-subtext {
+            font-size: 7px;
+          }
+        }
+      }
     }
   }
 }
