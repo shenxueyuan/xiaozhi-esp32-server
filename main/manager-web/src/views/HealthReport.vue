@@ -248,7 +248,7 @@
                 多维度生理与心理数据进行深度挖掘和智能分析，构建个性化心理健康评估模型。
               </p>
             </div>
-            
+
             <div class="tech-details">
               <div class="tech-item">
                 <div class="tech-icon">🧠</div>
@@ -261,7 +261,7 @@
                   </p>
                 </div>
               </div>
-              
+
               <div class="tech-item">
                 <div class="tech-icon">💬</div>
                 <div class="tech-info">
@@ -272,7 +272,7 @@
                   </p>
                 </div>
               </div>
-              
+
               <div class="tech-item">
                 <div class="tech-icon">🎵</div>
                 <div class="tech-info">
@@ -283,7 +283,7 @@
                   </p>
                 </div>
               </div>
-              
+
               <div class="tech-item">
                 <div class="tech-icon">👁️</div>
                 <div class="tech-info">
@@ -295,7 +295,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="tech-guarantee">
               <p class="guarantee-text">
                 <strong>技术保障：</strong>所有分析算法均经过严格的临床验证和专业评审，
@@ -424,20 +424,14 @@ export default {
             firstClassify: apiData.firstClassify,
             secondClassify: apiData.secondClassify,
             riskLevel: this.mapRiskLevel(apiData.firstClassify), // 映射风险等级
-            overallScore: this.calculateOverallScore(apiData.firstClassify), // 计算综合评分
+            overallScore: this.calculateOverallScore(apiData.firstClassify, apiData.riskReason), // 计算综合评分
 
             // 风险原因和建议
             riskReasons: apiData.riskReason || [],
             recommendations: this.formatRecommendations(apiData.suggestion || []),
 
-            // 模拟多维度数据（实际项目中可能需要从其他接口获取）
-            dimensions: {
-              emotionalState: 88,
-              stressLevel: 72,
-              socialInteraction: 90,
-              sleepQuality: 78,
-              anxietyLevel: 82
-            },
+            // 基于风险评估数据智能生成多维度分析
+            dimensions: this.generateDimensionsFromRisk(apiData.firstClassify, apiData.secondClassify, apiData.riskReason),
 
             // 模拟趋势数据（实际项目中可能需要从其他接口获取）
             trendAnalysis: this.generateMockTrendData()
@@ -759,16 +753,146 @@ export default {
     },
 
     // 计算综合评分
-    calculateOverallScore(firstClassify) {
+    calculateOverallScore(firstClassify, riskReasons = []) {
       if (!firstClassify) return 85;
+
       const classify = firstClassify.toLowerCase();
+      let baseScore = 85; // 默认基础分数
+
+      // 根据风险分类确定基础分数范围
       if (classify.includes('高') || classify.includes('严重') || classify.includes('high')) {
-        return Math.floor(Math.random() * 20) + 40; // 40-59
+        baseScore = 50; // 高风险基础分
       } else if (classify.includes('中') || classify.includes('moderate') || classify.includes('medium')) {
-        return Math.floor(Math.random() * 20) + 60; // 60-79
+        baseScore = 70; // 中风险基础分
+      } else if (classify.includes('异常') || classify.includes('风险')) {
+        baseScore = 65; // 异常风险基础分
       } else {
-        return Math.floor(Math.random() * 20) + 80; // 80-99
+        baseScore = 85; // 低风险或正常基础分
       }
+
+      // 根据风险原因数量调整分数
+      const riskCount = riskReasons.length;
+      let adjustment = 0;
+
+      if (riskCount >= 4) {
+        adjustment = -15; // 风险因素很多
+      } else if (riskCount >= 3) {
+        adjustment = -10; // 风险因素较多
+      } else if (riskCount >= 2) {
+        adjustment = -5;  // 风险因素一般
+      } else if (riskCount === 1) {
+        adjustment = -2;  // 风险因素较少
+      }
+
+      // 根据风险原因内容的严重程度进一步调整
+      const riskText = riskReasons.join('').toLowerCase();
+      if (riskText.includes('严重') || riskText.includes('非常') || riskText.includes('极度')) {
+        adjustment -= 8; // 严重程度高
+      } else if (riskText.includes('强烈') || riskText.includes('明显') || riskText.includes('持续')) {
+        adjustment -= 5; // 严重程度中等
+      }
+
+      const finalScore = Math.max(25, Math.min(95, baseScore + adjustment));
+      return Math.round(finalScore);
+    },
+
+    // 基于风险评估数据智能生成多维度分析
+    generateDimensionsFromRisk(firstClassify, secondClassify, riskReasons = []) {
+      const classify = (firstClassify || '').toLowerCase();
+      const subClassify = (secondClassify || '').toLowerCase();
+      const riskText = riskReasons.join('').toLowerCase();
+      
+      // 基础分数（正常状态）
+      let dimensions = {
+        emotionalState: 85,    // 情绪状态
+        stressLevel: 80,       // 压力水平
+        socialInteraction: 85, // 社交互动
+        sleepQuality: 80,      // 睡眠质量
+        anxietyLevel: 85       // 焦虑水平
+      };
+      
+      // 根据一级分类调整各维度
+      if (classify.includes('情绪') || classify.includes('emotion')) {
+        dimensions.emotionalState -= 25; // 情绪问题显著影响情绪状态
+        dimensions.anxietyLevel -= 15;   // 情绪问题通常伴随焦虑
+        dimensions.stressLevel -= 10;    // 增加压力水平
+      }
+      
+      if (classify.includes('焦虑') || classify.includes('anxiety')) {
+        dimensions.anxietyLevel -= 30;   // 焦虑问题直接影响焦虑水平
+        dimensions.stressLevel -= 20;    // 焦虑增加压力
+        dimensions.sleepQuality -= 15;   // 焦虑影响睡眠
+      }
+      
+      if (classify.includes('抑郁') || classify.includes('depression')) {
+        dimensions.emotionalState -= 30; // 抑郁严重影响情绪
+        dimensions.socialInteraction -= 25; // 抑郁影响社交
+        dimensions.sleepQuality -= 20;   // 抑郁影响睡眠
+      }
+      
+      if (classify.includes('压力') || classify.includes('stress')) {
+        dimensions.stressLevel -= 25;    // 压力问题直接影响压力水平
+        dimensions.sleepQuality -= 15;   // 压力影响睡眠
+        dimensions.emotionalState -= 10; // 压力影响情绪
+      }
+      
+      // 根据二级分类进一步调整
+      if (subClassify.includes('抑郁') || subClassify.includes('depression')) {
+        dimensions.emotionalState -= 15;
+        dimensions.socialInteraction -= 15;
+      }
+      
+      if (subClassify.includes('焦虑') || subClassify.includes('anxiety')) {
+        dimensions.anxietyLevel -= 15;
+        dimensions.stressLevel -= 10;
+      }
+      
+      // 根据风险原因数量调整
+      const riskCount = riskReasons.length;
+      const countAdjustment = Math.min(riskCount * 3, 15); // 每个风险因素减3分，最多减15分
+      
+      Object.keys(dimensions).forEach(key => {
+        dimensions[key] -= countAdjustment;
+      });
+      
+      // 根据风险原因内容的严重程度调整
+      let severityAdjustment = 0;
+      if (riskText.includes('严重') || riskText.includes('非常') || riskText.includes('极度')) {
+        severityAdjustment = 15; // 严重程度高
+      } else if (riskText.includes('强烈') || riskText.includes('明显') || riskText.includes('持续')) {
+        severityAdjustment = 10; // 严重程度中等
+      } else if (riskText.includes('较') || riskText.includes('有些') || riskText.includes('一定')) {
+        severityAdjustment = 5;  // 严重程度较轻
+      }
+      
+      // 应用严重程度调整
+      Object.keys(dimensions).forEach(key => {
+        dimensions[key] -= severityAdjustment;
+      });
+      
+      // 特定关键词的针对性调整
+      if (riskText.includes('不开心') || riskText.includes('难过') || riskText.includes('低落')) {
+        dimensions.emotionalState -= 10;
+      }
+      
+      if (riskText.includes('考试') || riskText.includes('学习') || riskText.includes('工作')) {
+        dimensions.stressLevel -= 8;
+      }
+      
+      if (riskText.includes('睡眠') || riskText.includes('失眠') || riskText.includes('睡不着')) {
+        dimensions.sleepQuality -= 15;
+      }
+      
+      if (riskText.includes('社交') || riskText.includes('朋友') || riskText.includes('交流')) {
+        dimensions.socialInteraction -= 10;
+      }
+      
+      // 确保分数在合理范围内（25-95）
+      Object.keys(dimensions).forEach(key => {
+        dimensions[key] = Math.max(25, Math.min(95, Math.round(dimensions[key])));
+      });
+      
+      return dimensions;
     },
 
     // 格式化建议数据
