@@ -16,13 +16,19 @@
           </el-button>
         </div>
         <div class="header-actions">
-          <el-button type="primary" icon="el-icon-download" @click="exportPDF">导出PDF</el-button>
+          <el-button 
+            type="primary" 
+            icon="el-icon-download" 
+            @click="exportPDF"
+            :loading="isExporting">
+            {{ isExporting ? '导出中...' : '导出PDF' }}
+          </el-button>
           <el-button type="default" icon="el-icon-share" @click="shareReport">分享</el-button>
         </div>
       </div>
 
       <!-- 报告容器 -->
-      <div class="report-container" v-if="reportData">
+      <div class="report-container" v-if="reportData" ref="reportContent">
         <!-- 报告头部 - 证书样式 -->
         <div class="report-header">
           <div class="certificate-border">
@@ -351,6 +357,8 @@
 <script>
 import * as echarts from 'echarts';
 import Api from '@/apis/api';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import HeaderBar from '@/components/HeaderBar.vue';
 
 export default {
@@ -364,7 +372,8 @@ export default {
       deviceInfo: {},
       reportData: null,
       radarChart: null,
-      trendChart: null
+      trendChart: null,
+      isExporting: false
     };
   },
   mounted() {
@@ -721,9 +730,19 @@ export default {
       return iconMap[type] || 'el-icon-info';
     },
 
-    formatDate(dateStr) {
+    formatDate(dateStr, format = 'YYYY-MM-DD') {
       if (!dateStr) return '';
       const date = new Date(dateStr);
+      
+      if (format === 'YYYYMMDD') {
+        // 用于文件名的格式
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}${month}${day}`;
+      }
+      
+      // 默认格式 YYYY-MM-DD
       return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
     },
 
@@ -734,8 +753,86 @@ export default {
       return `${start} 至 ${end}`;
     },
 
-    exportPDF() {
-      this.$message.info('PDF导出功能开发中...');
+    async exportPDF() {
+      if (this.isExporting) return;
+      
+      this.isExporting = true;
+      
+      try {
+        // 获取报告容器元素
+        const element = this.$refs.reportContent;
+        if (!element) {
+          throw new Error('报告内容未找到');
+        }
+
+        // 显示导出提示
+        this.$message.info('正在生成PDF，请稍候...');
+
+        // 临时添加PDF导出样式类
+        element.classList.add('pdf-exporting');
+
+        // 等待样式应用
+        await this.$nextTick();
+
+        // 配置html2canvas选项
+        const canvasOptions = {
+          scale: 2, // 提高清晰度
+          useCORS: true, // 允许跨域图片
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: element.scrollWidth,
+          height: element.scrollHeight,
+          scrollX: 0,
+          scrollY: 0
+        };
+
+        // 生成canvas
+        const canvas = await html2canvas(element, canvasOptions);
+        
+        // 计算PDF尺寸
+        const imgWidth = 210; // A4纸宽度(mm)
+        const pageHeight = 297; // A4纸高度(mm) 
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+
+        // 创建PDF文档
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        let position = 0;
+
+        // 将canvas转换为图片数据
+        const imgData = canvas.toDataURL('image/png', 1.0);
+
+        // 添加第一页
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // 如果内容超过一页，添加更多页面
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        // 生成文件名
+        const fileName = `心理健康报告_${this.deviceInfo.deviceName || '未命名设备'}_${this.formatDate(new Date(), 'YYYYMMDD')}.pdf`;
+        
+        // 保存PDF
+        pdf.save(fileName);
+        
+        this.$message.success('PDF导出成功！');
+        
+      } catch (error) {
+        console.error('PDF导出失败:', error);
+        this.$message.error('PDF导出失败，请重试');
+      } finally {
+        // 移除PDF导出样式类
+        const element = this.$refs.reportContent;
+        if (element) {
+          element.classList.remove('pdf-exporting');
+        }
+        this.isExporting = false;
+      }
     },
 
     shareReport() {
@@ -2053,6 +2150,52 @@ export default {
         border-top: 1px solid rgba(255, 255, 255, 0.2);
         padding-top: 8px;
       }
+    }
+  }
+}
+
+/* PDF导出优化样式 */
+@media print {
+  .page-header {
+    display: none !important;
+  }
+  
+  .report-container {
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .coming-soon::after {
+    display: none !important;
+  }
+  
+  .coming-soon {
+    opacity: 1 !important;
+    filter: none !important;
+  }
+}
+
+/* PDF导出时的样式优化 */
+.report-container {
+  &.pdf-exporting {
+    .page-header {
+      display: none;
+    }
+    
+    .coming-soon::after {
+      display: none;
+    }
+    
+    .coming-soon {
+      opacity: 1;
+      filter: none;
+    }
+    
+    // 确保图表在PDF中正确显示
+    .radar-chart,
+    .trend-chart {
+      background: white;
     }
   }
 }
