@@ -1047,5 +1047,14 @@ export default {
   'templateQuickConfig.templateNotFound': 'Template not found',
   'warning': 'Warning',
   'info': 'Info',
-  'common.networkError': 'Network request failed'
+  'common.networkError': 'Network request failed',
+
+  // WiFi Guide
+  'wifiGuide.title': 'WiFi Setup Guide',
+  'wifiGuide.step': 'Step',
+  'wifiGuide.step1': 'Step 1: Turn on device and enter configuration mode',
+  'wifiGuide.step2': 'Step 2: Connect to device hotspot',
+  'wifiGuide.step3': 'Step 3: Select WiFi network',
+  'wifiGuide.step4': 'Step 4: Enter WiFi password',
+  'wifiGuide.step5': 'Step 5: Connection successful'
 }

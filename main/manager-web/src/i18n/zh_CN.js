@@ -1047,5 +1047,14 @@ export default {
   'templateQuickConfig.resetSuccess': '重置成功',
   'warning': '警告',
   'info': '提示',
-  'common.networkError': '网络请求失败'
+  'common.networkError': '网络请求失败',
+
+  // WiFi联网教程
+  'wifiGuide.title': 'WiFi联网教程',
+  'wifiGuide.step': '步骤',
+  'wifiGuide.step1': '步骤1：打开设备，进入配置模式',
+  'wifiGuide.step2': '步骤2：连接设备热点',
+  'wifiGuide.step3': '步骤3：选择WiFi网络',
+  'wifiGuide.step4': '步骤4：输入WiFi密码',
+  'wifiGuide.step5': '步骤5：连接成功'
 }

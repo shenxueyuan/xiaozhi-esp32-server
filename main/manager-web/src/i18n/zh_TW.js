@@ -1047,5 +1047,14 @@ export default {
   'templateQuickConfig.newTemplate': '新模板',
   'warning': '警告',
   'info': '提示',
-  'common.networkError': '網路請求失敗'
+  'common.networkError': '網路請求失敗',
+
+  // WiFi聯網教程
+  'wifiGuide.title': 'WiFi聯網教程',
+  'wifiGuide.step': '步驟',
+  'wifiGuide.step1': '步驟1：打開設備，進入配置模式',
+  'wifiGuide.step2': '步驟2：連接設備熱點',
+  'wifiGuide.step3': '步驟3：選擇WiFi網路',
+  'wifiGuide.step4': '步驟4：輸入WiFi密碼',
+  'wifiGuide.step5': '步驟5：連接成功'
 }

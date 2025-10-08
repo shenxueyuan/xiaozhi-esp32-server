@@ -60,6 +60,17 @@
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
+
+            <!-- WiFi联网教程按钮 -->
+            <el-tooltip :content="$t('wifiGuide.title')" placement="bottom">
+              <el-button
+                type="primary"
+                icon="el-icon-connection"
+                circle
+                class="wifi-guide-btn"
+                @click="showWifiGuide"
+              ></el-button>
+            </el-tooltip>
           </div>
           <div style="padding: 0 30px">
             <!-- 用户名登录 -->
@@ -152,12 +163,16 @@
         <version-footer />
       </el-footer>
     </el-container>
+
+    <!-- WiFi联网教程对话框 -->
+    <wifi-guide-dialog :visible.sync="wifiGuideVisible" />
   </div>
 </template>
 
 <script>
 import Api from "@/apis/api";
 import VersionFooter from "@/components/VersionFooter.vue";
+import WifiGuideDialog from "@/components/WifiGuideDialog.vue";
 import i18n, { changeLanguage } from "@/i18n";
 import { getUUID, goToPage, showDanger, showSuccess, validateMobile } from "@/utils";
 import { mapState } from "vuex";
@@ -166,6 +181,7 @@ export default {
   name: "login",
   components: {
     VersionFooter,
+    WifiGuideDialog,
   },
   computed: {
     ...mapState({
@@ -214,6 +230,7 @@ export default {
       isMobileLogin: false,
       mobileDeviceDetected: false,
       currentTheme: localStorage.getItem('backgroundTheme') || 'flow',
+      wifiGuideVisible: false,
       languageDropdownVisible: false,
     }
   },
@@ -255,6 +272,10 @@ export default {
     // 监听语言下拉菜单的可见状态变化
     handleLanguageDropdownVisibleChange(visible) {
       this.languageDropdownVisible = visible;
+    },
+    // 显示WiFi联网教程
+    showWifiGuide() {
+      this.wifiGuideVisible = true;
     },
     fetchCaptcha() {
       if (this.$store.getters.getToken) {
@@ -375,6 +396,25 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "./auth.scss";
+
+/* WiFi教程按钮样式 */
+.wifi-guide-btn {
+  margin-left: 10px;
+  
+  &:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+  }
+}
+
+/* 移动端优化 */
+@media screen and (max-width: 768px) {
+  .wifi-guide-btn {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+  }
+}
 
 .login-type-container {
   margin: 10px 20px;
