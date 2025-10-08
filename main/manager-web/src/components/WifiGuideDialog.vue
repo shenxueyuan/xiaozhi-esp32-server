@@ -32,6 +32,13 @@
 </template>
 
 <script>
+// 静态导入图片
+import img1 from '@/assets/conwifi/con_wifi_1.PNG';
+import img2 from '@/assets/conwifi/con_wifi_2.PNG';
+import img3 from '@/assets/conwifi/con_wifi_3.PNG';
+import img4 from '@/assets/conwifi/con_wifi_4.PNG';
+import img5 from '@/assets/conwifi/con_wifi_5.PNG';
+
 export default {
   name: 'WifiGuideDialog',
   props: {
@@ -44,21 +51,21 @@ export default {
     return {
       dialogVisible: false,
       currentStep: 1,
-      isMobile: false
+      isMobile: false,
+      // 图片数据
+      imageData: [
+        { src: img1, step: 'step1' },
+        { src: img2, step: 'step2' },
+        { src: img3, step: 'step3' },
+        { src: img4, step: 'step4' },
+        { src: img5, step: 'step5' }
+      ]
     };
   },
   computed: {
     images() {
-      const imagePaths = [
-        { name: 'con_wifi_1.PNG', step: 'step1' },
-        { name: 'con_wifi_2.PNG', step: 'step2' },
-        { name: 'con_wifi_3.PNG', step: 'step3' },
-        { name: 'con_wifi_4.PNG', step: 'step4' },
-        { name: 'con_wifi_5.PNG', step: 'step5' }
-      ];
-      
-      return imagePaths.map((img, index) => ({
-        src: this.getImageUrl(img.name),
+      return this.imageData.map((img, index) => ({
+        src: img.src,
         alt: `联网步骤${index + 1}`,
         caption: this.$t(`wifiGuide.${img.step}`)
       }));
@@ -88,14 +95,6 @@ export default {
     window.removeEventListener('resize', this.checkScreenSize);
   },
   methods: {
-    getImageUrl(imageName) {
-      try {
-        return require(`@/assets/conwifi/${imageName}`);
-      } catch (e) {
-        console.error(`Failed to load image: ${imageName}`, e);
-        return '';
-      }
-    },
     checkScreenSize() {
       this.isMobile = window.innerWidth <= 768;
     },
