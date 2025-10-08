@@ -139,9 +139,12 @@
           </div>
         </div>
 
-        <!-- 趋势分析 -->
-        <div class="trend-section" v-if="reportData.trendAnalysis">
-          <h3 class="section-title">心理健康趋势分析</h3>
+        <!-- 趋势分析 - 即将上线 -->
+        <div class="trend-section coming-soon">
+          <h3 class="section-title">
+            心理健康趋势分析
+            <span class="coming-soon-badge">即将上线</span>
+          </h3>
           <div class="trend-chart-container">
             <div ref="trendChart" class="trend-chart"></div>
           </div>
@@ -801,7 +804,7 @@ export default {
       const classify = (firstClassify || '').toLowerCase();
       const subClassify = (secondClassify || '').toLowerCase();
       const riskText = riskReasons.join('').toLowerCase();
-      
+
       // 基础分数（正常状态）
       let dimensions = {
         emotionalState: 85,    // 情绪状态
@@ -810,51 +813,51 @@ export default {
         sleepQuality: 80,      // 睡眠质量
         anxietyLevel: 85       // 焦虑水平
       };
-      
+
       // 根据一级分类调整各维度
       if (classify.includes('情绪') || classify.includes('emotion')) {
         dimensions.emotionalState -= 25; // 情绪问题显著影响情绪状态
         dimensions.anxietyLevel -= 15;   // 情绪问题通常伴随焦虑
         dimensions.stressLevel -= 10;    // 增加压力水平
       }
-      
+
       if (classify.includes('焦虑') || classify.includes('anxiety')) {
         dimensions.anxietyLevel -= 30;   // 焦虑问题直接影响焦虑水平
         dimensions.stressLevel -= 20;    // 焦虑增加压力
         dimensions.sleepQuality -= 15;   // 焦虑影响睡眠
       }
-      
+
       if (classify.includes('抑郁') || classify.includes('depression')) {
         dimensions.emotionalState -= 30; // 抑郁严重影响情绪
         dimensions.socialInteraction -= 25; // 抑郁影响社交
         dimensions.sleepQuality -= 20;   // 抑郁影响睡眠
       }
-      
+
       if (classify.includes('压力') || classify.includes('stress')) {
         dimensions.stressLevel -= 25;    // 压力问题直接影响压力水平
         dimensions.sleepQuality -= 15;   // 压力影响睡眠
         dimensions.emotionalState -= 10; // 压力影响情绪
       }
-      
+
       // 根据二级分类进一步调整
       if (subClassify.includes('抑郁') || subClassify.includes('depression')) {
         dimensions.emotionalState -= 15;
         dimensions.socialInteraction -= 15;
       }
-      
+
       if (subClassify.includes('焦虑') || subClassify.includes('anxiety')) {
         dimensions.anxietyLevel -= 15;
         dimensions.stressLevel -= 10;
       }
-      
+
       // 根据风险原因数量调整
       const riskCount = riskReasons.length;
       const countAdjustment = Math.min(riskCount * 3, 15); // 每个风险因素减3分，最多减15分
-      
+
       Object.keys(dimensions).forEach(key => {
         dimensions[key] -= countAdjustment;
       });
-      
+
       // 根据风险原因内容的严重程度调整
       let severityAdjustment = 0;
       if (riskText.includes('严重') || riskText.includes('非常') || riskText.includes('极度')) {
@@ -864,34 +867,34 @@ export default {
       } else if (riskText.includes('较') || riskText.includes('有些') || riskText.includes('一定')) {
         severityAdjustment = 5;  // 严重程度较轻
       }
-      
+
       // 应用严重程度调整
       Object.keys(dimensions).forEach(key => {
         dimensions[key] -= severityAdjustment;
       });
-      
+
       // 特定关键词的针对性调整
       if (riskText.includes('不开心') || riskText.includes('难过') || riskText.includes('低落')) {
         dimensions.emotionalState -= 10;
       }
-      
+
       if (riskText.includes('考试') || riskText.includes('学习') || riskText.includes('工作')) {
         dimensions.stressLevel -= 8;
       }
-      
+
       if (riskText.includes('睡眠') || riskText.includes('失眠') || riskText.includes('睡不着')) {
         dimensions.sleepQuality -= 15;
       }
-      
+
       if (riskText.includes('社交') || riskText.includes('朋友') || riskText.includes('交流')) {
         dimensions.socialInteraction -= 10;
       }
-      
+
       // 确保分数在合理范围内（25-95）
       Object.keys(dimensions).forEach(key => {
         dimensions[key] = Math.max(25, Math.min(95, Math.round(dimensions[key])));
       });
-      
+
       return dimensions;
     },
 
@@ -1645,18 +1648,67 @@ export default {
 }
 
 /* 趋势分析 */
-.trend-section {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 40px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-  .trend-chart-container {
-    .trend-chart {
-      width: 100%;
-      height: 400px;
+  .trend-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    &.coming-soon {
+      opacity: 0.6;
+      position: relative;
+      
+      .trend-chart-container {
+        pointer-events: none;
+        filter: blur(1px);
+      }
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        z-index: 1;
+      }
     }
+
+    .trend-chart-container {
+      .trend-chart {
+        width: 100%;
+        height: 400px;
+    }
+  }
+}
+
+/* 即将上线标记 */
+.coming-soon-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff9a56, #ff6b6b);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-left: 12px;
+  vertical-align: middle;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 16px rgba(255, 107, 107, 0.5);
+  }
+  100% {
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
   }
 }
 
