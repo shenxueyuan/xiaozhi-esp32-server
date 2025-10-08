@@ -50,6 +50,25 @@
           </div>
         </div>
 
+        <!-- 技术说明 -->
+        <div class="technical-description">
+          <div class="tech-header">
+            <h3 class="tech-title">
+              <i class="el-icon-cpu"></i>
+              评估技术说明
+            </h3>
+          </div>
+          <div class="tech-content">
+            <p class="tech-text">
+              本报告基于先进的多模态AI分析技术生成，通过对您在周期性智能对话过程中的
+              <strong>文本意图识别</strong>、<strong>语音情绪分析</strong>、<strong>视觉微表情检测</strong>
+              等多维度数据进行深度学习和大模型智能分析，综合评估您的心理健康状态。
+              我们采用业界领先的自然语言处理、语音信号处理和计算机视觉技术，
+              确保评估结果的科学性和准确性。
+            </p>
+          </div>
+        </div>
+
         <!-- 评估结果概览 - 突出显示 -->
         <div class="assessment-overview">
           <div class="overview-header">
@@ -253,7 +272,18 @@
             </div>
           </div>
           <div class="footer-note">
-            <p>本报告仅供参考，如需专业心理咨询，请联系相关专业机构。</p>
+            <div class="disclaimer-content">
+              <h4 class="disclaimer-title">重要声明</h4>
+              <p class="disclaimer-text">
+                本报告基于人工智能多模态分析技术生成，通过文本语义理解、语音情感识别、
+                视觉微表情分析等先进技术，对用户在智能交互过程中的心理状态进行综合评估。
+                <strong>本报告仅供健康参考，不能替代专业医疗诊断。</strong>
+                如您感到心理困扰或需要专业帮助，请及时咨询持证心理咨询师或精神科医生。
+              </p>
+              <p class="tech-note">
+                技术支持：多模态AI心理健康评估系统 | 数据处理符合隐私保护标准
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -878,6 +908,60 @@ export default {
 
       .meta-value {
         font-weight: 600;
+      }
+    }
+  }
+}
+
+/* 技术说明 */
+.technical-description {
+  padding: 30px 40px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #dee2e6;
+
+  .tech-header {
+    text-align: center;
+    margin-bottom: 20px;
+
+    .tech-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #495057;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      i {
+        color: #6c757d;
+      }
+    }
+  }
+
+  .tech-content {
+    max-width: 900px;
+    margin: 0 auto;
+
+    .tech-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #495057;
+      text-align: justify;
+      margin: 0;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      border-left: 4px solid #6c757d;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+      strong {
+        color: #343a40;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
     }
   }
@@ -1602,11 +1686,44 @@ export default {
     border-top: 1px solid rgba(255, 255, 255, 0.3);
     padding-top: 20px;
 
-    p {
-      margin: 0;
-      font-size: 12px;
-      opacity: 0.8;
-      line-height: 1.4;
+    .disclaimer-content {
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+
+      .disclaimer-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 12px 0;
+        color: white;
+        text-align: center;
+      }
+
+      .disclaimer-text {
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 0 0 12px 0;
+        opacity: 0.9;
+        text-align: justify;
+
+        strong {
+          font-weight: 700;
+          color: #fff;
+          background: rgba(255, 255, 255, 0.2);
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+      }
+
+      .tech-note {
+        font-size: 11px;
+        opacity: 0.7;
+        text-align: center;
+        margin: 0;
+        font-style: italic;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 8px;
+      }
     }
   }
 }
@@ -1628,6 +1745,19 @@ export default {
   .report-container {
     border-radius: 8px;
     margin-top: 10px;
+  }
+
+  .technical-description {
+    padding: 20px;
+
+    .tech-content {
+      .tech-text {
+        font-size: 14px;
+        line-height: 1.6;
+        padding: 16px;
+        text-align: left;
+      }
+    }
   }
 
   .report-header {
@@ -1833,6 +1963,23 @@ export default {
           .seal-subtext {
             font-size: 7px;
           }
+        }
+      }
+    }
+
+    .footer-note {
+      .disclaimer-content {
+        .disclaimer-title {
+          font-size: 14px;
+        }
+
+        .disclaimer-text {
+          font-size: 12px;
+          line-height: 1.5;
+        }
+
+        .tech-note {
+          font-size: 10px;
         }
       }
     }
