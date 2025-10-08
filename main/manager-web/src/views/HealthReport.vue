@@ -313,8 +313,8 @@
           <div class="footer-content">
             <div class="signature-section">
               <div class="signature-line">
-                <span class="signature-label">评估机构：</span>
-                <span class="signature-value">心理健康评估中心</span>
+                <span class="signature-label">分析来源：</span>
+                <span class="signature-value">AI小新智能分析系统</span>
               </div>
               <div class="signature-line">
                 <span class="signature-label">报告日期：</span>
@@ -323,8 +323,8 @@
             </div>
             <div class="official-seal">
               <div class="seal-circle">
-                <div class="seal-text">官方认证</div>
-                <div class="seal-subtext">CERTIFIED</div>
+                <div class="seal-text">智能评估</div>
+                <div class="seal-subtext">AI ANALYSIS</div>
               </div>
             </div>
           </div>
@@ -1654,16 +1654,16 @@ export default {
     padding: 30px;
     margin-bottom: 40px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    
+
     &.coming-soon {
       opacity: 0.6;
       position: relative;
-      
+
       .trend-chart-container {
         pointer-events: none;
         filter: blur(1px);
       }
-      
+
       &::after {
         content: '';
         position: absolute;
