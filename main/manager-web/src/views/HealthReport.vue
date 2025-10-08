@@ -196,10 +196,16 @@ export default {
 
       this.loading = true;
       try {
+        // 获取当前用户ID
+        const userInfo = this.$store.getters.getUserInfo;
+        const userId = userInfo.id || userInfo.userId || localStorage.getItem('userId') || '';
+        if (!userId) {
+          throw new Error('用户未登录或用户ID获取失败');
+        }
+
         const response = await Api.device.generateHealthReport({
-          deviceId: this.deviceInfo.deviceId,
-          macAddress: this.deviceInfo.macAddress,
-          timeRange: '30d'
+          day: 30, // 分析最近30天的数据
+          userId: userId
         });
 
         if (response.data.code === 200) {

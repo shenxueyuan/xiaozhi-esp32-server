@@ -123,10 +123,15 @@ export default {
     // 生成心理健康报告
     generateHealthReport(params, callback) {
         return new Promise((resolve, reject) => {
+            // 构建query参数
+            const queryParams = new URLSearchParams({
+                day: params.day.toString(),
+                userId: params.userId
+            }).toString();
+            
             RequestService.sendRequest()
-                .url(`${getServiceUrl()}/xiaozhi/risk/assessment/report/generate`)
+                .url(`${getServiceUrl()}/xiaozhi/risk/assessment/report/generate?${queryParams}`)
                 .method('POST')
-                .data(params)
                 .success((res) => {
                     RequestService.clearRequestTime();
                     if (callback) callback(res);
