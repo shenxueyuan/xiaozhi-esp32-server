@@ -119,4 +119,24 @@ export default {
                 });
             }).send();
     },
+
+    // 生成心理健康报告
+    generateHealthReport(params, callback) {
+        return new Promise((resolve, reject) => {
+            RequestService.sendRequest()
+                .url(`${getServiceUrl()}/mobile/风险评估管理/generateReport`)
+                .method('POST')
+                .data(params)
+                .success((res) => {
+                    RequestService.clearRequestTime();
+                    if (callback) callback(res);
+                    resolve(res);
+                })
+                .networkFail((err) => {
+                    console.error('生成心理健康报告失败:', err);
+                    if (callback) callback(null, err);
+                    reject(err);
+                }).send();
+        });
+    },
 }

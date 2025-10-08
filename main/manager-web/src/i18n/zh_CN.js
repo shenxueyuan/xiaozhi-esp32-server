@@ -387,6 +387,7 @@ export default {
 
     // 忘记密码页面文本
     'retrievePassword.title': '重置密码',
+    'retrievePassword.subtitle': '请输入您的手机号码以重置密码',
     'retrievePassword.welcome': '密码找回',
     'retrievePassword.mobile': '手机号',
     'retrievePassword.mobilePlaceholder': '请输入手机号码',
@@ -397,9 +398,11 @@ export default {
     'retrievePassword.newPassword': '新密码',
     'retrievePassword.newPasswordPlaceholder': '请输入新密码',
     'retrievePassword.confirmNewPassword': '确认新密码',
-    'retrievePassword.confirmNewPasswordPlaceholder': '请确认新密码',
+    'retrievePassword.confirmPasswordPlaceholder': '请确认新密码',
     'retrievePassword.getMobileCaptcha': '获取验证码',
+    'retrievePassword.sendCaptcha': '发送验证码',
     'retrievePassword.updateButton': '立即修改',
+    'retrievePassword.resetButton': '重置密码',
     'retrievePassword.goToLogin': '返回登录',
     'retrievePassword.inputCorrectMobile': '请输入正确的手机号码',
     'retrievePassword.captchaSendSuccess': '验证码发送成功',
@@ -411,6 +414,7 @@ export default {
     'retrievePassword.newPasswordRequired': '新密码不能为空',
     'retrievePassword.confirmNewPasswordRequired': '确认新密码不能为空',
     'retrievePassword.passwordUpdateSuccess': '密码修改成功',
+    'retrievePassword.agreeTo': '重置密码即同意',
 
     // 修改密码页面文本
     'changePassword.title': '修改密码',
@@ -1061,7 +1065,10 @@ export default {
     'wifiGuide.stepTitle5': '设备重启',
     'wifiGuide.step1': '打开手机WiFi设置，查找并连接以"Xiaoxin"开头的设备热点。连接成功后，手机会自动弹出配网页面。',
     'wifiGuide.step2': '在配网页面中：①选择您要连接的WiFi网络 ②输入WiFi密码 ③点击"开始连接"按钮，设备将进入配网状态。',
-    'wifiGuide.step3': '设备正在连接您指定的WiFi网络，请耐心等待。配网过程通常需要10-30秒时间。',
-    'wifiGuide.step4': '配网成功！设备已成功连接到您的WiFi网络，现在可以正常使用网络功能了。',
-    'wifiGuide.step5': '配网完成后，设备将自动重启以应用新的网络配置。重启完成后即可开始使用。'
+  'wifiGuide.step3': '设备正在连接您指定的WiFi网络，请耐心等待。配网过程通常需要10-30秒时间。',
+  'wifiGuide.step4': '配网成功！设备已成功连接到您的WiFi网络，现在可以正常使用网络功能了。',
+  'wifiGuide.step5': '配网完成后，设备将自动重启以应用新的网络配置。重启完成后即可开始使用。',
+
+  // 设备管理 - 心理健康报告
+  'device.healthReport': '心理健康报告'
 }

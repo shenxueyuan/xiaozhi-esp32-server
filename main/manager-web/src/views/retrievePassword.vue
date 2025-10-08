@@ -48,12 +48,12 @@
             <div style="padding: 0 30px;">
               <!-- 手机号输入 -->
               <div class="input-box">
-                <div style="display: flex; align-items: center; width: 100%;">
-                  <el-select v-model="form.areaCode" style="width: 220px; margin-right: 10px;">
+                <div class="mobile-input-container" style="display: flex; align-items: center; width: 100%;">
+                  <el-select v-model="form.areaCode" :style="isMobile ? 'width: 90px; margin-right: 8px;' : 'width: 220px; margin-right: 10px;'">
                     <el-option v-for="item in mobileAreaList" :key="item.key" :label="`${item.name} (${item.key})`"
                       :value="item.key" />
                   </el-select>
-                  <el-input v-model="form.mobile" :placeholder="$t('retrievePassword.mobilePlaceholder')" />
+                  <el-input v-model="form.mobile" :placeholder="$t('retrievePassword.mobilePlaceholder')" style="flex: 1;" />
                 </div>
               </div>
 
@@ -64,7 +64,7 @@
                 </div>
                 <div class="captcha-container">
                   <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" alt="验证码"
-                    style="width: 150px; height: 40px; cursor: pointer;" @click="fetchCaptcha" />
+                    :style="isMobile ? 'width: 100px; height: 38px; cursor: pointer;' : 'width: 150px; height: 40px; cursor: pointer;'" @click="fetchCaptcha" />
                 </div>
               </div>
 
@@ -125,7 +125,7 @@
 <script>
 import Api from '@/apis/api';
 import VersionFooter from '@/components/VersionFooter.vue';
-import { getUUID, goToPage, showDanger, showSuccess, validateMobile } from '@/utils';
+import { getUUID, goToPage, showDanger, showSuccess, validateMobile, isMobileDevice } from '@/utils';
 import { mapState } from 'vuex';
 
 // 导入语言切换功能
@@ -146,6 +146,9 @@ export default {
     },
     themeClass() {
       return `theme-${this.currentTheme}`;
+    },
+    isMobile() {
+      return this.mobileDeviceDetected;
     }
   },
   data() {
@@ -162,11 +165,13 @@ export default {
       captchaUrl: '',
       countdown: 0,
       timer: null,
-      currentTheme: localStorage.getItem('backgroundTheme') || 'flow'
+      currentTheme: localStorage.getItem('backgroundTheme') || 'flow',
+      mobileDeviceDetected: false
     }
   },
   mounted() {
     this.fetchCaptcha();
+    this.checkDeviceType();
   },
   methods: {
     changeBackgroundTheme(theme) {
@@ -183,6 +188,9 @@ export default {
         breathing: '呼吸光晕'
       };
       return names[theme] || '未知主题';
+    },
+    checkDeviceType() {
+      this.mobileDeviceDetected = isMobileDevice();
     },
     // 复用验证码获取方法
     fetchCaptcha() {
@@ -307,15 +315,36 @@ export default {
   min-width: 100px;
   height: 40px;
   line-height: 40px;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 14px;
-  background: rgb(87, 120, 255);
+  background: linear-gradient(135deg, #4A90A4 0%, #83C5BE 100%);
   border: none;
   padding: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(74, 144, 164, 0.3);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3A7A8A 0%, #6BB6AA 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 144, 164, 0.4);
+  }
 
   &:disabled {
     background: #c0c4cc;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* 移动端发送验证码按钮优化 */
+@media screen and (max-width: 768px) {
+  .send-captcha-btn {
+    min-width: 90px;
+    height: 38px;
+    line-height: 38px;
+    font-size: 12px;
+    border-radius: 6px;
   }
 }
 </style>

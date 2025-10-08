@@ -59,8 +59,11 @@
                     @change="handleOtaSwitchChange(scope.row)"></el-switch>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('device.operation')" align="center">
+              <el-table-column :label="$t('device.operation')" align="center" width="200">
                 <template slot-scope="scope">
+                  <el-button size="mini" type="text" @click="handleHealthReport(scope.row)">
+                    {{ $t('device.healthReport') }}
+                  </el-button>
                   <el-button size="mini" type="text" @click="handleUnbind(scope.row.device_id)">
                     {{ $t('device.unbind') }}
                   </el-button>
@@ -118,6 +121,7 @@
     <ManualAddDeviceDialog :visible.sync="manualAddDeviceDialogVisible" :agent-id="currentAgentId"
       @refresh="fetchBindDevices(currentAgentId)" />
     <McpToolCallDialog :visible.sync="mcpToolCallDialogVisible" :device-id="selectedDeviceId" />
+    <HealthReportDialog :visible.sync="healthReportDialogVisible" :device-info="selectedDeviceInfo" />
 
   </div>
 </template>
@@ -128,20 +132,24 @@ import AddDeviceDialog from "@/components/AddDeviceDialog.vue";
 import HeaderBar from "@/components/HeaderBar.vue";
 import ManualAddDeviceDialog from "@/components/ManualAddDeviceDialog.vue";
 import McpToolCallDialog from "@/components/McpToolCallDialog.vue";
+import HealthReportDialog from "@/components/HealthReportDialog.vue";
 
 export default {
   components: {
     HeaderBar,
     AddDeviceDialog,
     ManualAddDeviceDialog,
-    McpToolCallDialog
+    McpToolCallDialog,
+    HealthReportDialog
   },
   data() {
     return {
       addDeviceDialogVisible: false,
       manualAddDeviceDialogVisible: false,
       mcpToolCallDialogVisible: false,
+      healthReportDialogVisible: false,
       selectedDeviceId: '',
+      selectedDeviceInfo: {},
       searchKeyword: "",
       activeSearchKeyword: "",
       currentAgentId: this.$route.query.agentId || '',
@@ -285,6 +293,17 @@ export default {
       this.selectedDeviceId = deviceId;
       this.mcpToolCallDialogVisible = true;
     },
+
+    handleHealthReport(device) {
+      this.selectedDeviceInfo = {
+        deviceId: device.device_id,
+        deviceName: device.remark || device.model || '未命名设备',
+        macAddress: device.macAddress,
+        model: device.model,
+        firmwareVersion: device.firmwareVersion
+      };
+      this.healthReportDialogVisible = true;
+    },
     submitRemark(row) {
       if (row._submitting) return;
 
@@ -383,7 +402,7 @@ export default {
             .sort((a, b) => a.rawBindTime - b.rawBindTime);
           this.activeSearchKeyword = "";
           this.searchKeyword = "";
-          
+
           // 获取设备列表后，立即获取设备状态
           this.fetchDeviceStatus(agentId);
         } else {
@@ -391,7 +410,7 @@ export default {
         }
       });
     },
-    
+
     // 获取设备状态
     fetchDeviceStatus(agentId) {
       Api.device.getDeviceStatus(agentId, ({ data }) => {
@@ -399,7 +418,7 @@ export default {
           try {
             // 解析后端返回的设备状态JSON
             const statusData = JSON.parse(data.data);
-            
+
             // 直接使用解析后的数据作为设备状态映射（不需要devices字段包装）
             if (statusData && typeof statusData === 'object') {
               // 更新设备状态
@@ -411,7 +430,7 @@ export default {
         }
       });
     },
-    
+
     // 根据API响应更新设备状态
     updateDeviceStatusFromResponse(deviceStatusMap) {
       this.deviceList.forEach(device => {
@@ -419,11 +438,11 @@ export default {
         const macAddress = device.macAddress ? device.macAddress.replace(/:/g, '_') : 'unknown';
         const groupId = device.model ? device.model.replace(/:/g, '_') : 'GID_default';
         const mqttClientId = `${groupId}@@@${macAddress}@@@${macAddress}`;
-        
+
         // 从状态映射中获取设备状态
         if (deviceStatusMap[mqttClientId]) {
           const statusInfo = deviceStatusMap[mqttClientId];
-          
+
           let isOnline = false;
           if (statusInfo.isAlive === true) {
             isOnline = true;
@@ -434,7 +453,7 @@ export default {
           } else {
             isOnline = false;
           }
-          
+
           device.deviceStatus = isOnline ? 'online' : 'offline';
         } else {
           // 如果没有找到对应的状态信息，默认为离线
