@@ -1049,12 +1049,20 @@ export default {
     'info': '提示',
     'common.networkError': '網路請求失敗',
 
-  // WiFi聯網教程
-  'wifiGuide.title': 'WiFi聯網教程',
-  'wifiGuide.step': '步驟',
-  'wifiGuide.step1': '步驟1：打開手機，查找Xiaoxin開頭的WIFI並連接',
-  'wifiGuide.step2': '步驟2：①在彈出的聯網界面中，選擇自己的WIFI。②輸入WIFI密碼 ③點擊開始連接，進入配網狀態',
-  'wifiGuide.step3': '步驟3：配網中',
-  'wifiGuide.step4': '步驟4：配網成功提示',
-  'wifiGuide.step5': '步驟5：配網成功，設備重啟中'
+    // WiFi聯網教程
+    'wifiGuide.title': 'WiFi聯網教程',
+    'wifiGuide.step': '步驟',
+    'wifiGuide.previous': '上一步',
+    'wifiGuide.next': '下一步',
+    'wifiGuide.stepTitle1': '連接設備熱點',
+    'wifiGuide.stepTitle2': '選擇網路配置',
+    'wifiGuide.stepTitle3': '配網進行中',
+    'wifiGuide.stepTitle4': '配網成功',
+    'wifiGuide.stepTitle5': '設備重啟',
+    'wifiGuide.step1': '打開手機WiFi設定，查找並連接以"Xiaoxin"開頭的設備熱點。連接成功後，手機會自動彈出配網頁面。',
+    'wifiGuide.step2': '在配網頁面中：①選擇您要連接的WiFi網路 ②輸入WiFi密碼 ③點擊"開始連接"按鈕，設備將進入配網狀態。',
+    'wifiGuide.step3': '設備正在連接您指定的WiFi網路，請耐心等待。配網過程通常需要10-30秒時間。',
+    'wifiGuide.step4': '配網成功！設備已成功連接到您的WiFi網路，現在可以正常使用網路功能了。',
+    'wifiGuide.step5': '配網完成後，設備將自動重啟以應用新的網路配置。重啟完成後即可開始使用。',
+  'wifiGuide.clickToZoom': '點擊放大查看'
 }

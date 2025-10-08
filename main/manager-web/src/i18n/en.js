@@ -1049,12 +1049,20 @@ export default {
     'info': 'Info',
     'common.networkError': 'Network request failed',
 
-  // WiFi Guide
-  'wifiGuide.title': 'WiFi Setup Guide',
-  'wifiGuide.step': 'Step',
-  'wifiGuide.step1': 'Step 1: Open your phone and find WiFi starting with "Xiaoxin" to connect',
-  'wifiGuide.step2': 'Step 2: ① Select your WiFi in the pop-up network interface. ② Enter WiFi password ③ Click "Start Connect" to enter configuration mode',
-  'wifiGuide.step3': 'Step 3: Configuring network',
-  'wifiGuide.step4': 'Step 4: Configuration successful',
-  'wifiGuide.step5': 'Step 5: Configuration completed, device is restarting'
+    // WiFi Guide
+    'wifiGuide.title': 'WiFi Setup Guide',
+    'wifiGuide.step': 'Step',
+    'wifiGuide.previous': 'Previous',
+    'wifiGuide.next': 'Next',
+    'wifiGuide.stepTitle1': 'Connect to Device',
+    'wifiGuide.stepTitle2': 'Network Configuration',
+    'wifiGuide.stepTitle3': 'Connecting',
+    'wifiGuide.stepTitle4': 'Success',
+    'wifiGuide.stepTitle5': 'Device Restart',
+    'wifiGuide.step1': 'Open your phone\'s WiFi settings and find the device hotspot starting with "Xiaoxin". After connecting, a configuration page will automatically appear.',
+    'wifiGuide.step2': 'On the configuration page: ① Select your WiFi network ② Enter WiFi password ③ Click "Start Connect" button to begin network configuration.',
+    'wifiGuide.step3': 'The device is connecting to your specified WiFi network. Please wait patiently. The configuration process usually takes 10-30 seconds.',
+    'wifiGuide.step4': 'Configuration successful! The device has successfully connected to your WiFi network and can now use network functions normally.',
+    'wifiGuide.step5': 'After configuration is complete, the device will automatically restart to apply the new network settings. You can start using it after restart.',
+  'wifiGuide.clickToZoom': 'Click to zoom'
 }
