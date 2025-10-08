@@ -59,13 +59,67 @@
             </h3>
           </div>
           <div class="tech-content">
-            <p class="tech-text">
-              本报告基于先进的多模态AI分析技术生成，通过对您在周期性智能对话过程中的
-              <strong>文本意图识别</strong>、<strong>语音情绪分析</strong>、<strong>视觉微表情检测</strong>
-              等多维度数据进行深度学习和大模型智能分析，综合评估您的心理健康状态。
-              我们采用业界领先的自然语言处理、语音信号处理和计算机视觉技术，
-              确保评估结果的科学性和准确性。
-            </p>
+            <div class="tech-overview">
+              <h4 class="tech-subtitle">核心技术架构</h4>
+              <p class="tech-text">
+                本报告采用先进的<strong>多模态AI融合分析技术</strong>，通过对您在周期性智能交互过程中产生的
+                多维度生理与心理数据进行深度挖掘和智能分析，构建个性化心理健康评估模型。
+              </p>
+            </div>
+            
+            <div class="tech-details">
+              <div class="tech-item">
+                <div class="tech-icon">🧠</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">大模型智能引擎</h5>
+                  <p class="tech-desc">
+                    基于<strong>通义千问72B</strong>大语言模型，采用公开心理学文献、临床诊断标准、
+                    心理测评量表等专业数据集进行二次训练和领域微调，确保心理健康评估的
+                    <strong>专业性</strong>和<strong>准确性</strong>。
+                  </p>
+                </div>
+              </div>
+              
+              <div class="tech-item">
+                <div class="tech-icon">💬</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">文本语义分析</h5>
+                  <p class="tech-desc">
+                    运用先进的<strong>自然语言处理技术</strong>，深度解析对话文本中的情感倾向、
+                    认知模式、行为意图等心理特征，识别潜在的心理健康风险因子。
+                  </p>
+                </div>
+              </div>
+              
+              <div class="tech-item">
+                <div class="tech-icon">🎵</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">语音情感识别</h5>
+                  <p class="tech-desc">
+                    通过<strong>语音信号处理算法</strong>分析语调变化、语速节奏、停顿模式等
+                    声学特征，精准识别情绪状态和心理压力水平。
+                  </p>
+                </div>
+              </div>
+              
+              <div class="tech-item">
+                <div class="tech-icon">👁️</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">视觉微表情检测</h5>
+                  <p class="tech-desc">
+                    采用<strong>计算机视觉技术</strong>捕捉面部微表情变化，分析眼神、表情、
+                    肢体语言等非言语信息，全面评估心理状态。
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="tech-guarantee">
+              <p class="guarantee-text">
+                <strong>技术保障：</strong>所有分析算法均经过严格的临床验证和专业评审，
+                数据处理全程符合国际隐私保护标准，确保评估结果的科学可靠性。
+              </p>
+            </div>
           </div>
         </div>
 
@@ -940,28 +994,127 @@ export default {
   }
 
   .tech-content {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 
-    .tech-text {
-      font-size: 15px;
-      line-height: 1.8;
-      color: #495057;
-      text-align: justify;
-      margin: 0;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
-      border-left: 4px solid #6c757d;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    .tech-overview {
+      margin-bottom: 30px;
 
-      strong {
-        color: #343a40;
+      .tech-subtitle {
+        font-size: 18px;
         font-weight: 600;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #343a40;
+        margin: 0 0 16px 0;
+        text-align: center;
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60px;
+          height: 3px;
+          background: linear-gradient(90deg, #667eea, #764ba2);
+          border-radius: 2px;
+        }
+      }
+
+      .tech-text {
+        font-size: 15px;
+        line-height: 1.8;
+        color: #495057;
+        text-align: justify;
+        margin: 0;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+        strong {
+          color: #343a40;
+          font-weight: 600;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+    }
+
+    .tech-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+
+      .tech-item {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+          border-color: #667eea;
+        }
+
+        .tech-icon {
+          font-size: 32px;
+          margin-bottom: 16px;
+          text-align: center;
+        }
+
+        .tech-info {
+          .tech-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #343a40;
+            margin: 0 0 12px 0;
+            text-align: center;
+          }
+
+          .tech-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #6c757d;
+            margin: 0;
+            text-align: justify;
+
+            strong {
+              color: #495057;
+              font-weight: 600;
+              background: linear-gradient(135deg, #667eea, #764ba2);
+              background-clip: text;
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+            }
+          }
+        }
+      }
+    }
+
+    .tech-guarantee {
+      .guarantee-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #495057;
+        text-align: center;
+        margin: 0;
+        padding: 16px 24px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+
+        strong {
+          color: #343a40;
+          font-weight: 600;
+        }
       }
     }
   }
@@ -1751,11 +1904,49 @@ export default {
     padding: 20px;
 
     .tech-content {
-      .tech-text {
-        font-size: 14px;
-        line-height: 1.6;
-        padding: 16px;
-        text-align: left;
+      .tech-overview {
+        .tech-subtitle {
+          font-size: 16px;
+        }
+
+        .tech-text {
+          font-size: 14px;
+          line-height: 1.6;
+          padding: 16px;
+          text-align: left;
+        }
+      }
+
+      .tech-details {
+        grid-template-columns: 1fr;
+        gap: 16px;
+
+        .tech-item {
+          padding: 20px;
+
+          .tech-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+          }
+
+          .tech-info {
+            .tech-name {
+              font-size: 15px;
+            }
+
+            .tech-desc {
+              font-size: 13px;
+              line-height: 1.5;
+            }
+          }
+        }
+      }
+
+      .tech-guarantee {
+        .guarantee-text {
+          font-size: 13px;
+          padding: 14px 16px;
+        }
       }
     }
   }
