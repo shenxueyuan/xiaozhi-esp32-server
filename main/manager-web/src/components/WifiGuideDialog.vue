@@ -32,13 +32,6 @@
 </template>
 
 <script>
-// 静态导入图片
-import img1 from '@/assets/conwifi/con_wifi_1.PNG';
-import img2 from '@/assets/conwifi/con_wifi_2.PNG';
-import img3 from '@/assets/conwifi/con_wifi_3.PNG';
-import img4 from '@/assets/conwifi/con_wifi_4.PNG';
-import img5 from '@/assets/conwifi/con_wifi_5.PNG';
-
 export default {
   name: 'WifiGuideDialog',
   props: {
@@ -52,13 +45,13 @@ export default {
       dialogVisible: false,
       currentStep: 1,
       isMobile: false,
-      // 图片数据
+      // 图片数据 - 使用public路径
       imageData: [
-        { src: img1, step: 'step1' },
-        { src: img2, step: 'step2' },
-        { src: img3, step: 'step3' },
-        { src: img4, step: 'step4' },
-        { src: img5, step: 'step5' }
+        { src: '/images/conwifi/con_wifi_1.PNG', step: 'step1' },
+        { src: '/images/conwifi/con_wifi_2.PNG', step: 'step2' },
+        { src: '/images/conwifi/con_wifi_3.PNG', step: 'step3' },
+        { src: '/images/conwifi/con_wifi_4.PNG', step: 'step4' },
+        { src: '/images/conwifi/con_wifi_5.PNG', step: 'step5' }
       ]
     };
   },
