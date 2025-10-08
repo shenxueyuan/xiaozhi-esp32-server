@@ -1,6 +1,6 @@
 <template>
     <el-dialog :title="$t('chatHistory.with') + agentName + $t('chatHistory.dialogTitle') + (currentMacAddress ? '[' + currentMacAddress + ']' : '')"
-        :visible.sync="dialogVisible" width="80%" :before-close="handleClose" custom-class="chat-history-dialog">
+        :visible.sync="dialogVisible" :width="isMobile ? '100%' : '80%'" :before-close="handleClose" custom-class="chat-history-dialog">
         <div class="chat-container">
             <div class="session-list" @scroll="handleScroll">
                 <div v-for="session in sessions" :key="session.sessionId" class="session-item"
@@ -72,7 +72,8 @@ export default {
             scrollTimer: null,
             isFirstLoad: true,
             playingAudioId: null,
-            audioElement: null
+            audioElement: null,
+            isMobile: false
         };
     },
     watch: {
@@ -128,7 +129,17 @@ export default {
             return result;
         }
     },
+    mounted() {
+        this.checkScreenSize();
+        window.addEventListener('resize', this.checkScreenSize);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkScreenSize);
+    },
     methods: {
+        checkScreenSize() {
+            this.isMobile = window.innerWidth <= 768;
+        },
         /**
          * 从 content 字段中提取聊天内容
          * 如果 content 是 JSON 格式（如 {"speaker": "未知说话人", "content": "现在几点了。"}），则提取 content 字段
