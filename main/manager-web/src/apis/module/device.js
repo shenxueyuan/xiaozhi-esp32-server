@@ -131,7 +131,7 @@ export default {
             
             RequestService.sendRequest()
                 .url(`${getServiceUrl()}/xiaozhi/risk/assessment/report/generate?${queryParams}`)
-                .method('POST')
+                .method('GET')
                 .success((res) => {
                     RequestService.clearRequestTime();
                     if (callback) callback(res);
