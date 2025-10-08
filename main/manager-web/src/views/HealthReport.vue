@@ -1,14 +1,14 @@
 <template>
   <div class="welcome">
     <HeaderBar />
-    
+
     <div class="health-report-page" v-loading="loading" element-loading-text="正在生成报告...">
       <!-- 页面头部 -->
       <div class="page-header">
         <div class="header-left">
-          <el-button 
-            type="text" 
-            icon="el-icon-arrow-left" 
+          <el-button
+            type="text"
+            icon="el-icon-arrow-left"
             @click="goBack"
             class="back-btn"
           >
@@ -81,8 +81,8 @@
               <div ref="radarChart" class="radar-chart"></div>
             </div>
             <div class="dimensions-list">
-              <div 
-                v-for="(dimension, key) in reportData.dimensions" 
+              <div
+                v-for="(dimension, key) in reportData.dimensions"
                 :key="key"
                 class="dimension-item"
               >
@@ -91,8 +91,8 @@
                   <span class="dimension-score">{{ dimension }}/100</span>
                 </div>
                 <div class="dimension-progress">
-                  <div 
-                    class="progress-bar" 
+                  <div
+                    class="progress-bar"
                     :style="{ width: dimension + '%', backgroundColor: getDimensionColor(dimension) }"
                   ></div>
                 </div>
@@ -114,8 +114,8 @@
         <div class="recommendations-section" v-if="reportData.recommendations">
           <h3 class="section-title">个性化建议</h3>
           <div class="recommendations-grid">
-            <div 
-              v-for="(recommendation, index) in reportData.recommendations" 
+            <div
+              v-for="(recommendation, index) in reportData.recommendations"
               :key="index"
               class="recommendation-card"
             >
@@ -126,10 +126,10 @@
                 <h4 class="recommendation-title">{{ recommendation.title }}</h4>
                 <p class="recommendation-desc">{{ recommendation.description }}</p>
                 <div class="recommendation-tags">
-                  <el-tag 
-                    v-for="tag in recommendation.tags" 
-                    :key="tag" 
-                    size="mini" 
+                  <el-tag
+                    v-for="tag in recommendation.tags"
+                    :key="tag"
+                    size="mini"
                     type="info"
                   >
                     {{ tag }}
@@ -207,7 +207,7 @@ export default {
           this.reportData.generatedAt = response.data.data.generatedAt;
           this.reportData.recommendations = response.data.data.recommendations;
           this.reportData.trendAnalysis = response.data.data.trendAnalysis;
-          
+
           this.$nextTick(() => {
             this.initCharts();
           });
@@ -272,7 +272,7 @@ export default {
           { date: '2024-10-06', score: 85 }
         ]
       };
-      
+
       this.$nextTick(() => {
         this.initCharts();
       });
@@ -285,9 +285,9 @@ export default {
 
     initRadarChart() {
       if (!this.$refs.radarChart) return;
-      
+
       this.radarChart = echarts.init(this.$refs.radarChart);
-      
+
       const option = {
         radar: {
           indicator: [
@@ -338,18 +338,18 @@ export default {
           }]
         }]
       };
-      
+
       this.radarChart.setOption(option);
     },
 
     initTrendChart() {
       if (!this.$refs.trendChart || !this.reportData.trendAnalysis) return;
-      
+
       this.trendChart = echarts.init(this.$refs.trendChart);
-      
+
       const dates = this.reportData.trendAnalysis.map(item => item.date);
       const scores = this.reportData.trendAnalysis.map(item => item.score);
-      
+
       const option = {
         grid: {
           left: '3%',
@@ -395,7 +395,7 @@ export default {
           }
         }]
       };
-      
+
       this.trendChart.setOption(option);
     },
 
@@ -531,7 +531,7 @@ export default {
     .back-btn {
       font-size: 14px;
       color: #409EFF;
-      
+
       &:hover {
         color: #66B1FF;
       }
@@ -643,15 +643,15 @@ export default {
       font-size: 24px;
       background: linear-gradient(135deg, #4A90E2, #7ED321);
       color: white;
-      
+
       &.icon-low {
         background: linear-gradient(135deg, #67C23A, #85CE61);
       }
-      
+
       &.icon-medium {
         background: linear-gradient(135deg, #E6A23C, #EEBE77);
       }
-      
+
       &.icon-high {
         background: linear-gradient(135deg, #F56C6C, #F78989);
       }
@@ -681,15 +681,15 @@ export default {
       .risk-value {
         font-size: 18px;
         font-weight: 600;
-        
+
         &.risk-low {
           color: #67C23A;
         }
-        
+
         &.risk-medium {
           color: #E6A23C;
         }
-        
+
         &.risk-high {
           color: #F56C6C;
         }

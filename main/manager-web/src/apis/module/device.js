@@ -124,7 +124,7 @@ export default {
     generateHealthReport(params, callback) {
         return new Promise((resolve, reject) => {
             RequestService.sendRequest()
-                .url(`${getServiceUrl()}/mobile/风险评估管理/generateReport`)
+                .url(`${getServiceUrl()}/xiaozhi/risk/assessment/report/generate`)
                 .method('POST')
                 .data(params)
                 .success((res) => {
