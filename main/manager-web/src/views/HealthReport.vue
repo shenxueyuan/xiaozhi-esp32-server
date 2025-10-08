@@ -50,79 +50,6 @@
           </div>
         </div>
 
-        <!-- 技术说明 -->
-        <div class="technical-description">
-          <div class="tech-header">
-            <h3 class="tech-title">
-              <i class="el-icon-cpu"></i>
-              评估技术说明
-            </h3>
-          </div>
-          <div class="tech-content">
-            <div class="tech-overview">
-              <h4 class="tech-subtitle">核心技术架构</h4>
-              <p class="tech-text">
-                本报告采用先进的<strong>多模态AI融合分析技术</strong>，通过对您在周期性智能交互过程中产生的
-                多维度生理与心理数据进行深度挖掘和智能分析，构建个性化心理健康评估模型。
-              </p>
-            </div>
-            
-            <div class="tech-details">
-              <div class="tech-item">
-                <div class="tech-icon">🧠</div>
-                <div class="tech-info">
-                  <h5 class="tech-name">大模型智能引擎</h5>
-                  <p class="tech-desc">
-                    基于<strong>通义千问72B</strong>大语言模型，采用公开心理学文献、临床诊断标准、
-                    心理测评量表等专业数据集进行二次训练和领域微调，确保心理健康评估的
-                    <strong>专业性</strong>和<strong>准确性</strong>。
-                  </p>
-                </div>
-              </div>
-              
-              <div class="tech-item">
-                <div class="tech-icon">💬</div>
-                <div class="tech-info">
-                  <h5 class="tech-name">文本语义分析</h5>
-                  <p class="tech-desc">
-                    运用先进的<strong>自然语言处理技术</strong>，深度解析对话文本中的情感倾向、
-                    认知模式、行为意图等心理特征，识别潜在的心理健康风险因子。
-                  </p>
-                </div>
-              </div>
-              
-              <div class="tech-item">
-                <div class="tech-icon">🎵</div>
-                <div class="tech-info">
-                  <h5 class="tech-name">语音情感识别</h5>
-                  <p class="tech-desc">
-                    通过<strong>语音信号处理算法</strong>分析语调变化、语速节奏、停顿模式等
-                    声学特征，精准识别情绪状态和心理压力水平。
-                  </p>
-                </div>
-              </div>
-              
-              <div class="tech-item">
-                <div class="tech-icon">👁️</div>
-                <div class="tech-info">
-                  <h5 class="tech-name">视觉微表情检测</h5>
-                  <p class="tech-desc">
-                    采用<strong>计算机视觉技术</strong>捕捉面部微表情变化，分析眼神、表情、
-                    肢体语言等非言语信息，全面评估心理状态。
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div class="tech-guarantee">
-              <p class="guarantee-text">
-                <strong>技术保障：</strong>所有分析算法均经过严格的临床验证和专业评审，
-                数据处理全程符合国际隐私保护标准，确保评估结果的科学可靠性。
-              </p>
-            </div>
-          </div>
-        </div>
-
         <!-- 评估结果概览 - 突出显示 -->
         <div class="assessment-overview">
           <div class="overview-header">
@@ -301,6 +228,79 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 技术说明 -->
+        <div class="technical-description">
+          <div class="tech-header">
+            <h3 class="tech-title">
+              <i class="el-icon-cpu"></i>
+              评估技术说明
+            </h3>
+          </div>
+          <div class="tech-content">
+            <div class="tech-overview">
+              <h4 class="tech-subtitle">核心技术架构</h4>
+              <p class="tech-text">
+                本报告采用先进的<strong>多模态AI融合分析技术</strong>，通过对您在周期性智能交互过程中产生的
+                多维度生理与心理数据进行深度挖掘和智能分析，构建个性化心理健康评估模型。
+              </p>
+            </div>
+            
+            <div class="tech-details">
+              <div class="tech-item">
+                <div class="tech-icon">🧠</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">大模型智能引擎</h5>
+                  <p class="tech-desc">
+                    基于<strong>通义千问72B</strong>大语言模型，采用公开心理学文献、临床诊断标准、
+                    心理测评量表等专业数据集进行二次训练和领域微调，确保心理健康评估的
+                    <strong>专业性</strong>和<strong>准确性</strong>。
+                  </p>
+                </div>
+              </div>
+              
+              <div class="tech-item">
+                <div class="tech-icon">💬</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">文本语义分析</h5>
+                  <p class="tech-desc">
+                    运用先进的<strong>自然语言处理技术</strong>，深度解析对话文本中的情感倾向、
+                    认知模式、行为意图等心理特征，识别潜在的心理健康风险因子。
+                  </p>
+                </div>
+              </div>
+              
+              <div class="tech-item">
+                <div class="tech-icon">🎵</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">语音情感识别</h5>
+                  <p class="tech-desc">
+                    通过<strong>语音信号处理算法</strong>分析语调变化、语速节奏、停顿模式等
+                    声学特征，精准识别情绪状态和心理压力水平。
+                  </p>
+                </div>
+              </div>
+              
+              <div class="tech-item">
+                <div class="tech-icon">👁️</div>
+                <div class="tech-info">
+                  <h5 class="tech-name">视觉微表情检测</h5>
+                  <p class="tech-desc">
+                    采用<strong>计算机视觉技术</strong>捕捉面部微表情变化，分析眼神、表情、
+                    肢体语言等非言语信息，全面评估心理状态。
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="tech-guarantee">
+              <p class="guarantee-text">
+                <strong>技术保障：</strong>所有分析算法均经过严格的临床验证和专业评审，
+                数据处理全程符合国际隐私保护标准，确保评估结果的科学可靠性。
+              </p>
             </div>
           </div>
         </div>
