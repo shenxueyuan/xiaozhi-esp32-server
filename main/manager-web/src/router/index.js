@@ -111,6 +111,17 @@ const routes = [
     }
   },
   {
+    path: '/health-report',
+    name: 'HealthReport',
+    component: function () {
+      return import('../views/HealthReport.vue')
+    },
+    meta: {
+      requiresAuth: true,
+      title: '心理健康报告'
+    }
+  },
+  {
     path: '/dict-management',
     name: 'DictManagement',
     component: function () {

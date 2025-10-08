@@ -1065,10 +1065,10 @@ export default {
     'wifiGuide.stepTitle5': 'Device Restart',
     'wifiGuide.step1': 'Open your phone\'s WiFi settings and find the device hotspot starting with "Xiaoxin". After connecting, a configuration page will automatically appear.',
     'wifiGuide.step2': 'On the configuration page: ① Select your WiFi network ② Enter WiFi password ③ Click "Start Connect" button to begin network configuration.',
-  'wifiGuide.step3': 'The device is connecting to your specified WiFi network. Please wait patiently. The configuration process usually takes 10-30 seconds.',
-  'wifiGuide.step4': 'Configuration successful! The device has successfully connected to your WiFi network and can now use network functions normally.',
-  'wifiGuide.step5': 'After configuration is complete, the device will automatically restart to apply the new network settings. You can start using it after restart.',
+    'wifiGuide.step3': 'The device is connecting to your specified WiFi network. Please wait patiently. The configuration process usually takes 10-30 seconds.',
+    'wifiGuide.step4': 'Configuration successful! The device has successfully connected to your WiFi network and can now use network functions normally.',
+    'wifiGuide.step5': 'After configuration is complete, the device will automatically restart to apply the new network settings. You can start using it after restart.',
 
-  // Device Management - Health Report
-  'device.healthReport': 'Health Report'
+    // Device Management - Health Report
+    'device.healthReport': 'Health Report'
 }

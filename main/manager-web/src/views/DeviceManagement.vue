@@ -121,7 +121,6 @@
     <ManualAddDeviceDialog :visible.sync="manualAddDeviceDialogVisible" :agent-id="currentAgentId"
       @refresh="fetchBindDevices(currentAgentId)" />
     <McpToolCallDialog :visible.sync="mcpToolCallDialogVisible" :device-id="selectedDeviceId" />
-    <HealthReportDialog :visible.sync="healthReportDialogVisible" :device-info="selectedDeviceInfo" />
 
   </div>
 </template>
@@ -132,24 +131,20 @@ import AddDeviceDialog from "@/components/AddDeviceDialog.vue";
 import HeaderBar from "@/components/HeaderBar.vue";
 import ManualAddDeviceDialog from "@/components/ManualAddDeviceDialog.vue";
 import McpToolCallDialog from "@/components/McpToolCallDialog.vue";
-import HealthReportDialog from "@/components/HealthReportDialog.vue";
 
 export default {
   components: {
     HeaderBar,
     AddDeviceDialog,
     ManualAddDeviceDialog,
-    McpToolCallDialog,
-    HealthReportDialog
+    McpToolCallDialog
   },
   data() {
     return {
       addDeviceDialogVisible: false,
       manualAddDeviceDialogVisible: false,
       mcpToolCallDialogVisible: false,
-      healthReportDialogVisible: false,
       selectedDeviceId: '',
-      selectedDeviceInfo: {},
       searchKeyword: "",
       activeSearchKeyword: "",
       currentAgentId: this.$route.query.agentId || '',
@@ -295,14 +290,17 @@ export default {
     },
 
     handleHealthReport(device) {
-      this.selectedDeviceInfo = {
-        deviceId: device.device_id,
-        deviceName: device.remark || device.model || '未命名设备',
-        macAddress: device.macAddress,
-        model: device.model,
-        firmwareVersion: device.firmwareVersion
-      };
-      this.healthReportDialogVisible = true;
+      // 跳转到心理健康报告页面，通过query参数传递设备信息
+      this.$router.push({
+        name: 'HealthReport',
+        query: {
+          deviceId: device.device_id,
+          deviceName: device.remark || device.model || '未命名设备',
+          macAddress: device.macAddress,
+          model: device.model,
+          firmwareVersion: device.firmwareVersion
+        }
+      });
     },
     submitRemark(row) {
       if (row._submitting) return;
