@@ -24,31 +24,15 @@
       <!-- 当前步骤内容 -->
       <div class="step-content">
         <div class="step-image-container">
-          <img 
-            :src="currentStepData.src" 
-            :alt="currentStepData.alt" 
+          <img
+            :src="currentStepData.src"
+            :alt="currentStepData.alt"
             class="step-image"
-            @click="showImagePreview"
           />
-          <div class="image-zoom-hint">
-            <i class="el-icon-zoom-in"></i>
-            {{ $t('wifiGuide.clickToZoom') }}
-          </div>
         </div>
         <div class="step-description">
           <h3 class="step-heading">{{ currentStepData.title }}</h3>
           <p class="step-text">{{ currentStepData.description }}</p>
-          
-          <!-- 进度条 -->
-          <div class="progress-container">
-            <div class="progress-bar">
-              <div 
-                class="progress-fill" 
-                :style="{ width: progressPercentage + '%' }"
-              ></div>
-            </div>
-            <span class="progress-text">{{ currentStep }} / {{ steps.length }}</span>
-          </div>
         </div>
       </div>
 
@@ -127,9 +111,6 @@ export default {
     },
     currentStepData() {
       return this.steps[this.currentStep - 1] || this.steps[0];
-    },
-    progressPercentage() {
-      return (this.currentStep / this.steps.length) * 100;
     }
   },
   watch: {
@@ -148,11 +129,9 @@ export default {
   mounted() {
     this.checkScreenSize();
     window.addEventListener('resize', this.checkScreenSize);
-    window.addEventListener('keydown', this.handleKeydown);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.checkScreenSize);
-    window.removeEventListener('keydown', this.handleKeydown);
   },
   methods: {
     checkScreenSize() {
@@ -173,40 +152,6 @@ export default {
       if (this.currentStep > 1) {
         this.currentStep--;
       }
-    },
-    handleKeydown(event) {
-      if (!this.dialogVisible) return;
-      
-      switch (event.key) {
-        case 'ArrowLeft':
-          event.preventDefault();
-          this.prevStep();
-          break;
-        case 'ArrowRight':
-          event.preventDefault();
-          this.nextStep();
-          break;
-        case 'Escape':
-          event.preventDefault();
-          this.handleClose();
-          break;
-      }
-    },
-    showImagePreview() {
-      // 创建图片预览对话框
-      const img = new Image();
-      img.src = this.currentStepData.src;
-      img.style.maxWidth = '90vw';
-      img.style.maxHeight = '90vh';
-      img.style.objectFit = 'contain';
-      
-      this.$msgbox({
-        title: this.currentStepData.title,
-        message: img,
-        showCancelButton: false,
-        showConfirmButton: false,
-        customClass: 'image-preview-dialog'
-      });
     }
   }
 };
@@ -290,7 +235,6 @@ export default {
   border-radius: 12px;
   padding: 20px;
   min-height: 400px;
-  position: relative;
 }
 
 .step-image {
@@ -299,29 +243,6 @@ export default {
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  
-  &:hover {
-    transform: scale(1.02);
-  }
-}
-
-.image-zoom-hint {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  
-  .step-image-container:hover & {
-    opacity: 1;
-  }
 }
 
 .step-description {
@@ -344,37 +265,7 @@ export default {
   font-size: 16px;
   line-height: 1.6;
   color: #666;
-  margin: 0 0 20px 0;
-}
-
-/* 进度条样式 */
-.progress-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 6px;
-  background: #f0f0f0;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #409eff, #67c23a);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  font-size: 12px;
-  color: #999;
-  font-weight: 500;
-  min-width: 40px;
+  margin: 0;
 }
 
 /* 操作按钮 */

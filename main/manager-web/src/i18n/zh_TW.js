@@ -1063,6 +1063,5 @@ export default {
     'wifiGuide.step2': '在配網頁面中：①選擇您要連接的WiFi網路 ②輸入WiFi密碼 ③點擊"開始連接"按鈕，設備將進入配網狀態。',
     'wifiGuide.step3': '設備正在連接您指定的WiFi網路，請耐心等待。配網過程通常需要10-30秒時間。',
     'wifiGuide.step4': '配網成功！設備已成功連接到您的WiFi網路，現在可以正常使用網路功能了。',
-    'wifiGuide.step5': '配網完成後，設備將自動重啟以應用新的網路配置。重啟完成後即可開始使用。',
-  'wifiGuide.clickToZoom': '點擊放大查看'
+    'wifiGuide.step5': '配網完成後，設備將自動重啟以應用新的網路配置。重啟完成後即可開始使用。'
 }

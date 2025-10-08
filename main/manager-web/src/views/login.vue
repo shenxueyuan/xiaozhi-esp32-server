@@ -232,7 +232,6 @@ export default {
       currentTheme: localStorage.getItem('backgroundTheme') || 'flow',
       wifiGuideVisible: false,
       languageDropdownVisible: false,
-      autoShowTimer: null,
     }
   },
   mounted() {
@@ -241,16 +240,6 @@ export default {
       // 根据配置决定默认登录方式
       this.isMobileLogin = this.enableMobileRegister;
     });
-    this.checkDeviceType();
-    
-    // 自动显示WiFi教程3秒后隐藏
-    this.autoShowWifiGuide();
-  },
-  beforeDestroy() {
-    // 清理定时器
-    if (this.autoShowTimer) {
-      clearTimeout(this.autoShowTimer);
-    }
   },
   methods: {
     checkDeviceType() {
@@ -287,24 +276,6 @@ export default {
     // 显示WiFi联网教程
     showWifiGuide() {
       this.wifiGuideVisible = true;
-      // 如果有自动隐藏定时器，清除它
-      if (this.autoShowTimer) {
-        clearTimeout(this.autoShowTimer);
-        this.autoShowTimer = null;
-      }
-    },
-    // 自动显示WiFi教程
-    autoShowWifiGuide() {
-      // 延迟500ms显示，让页面完全加载
-      setTimeout(() => {
-        this.wifiGuideVisible = true;
-        
-        // 3秒后自动隐藏
-        this.autoShowTimer = setTimeout(() => {
-          this.wifiGuideVisible = false;
-          this.autoShowTimer = null;
-        }, 3000);
-      }, 500);
     },
     fetchCaptcha() {
       if (this.$store.getters.getToken) {
