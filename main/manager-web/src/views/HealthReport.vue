@@ -16,9 +16,9 @@
           </el-button>
         </div>
         <div class="header-actions">
-          <el-button 
-            type="primary" 
-            icon="el-icon-download" 
+          <el-button
+            type="primary"
+            icon="el-icon-download"
             @click="exportPDF"
             :loading="isExporting">
             {{ isExporting ? '导出中...' : '导出PDF' }}
@@ -733,7 +733,7 @@ export default {
     formatDate(dateStr, format = 'YYYY-MM-DD') {
       if (!dateStr) return '';
       const date = new Date(dateStr);
-      
+
       if (format === 'YYYYMMDD') {
         // 用于文件名的格式
         const year = date.getFullYear();
@@ -741,7 +741,7 @@ export default {
         const day = date.getDate().toString().padStart(2, '0');
         return `${year}${month}${day}`;
       }
-      
+
       // 默认格式 YYYY-MM-DD
       return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
     },
@@ -755,9 +755,9 @@ export default {
 
     async exportPDF() {
       if (this.isExporting) return;
-      
+
       this.isExporting = true;
-      
+
       try {
         // 获取报告容器元素
         const element = this.$refs.reportContent;
@@ -788,10 +788,10 @@ export default {
 
         // 生成canvas
         const canvas = await html2canvas(element, canvasOptions);
-        
+
         // 计算PDF尺寸
         const imgWidth = 210; // A4纸宽度(mm)
-        const pageHeight = 297; // A4纸高度(mm) 
+        const pageHeight = 297; // A4纸高度(mm)
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         let heightLeft = imgHeight;
 
@@ -816,12 +816,12 @@ export default {
 
         // 生成文件名
         const fileName = `心理健康报告_${this.deviceInfo.deviceName || '未命名设备'}_${this.formatDate(new Date(), 'YYYYMMDD')}.pdf`;
-        
+
         // 保存PDF
         pdf.save(fileName);
-        
+
         this.$message.success('PDF导出成功！');
-        
+
       } catch (error) {
         console.error('PDF导出失败:', error);
         this.$message.error('PDF导出失败，请重试');
@@ -2159,17 +2159,17 @@ export default {
   .page-header {
     display: none !important;
   }
-  
+
   .report-container {
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
   }
-  
+
   .coming-soon::after {
     display: none !important;
   }
-  
+
   .coming-soon {
     opacity: 1 !important;
     filter: none !important;
@@ -2182,16 +2182,16 @@ export default {
     .page-header {
       display: none;
     }
-    
+
     .coming-soon::after {
       display: none;
     }
-    
+
     .coming-soon {
       opacity: 1;
       filter: none;
     }
-    
+
     // 确保图表在PDF中正确显示
     .radar-chart,
     .trend-chart {
