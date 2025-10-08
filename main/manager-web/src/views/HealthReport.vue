@@ -243,26 +243,26 @@ export default {
             startTime: apiData.startTime,
             endTime: apiData.endTime,
             generatedAt: apiData.createdAt,
-            
+
             // 风险评估结果
             firstClassify: apiData.firstClassify,
             secondClassify: apiData.secondClassify,
             riskLevel: this.mapRiskLevel(apiData.firstClassify), // 映射风险等级
             overallScore: this.calculateOverallScore(apiData.firstClassify), // 计算综合评分
-            
+
             // 风险原因和建议
             riskReasons: apiData.riskReason || [],
             recommendations: this.formatRecommendations(apiData.suggestion || []),
-            
+
             // 模拟多维度数据（实际项目中可能需要从其他接口获取）
             dimensions: {
               emotionalState: 88,
-              stressLevel: 72, 
+              stressLevel: 72,
               socialInteraction: 90,
               sleepQuality: 78,
               anxietyLevel: 82
             },
-            
+
             // 模拟趋势数据（实际项目中可能需要从其他接口获取）
             trendAnalysis: this.generateMockTrendData()
           };

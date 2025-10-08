@@ -128,9 +128,9 @@ export default {
                 day: params.day.toString(),
                 userId: params.userId
             }).toString();
-            
+
             RequestService.sendRequest()
-                .url(`${getServiceUrl()}/xiaozhi/risk/assessment/report/generate?${queryParams}`)
+                .url(`${getServiceUrl()}/risk/assessment/report/generate?${queryParams}`)
                 .method('GET')
                 .success((res) => {
                     RequestService.clearRequestTime();
