@@ -1,14 +1,14 @@
 <template>
   <div class="welcome">
     <HeaderBar />
-    
+
     <div class="health-report-page" v-loading="loading" element-loading-text="正在生成报告...">
       <!-- 页面头部 -->
       <div class="page-header">
         <div class="header-left">
-          <el-button 
-            type="text" 
-            icon="el-icon-arrow-left" 
+          <el-button
+            type="text"
+            icon="el-icon-arrow-left"
             @click="goBack"
             class="back-btn"
           >
@@ -58,7 +58,7 @@
               评估结果概览
             </h3>
           </div>
-          
+
           <div class="result-cards">
             <!-- 风险分类卡片 -->
             <div class="result-card primary-card">
@@ -158,7 +158,7 @@
               <span class="badge-text">专业评估</span>
             </div>
           </div>
-          
+
           <div class="analysis-content-wrapper">
             <div class="risk-factors">
               <h4 class="subsection-title">
@@ -166,9 +166,9 @@
                 风险因素识别
               </h4>
               <div class="factors-list">
-                <div 
-                  v-for="(reason, index) in reportData.riskReasons" 
-                  :key="index" 
+                <div
+                  v-for="(reason, index) in reportData.riskReasons"
+                  :key="index"
                   class="factor-item"
                 >
                   <div class="factor-number">{{ index + 1 }}</div>
@@ -192,7 +192,7 @@
               <span class="badge-text">专家推荐</span>
             </div>
           </div>
-          
+
           <div class="recommendations-content">
             <div class="recommendations-intro">
               <p class="intro-text">
@@ -200,10 +200,10 @@
                 请结合自身情况，循序渐进地实施这些建议。
               </p>
             </div>
-            
+
             <div class="recommendations-list">
-              <div 
-                v-for="(recommendation, index) in reportData.recommendations" 
+              <div
+                v-for="(recommendation, index) in reportData.recommendations"
                 :key="index"
                 class="recommendation-item"
               >
@@ -217,10 +217,10 @@
                 <div class="recommendation-body">
                   <p class="recommendation-desc">{{ recommendation.description }}</p>
                   <div class="recommendation-tags">
-                    <el-tag 
-                      v-for="tag in recommendation.tags" 
-                      :key="tag" 
-                      size="small" 
+                    <el-tag
+                      v-for="tag in recommendation.tags"
+                      :key="tag"
+                      size="small"
                       effect="plain"
                     >
                       {{ tag }}
@@ -759,7 +759,7 @@ export default {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -783,7 +783,7 @@ export default {
     .back-btn {
       font-size: 14px;
       color: #667eea;
-      
+
       &:hover {
         color: #764ba2;
       }
@@ -809,7 +809,7 @@ export default {
     border-radius: 12px;
     padding: 40px 20px;
     position: relative;
-    
+
     &::before, &::after {
       content: '';
       position: absolute;
@@ -818,12 +818,12 @@ export default {
       border: 3px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
     }
-    
+
     &::before {
       top: -30px;
       left: -30px;
     }
-    
+
     &::after {
       bottom: -30px;
       right: -30px;
@@ -835,13 +835,13 @@ export default {
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
-    
+
     .decoration-line {
       width: 80px;
       height: 2px;
       background: rgba(255, 255, 255, 0.5);
     }
-    
+
     .decoration-icon {
       font-size: 32px;
       margin: 0 20px;
@@ -870,12 +870,12 @@ export default {
       align-items: center;
       margin-bottom: 8px;
       font-size: 14px;
-      
+
       .meta-label {
         font-weight: 500;
         margin-right: 8px;
       }
-      
+
       .meta-value {
         font-weight: 600;
       }
@@ -1395,72 +1395,6 @@ export default {
               color: #2c3e50;
               font-size: 15px;
             }
-          }
-        }
-      }
-    }
-  }
-}
-
-  .risk-info {
-    .risk-classify {
-      margin-bottom: 24px;
-      padding: 16px;
-      background: #F8F9FA;
-      border-radius: 8px;
-
-      .classify-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 8px;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        .classify-label {
-          font-weight: 500;
-          color: #666;
-          min-width: 80px;
-        }
-
-        .classify-value {
-          color: #333;
-          font-weight: 600;
-        }
-      }
-    }
-
-    .risk-reasons {
-      .reasons-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #333;
-        margin: 0 0 16px 0;
-      }
-
-      .reasons-list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-
-        .reason-item {
-          position: relative;
-          padding: 12px 0 12px 24px;
-          color: #666;
-          line-height: 1.6;
-          border-bottom: 1px solid #F0F0F0;
-
-          &:last-child {
-            border-bottom: none;
-          }
-
-          &::before {
-            content: '•';
-            position: absolute;
-            left: 8px;
-            color: #E6A23C;
-            font-weight: bold;
           }
         }
       }
