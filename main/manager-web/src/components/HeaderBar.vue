@@ -462,7 +462,7 @@ export default {
 
 /* 导航文本样式 - 支持中英文换行 */
 .nav-text {
-  white-space: normal;
+  white-space: nowrap;
   text-align: center;
   max-width: 80px;
   line-height: 1.2;
@@ -475,7 +475,6 @@ export default {
   }
 
   .equipment-management {
-    width: 79px;
     font-size: 9px;
   }
 }
