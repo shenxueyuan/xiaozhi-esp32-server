@@ -468,11 +468,6 @@ export default {
     min-height: unset;
   }
 
-  /* 在首页的移动端视图中，隐藏HeaderBar右侧多余的桌面端元素 */
-  :deep(.header .header-right) {
-    display: none;
-  }
-
   .add-device {
     height: 160px;
   }

@@ -76,7 +76,7 @@
       </div>
 
       <!-- 右侧元素 -->
-      <div class="header-right">
+      <div class="header-right" v-if="!isMobile">
         <div class="search-container" v-if="$route.path === '/home' && !(isSuperAdmin && isSmallScreen)">
           <el-input v-model="search" :placeholder="$t('header.searchPlaceholder')" class="custom-search-input"
             @keyup.enter.native="handleSearch">
