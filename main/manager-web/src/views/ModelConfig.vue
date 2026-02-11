@@ -26,40 +26,6 @@
     <!-- 当前选中的模型配置详情 -->
     <div class="main-wrapper">
       <div class="content-panel">
-        <!-- 左侧导航 -->
-        <el-menu
-          :default-active="activeTab"
-          class="nav-panel"
-          @select="handleMenuSelect"
-          style="background-size: cover; background-position: center"
-        >
-          <el-menu-item index="vad">
-            <span class="menu-text">{{ $t("modelConfig.vad") }}</span>
-          </el-menu-item>
-          <el-menu-item index="asr">
-            <span class="menu-text">{{ $t("modelConfig.asr") }}</span>
-          </el-menu-item>
-          <el-menu-item index="llm">
-            <span class="menu-text">{{ $t("modelConfig.llm") }}</span>
-          </el-menu-item>
-          <el-menu-item index="vllm">
-            <span class="menu-text">{{ $t("modelConfig.vllm") }}</span>
-          </el-menu-item>
-          <el-menu-item index="intent">
-            <span class="menu-text">{{ $t("modelConfig.intent") }}</span>
-          </el-menu-item>
-          <el-menu-item index="tts">
-            <span class="menu-text">{{ $t("modelConfig.tts") }}</span>
-          </el-menu-item>
-          <el-menu-item index="memory">
-            <span class="menu-text">{{ $t("modelConfig.memory") }}</span>
-          </el-menu-item>
-          <el-menu-item index="rag">
-            <span class="menu-text">{{ $t("modelConfig.rag") }}</span>
-          </el-menu-item>
-        </el-menu>
-
-        <!-- 右侧内容 -->
         <div class="content-area">
           <el-card class="model-card" shadow="never">
             <el-table
@@ -340,6 +306,12 @@ export default {
           name: '语音检测',
           icon: '📡',
           description: '检测语音活动和情绪状态'
+        },
+        {
+          key: 'rag',
+          name: '知识库',
+          icon: '📚',
+          description: 'RAG知识库检索配置'
         }
       ]
     };
@@ -1357,63 +1329,6 @@ export default {
   border: 1px solid #fff;
 }
 
-.nav-panel {
-  min-width: 242px;
-  height: 100%;
-  border-right: 1px solid #ebeef5;
-  background: linear-gradient(
-      120deg,
-      rgba(107, 140, 255, 0.3) 0%,
-      rgba(169, 102, 255, 0.3) 25%,
-      transparent 60%
-    ),
-    url("../assets/model/model.png") no-repeat center / cover;
-  padding: 16px 0;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.nav-panel .el-menu-item {
-  height: 50px;
-  background: #e9f0ff;
-  line-height: 50px;
-  border-radius: 4px 0 0 4px !important;
-  transition: all 0.3s;
-  display: flex !important;
-  justify-content: flex-end;
-  padding-right: 12px !important;
-  width: fit-content;
-  margin: 8px 0 8px auto;
-  min-width: unset;
-}
-
-.nav-panel .el-menu-item.is-active {
-  background: #5778ff;
-  position: relative;
-  padding-left: 40px !important;
-}
-
-.nav-panel .el-menu-item.is-active::before {
-  content: "";
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 13px;
-  height: 13px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 4px rgba(64, 158, 255, 0.5);
-}
-
-.menu-text {
-  font-size: 14px;
-  color: #606266;
-  text-align: right;
-  width: 100%;
-  padding-right: 8px;
-}
 
 .content-area {
   flex: 1;
