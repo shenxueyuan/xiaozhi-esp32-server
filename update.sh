@@ -6,7 +6,7 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo -e "${GREEN}开始更新小智ESP32服务器...${NC}"
+echo -e "${GREEN}开始更新小新ESP32服务器...${NC}"
 
 # 拉取最新代码
 echo -e "${YELLOW}拉取最新代码...${NC}"
