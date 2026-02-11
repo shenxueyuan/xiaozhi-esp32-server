@@ -184,3 +184,4 @@ xiaozhi-server/models/SenseVoiceSmall/model.pt
 !main/manager-mobile/**/env/
 !main/manager-mobile/**/.env*
 !main/manager-mobile/**/*.json
+!main/xiaozhi-server/**/*.json

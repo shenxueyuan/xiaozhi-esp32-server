@@ -28,61 +28,66 @@
       <div style="height: 2px; background: #e9e9e9; margin-bottom: 22px;"></div>
       <el-form :model="formData" label-width="100px" label-position="left" class="custom-form">
         <div style="display: flex; gap: 20px; margin-bottom: 0;">
+          <el-form-item :label="$t('modelConfigDialog.modelId')" prop="id" style="flex: 1;">
+            <el-input v-model="formData.id" :placeholder="$t('modelConfigDialog.enterModelId')" class="custom-input-bg"
+              maxlength="32"></el-input>
+          </el-form-item>
+        </div>
+        <div style="display: flex; gap: 20px; margin-bottom: 0;">
           <el-form-item :label="$t('modelConfigDialog.modelName')" prop="modelName" style="flex: 1;">
-            <el-input v-model="formData.modelName" :placeholder="$t('modelConfigDialog.enterModelName')" class="custom-input-bg"></el-input>
+            <el-input v-model="formData.modelName" :placeholder="$t('modelConfigDialog.enterModelName')"
+              class="custom-input-bg"></el-input>
           </el-form-item>
           <el-form-item :label="$t('modelConfigDialog.modelCode')" prop="modelCode" style="flex: 1;">
-            <el-input v-model="formData.modelCode" :placeholder="$t('modelConfigDialog.enterModelCode')" class="custom-input-bg"></el-input>
+            <el-input v-model="formData.modelCode" :placeholder="$t('modelConfigDialog.enterModelCode')"
+              class="custom-input-bg"></el-input>
           </el-form-item>
         </div>
 
         <div style="display: flex; gap: 20px; margin-bottom: 0;">
           <el-form-item :label="$t('modelConfigDialog.supplier')" prop="supplier" style="flex: 1;">
-            <el-select v-model="formData.supplier" :placeholder="$t('modelConfigDialog.selectSupplier')" class="custom-select custom-input-bg"
-              style="width: 100%;" @focus="loadProviders" filterable>
+            <el-select v-model="formData.supplier" :placeholder="$t('modelConfigDialog.selectSupplier')"
+              class="custom-select custom-input-bg" style="width: 100%;" @focus="loadProviders" filterable>
               <el-option v-for="item in providers" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
           <el-form-item :label="$t('modelConfigDialog.sortOrder')" prop="sortOrder" style="flex: 1;">
-            <el-input v-model="formData.sort" type="number" :placeholder="$t('modelConfigDialog.enterSortOrder')" class="custom-input-bg"></el-input>
+            <el-input v-model="formData.sort" type="number" :placeholder="$t('modelConfigDialog.enterSortOrder')"
+              class="custom-input-bg"></el-input>
           </el-form-item>
         </div>
 
 
         <el-form-item :label="$t('modelConfigDialog.docLink')" prop="docLink" style="margin-bottom: 27px;">
-          <el-input v-model="formData.docLink" :placeholder="$t('modelConfigDialog.enterDocLink')" class="custom-input-bg"></el-input>
+          <el-input v-model="formData.docLink" :placeholder="$t('modelConfigDialog.enterDocLink')"
+            class="custom-input-bg"></el-input>
         </el-form-item>
 
         <el-form-item :label="$t('modelConfigDialog.remark')" prop="remark" class="prop-remark">
-          <el-input v-model="formData.remark" type="textarea" :rows="3" :placeholder="$t('modelConfigDialog.enterRemark')" :autosize="{ minRows: 3, maxRows: 5 }"
+          <el-input v-model="formData.remark" type="textarea" :rows="3"
+            :placeholder="$t('modelConfigDialog.enterRemark')" :autosize="{ minRows: 3, maxRows: 5 }"
             class="custom-input-bg"></el-input>
         </el-form-item>
       </el-form>
 
-      <div style="font-size: 20px; font-weight: bold; color: #3d4566; margin-bottom: 15px;">{{ $t('modelConfigDialog.callInfo') }}</div>
+      <div style="font-size: 20px; font-weight: bold; color: #3d4566; margin-bottom: 15px;">{{
+        $t('modelConfigDialog.callInfo') }}</div>
       <div style="height: 2px; background: #e9e9e9; margin-bottom: 22px;"></div>
 
       <el-form :model="formData.configJson" label-width="auto" label-position="left" class="custom-form">
-        <template v-for="(row, rowIndex) in chunkedCallInfoFields">
-          <div :key="rowIndex" style="display: flex; gap: 20px; margin-bottom: 0;">
-            <el-form-item v-for="field in row" :key="field.prop" :label="field.label" :prop="field.prop"
-              style="flex: 1;">
-              <el-input v-model="formData.configJson[field.prop]" :placeholder="field.placeholder"
-                :type="field.type || 'text'" class="custom-input-bg" :show-password="field.type === 'password'">
-              </el-input>
-            </el-form-item>
-          </div>
-        </template>
+        <div v-for="(row, rowIndex) in chunkedCallInfoFields" :key="rowIndex"
+          style="display: flex; gap: 20px; margin-bottom: 0;">
+          <el-form-item v-for="field in row" :key="field.prop" :label="field.label" :prop="field.prop" style="flex: 1;">
+            <el-input v-model="formData.configJson[field.prop]" :placeholder="field.placeholder"
+              :type="field.type || 'text'" class="custom-input-bg" :show-password="field.type === 'password'">
+            </el-input>
+          </el-form-item>
+        </div>
       </el-form>
     </div>
 
     <div style="display: flex;justify-content: center;">
-      <el-button
-        type="primary"
-        @click="confirm"
-        class="save-btn"
-        :loading="saving"
-        :disabled="saving">
+      <el-button type="primary" @click="confirm" class="save-btn" :loading="saving" :disabled="saving">
         {{ $t('modelConfigDialog.save') }}
       </el-button>
     </div>
@@ -106,6 +111,7 @@ export default {
       providerFields: [],
       currentProvider: null,
       formData: {
+        id: '',
         modelName: '',
         modelCode: '',
         supplier: '',
@@ -159,7 +165,7 @@ export default {
             label: f.label,
             prop: f.key,
             type: f.type === 'password' ? 'password' : 'text',
-            placeholder: `请输入${f.label}`
+            placeholder: `请输入${f.key}`
           }))
         }))
         this.providersLoaded = true
@@ -194,6 +200,13 @@ export default {
     confirm() {
       this.saving = true;
 
+      // 校验模型ID不能为纯文字或空格
+      if (this.formData.id && !this.validateModelId(this.formData.id)) {
+        this.$message.error(this.$t('modelConfigDialog.invalidModelId'));
+        this.saving = false;
+        return;
+      }
+
       if (!this.formData.supplier) {
         this.$message.error(this.$t('addModelDialog.requiredSupplier'));
         this.saving = false;
@@ -201,6 +214,7 @@ export default {
       }
 
       const submitData = {
+        id: this.formData.id || '',
         modelName: this.formData.modelName || '',
         modelCode: this.formData.modelCode || '',
         supplier: this.formData.supplier,
@@ -229,6 +243,7 @@ export default {
     resetForm() {
       this.saving = false;
       this.formData = {
+        id: '',
         modelName: '',
         modelCode: '',
         supplier: '',
@@ -246,6 +261,38 @@ export default {
       this.providerFields = [];
       this.currentProvider = null;
     },
+
+    // 校验模型ID：不能为纯文字或空格
+    validateModelId(modelId) {
+      if (!modelId || typeof modelId !== 'string') {
+        return false;
+      }
+
+      // 去除首尾空格
+      const trimmedId = modelId.trim();
+
+      // 检查是否为空或纯空格
+      if (trimmedId === '') {
+        return false;
+      }
+
+      // 检查是否只包含字母（纯文字）
+      if (/^[a-zA-Z]+$/.test(trimmedId)) {
+        return false;
+      }
+
+      // 检查是否包含空格
+      if (/\s/.test(trimmedId)) {
+        return false;
+      }
+
+      // 允许字母、数字、下划线、连字符
+      if (!/^[a-zA-Z0-9_-]+$/.test(trimmedId)) {
+        return false;
+      }
+
+      return true;
+    }
   }
 }
 </script>
@@ -475,7 +522,7 @@ export default {
 
 .custom-input-bg .el-input__inner,
 .custom-input-bg .el-textarea__inner {
-  background-color: #f6f8fc;
+  background-color: #ffffff;
 }
 
 

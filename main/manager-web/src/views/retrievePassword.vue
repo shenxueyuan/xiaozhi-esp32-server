@@ -77,7 +77,7 @@
                 <el-button type="primary" class="send-captcha-btn" :disabled="!canSendMobileCaptcha"
                   @click="sendMobileCaptcha">
                   <span>
-                    {{ countdown > 0 ? `${countdown}秒后重试` : $t('retrievePassword.sendCaptcha') }}
+                    {{ countdown > 0 ? `${countdown}${$t('register.secondsLater')}` : $t('retrievePassword.getMobileCaptcha') }}
                   </span>
                 </el-button>
               </div>
@@ -91,7 +91,7 @@
               <!-- 确认新密码 -->
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/password.png" />
-                <el-input v-model="form.confirmPassword" :placeholder="$t('retrievePassword.confirmPasswordPlaceholder')" type="password" show-password />
+                <el-input v-model="form.confirmPassword" :placeholder="$t('retrievePassword.confirmNewPasswordPlaceholder')" type="password" show-password />
               </div>
 
               <!-- 修改底部链接 -->
@@ -107,7 +107,7 @@
             <div style="font-size: 14px;color: #979db1;">
               {{ $t('retrievePassword.agreeTo') }}
               <div style="display: inline-block;color: #5778FF;cursor: pointer;">{{ $t('register.userAgreement') }}</div>
-              {{ $t('register.and') }}
+              {{ $t('login.and') }}
               <div style="display: inline-block;color: #5778FF;cursor: pointer;">{{ $t('register.privacyPolicy') }}</div>
             </div>
           </div>
@@ -125,8 +125,9 @@
 <script>
 import Api from '@/apis/api';
 import VersionFooter from '@/components/VersionFooter.vue';
-import { getUUID, goToPage, showDanger, showSuccess, validateMobile, isMobileDevice } from '@/utils';
+import { getUUID, goToPage, showDanger, showSuccess, validateMobile, isMobileDevice, sm2Encrypt } from '@/utils';
 import { mapState } from 'vuex';
+import i18n from '@/i18n';
 
 // 导入语言切换功能
 import { changeLanguage } from '@/i18n';
@@ -139,8 +140,31 @@ export default {
   computed: {
     ...mapState({
       allowUserRegister: state => state.pubConfig.allowUserRegister,
-      mobileAreaList: state => state.pubConfig.mobileAreaList
+      mobileAreaList: state => state.pubConfig.mobileAreaList,
+      sm2PublicKey: state => state.pubConfig.sm2PublicKey
     }),
+    // 获取当前语言
+    currentLanguage() {
+      return i18n.locale || "zh_CN";
+    },
+    // 根据当前语言获取对应的xiaozhi-ai图标
+    xiaozhiAiIcon() {
+      const currentLang = this.currentLanguage;
+      switch (currentLang) {
+        case "zh_CN":
+          return require("@/assets/xiaozhi-ai.png");
+        case "zh_TW":
+          return require("@/assets/xiaozhi-ai_zh_TW.png");
+        case "en":
+          return require("@/assets/xiaozhi-ai_en.png");
+        case "de":
+          return require("@/assets/xiaozhi-ai_de.png");
+        case "vi":
+          return require("@/assets/xiaozhi-ai_vi.png");
+        default:
+          return require("@/assets/xiaozhi-ai.png");
+      }
+    },
     canSendMobileCaptcha() {
       return this.countdown === 0 && validateMobile(this.form.mobile, this.form.areaCode);
     },
@@ -202,7 +226,7 @@ export default {
 
         } else {
           console.error('验证码加载异常:', error);
-          showDanger('验证码加载失败，点击刷新');
+          showDanger(this.$t('register.captchaLoadFailed'));
         }
       });
     },
@@ -219,12 +243,12 @@ export default {
     // 发送手机验证码
     sendMobileCaptcha() {
       if (!validateMobile(this.form.mobile, this.form.areaCode)) {
-        showDanger('请输入正确的手机号码');
+        showDanger(this.$t('retrievePassword.inputCorrectMobile'));
         return;
       }
 
       // 验证图形验证码
-      if (!this.validateInput(this.form.captcha, '请输入图形验证码')) {
+      if (!this.validateInput(this.form.captcha, this.$t('retrievePassword.captchaRequired'))) {
         this.fetchCaptcha();
         return;
       }
@@ -252,9 +276,9 @@ export default {
         captcha: this.form.captcha,
         captchaId: this.form.captchaId
       }, (res) => {
-        showSuccess('验证码发送成功');
+        showSuccess(this.$t('retrievePassword.captchaSendSuccess'));
       }, (err) => {
-        showDanger(err.data.msg || '验证码发送失败');
+        showDanger(err.data.msg || this.$t('register.captchaSendFailed'));
         this.countdown = 0;
         this.fetchCaptcha();
       });
@@ -264,32 +288,45 @@ export default {
     retrievePassword() {
       // 验证逻辑
       if (!validateMobile(this.form.mobile, this.form.areaCode)) {
-        showDanger('请输入正确的手机号码');
+        showDanger(this.$t('retrievePassword.inputCorrectMobile'));
         return;
       }
       if (!this.form.captcha) {
-        showDanger('请输入图形验证码');
+        showDanger(this.$t('retrievePassword.captchaRequired'));
         return;
       }
       if (!this.form.mobileCaptcha) {
-        showDanger('请输入短信验证码');
+        showDanger(this.$t('retrievePassword.mobileCaptchaRequired'));
         return;
       }
       if (this.form.newPassword !== this.form.confirmPassword) {
-        showDanger('两次输入的密码不一致');
+        showDanger(this.$t('retrievePassword.passwordsNotMatch'));
+        return;
+      }
+
+      // 加密密码
+      let encryptedPassword;
+      try {
+        // 拼接图形验证码和新密码进行加密
+        const captchaAndPassword = this.form.captcha + this.form.newPassword;
+        encryptedPassword = sm2Encrypt(this.sm2PublicKey, captchaAndPassword);
+      } catch (error) {
+        console.error("密码加密失败:", error);
+        showDanger(this.$t('sm2.encryptionFailed'));
         return;
       }
 
       Api.user.retrievePassword({
         phone: this.form.areaCode + this.form.mobile,
-        password: this.form.newPassword,
-        code: this.form.mobileCaptcha
+        password: encryptedPassword,
+        code: this.form.mobileCaptcha,
+        captchaId: this.form.captchaId
       }, (res) => {
-        showSuccess('密码重置成功');
+        showSuccess(this.$t('retrievePassword.passwordUpdateSuccess'));
         goToPage('/login');
       }, (err) => {
-        showDanger(err.data.msg || '重置失败');
-        if (err.data != null && err.data.msg != null && err.data.msg.indexOf('图形验证码') > -1) {
+        showDanger(err.data.msg || this.$t('message.error'));
+        if (err.data != null && err.data.msg != null && (err.data.msg.indexOf('图形验证码') > -1 || err.data.msg.indexOf('Captcha') > -1)) {
           this.fetchCaptcha()
         }
       });

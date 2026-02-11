@@ -58,6 +58,12 @@
                 <el-dropdown-item @click.native="changeLanguage('en')">
                   {{ $t("language.en") }}
                 </el-dropdown-item>
+                <el-dropdown-item @click.native="changeLanguage('de')">
+                  {{ $t("language.de") }}
+                </el-dropdown-item>
+                <el-dropdown-item @click.native="changeLanguage('vi')">
+                  {{ $t("language.vi") }}
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
 
@@ -174,8 +180,9 @@ import Api from "@/apis/api";
 import VersionFooter from "@/components/VersionFooter.vue";
 import WifiGuideDialog from "@/components/WifiGuideDialog.vue";
 import i18n, { changeLanguage } from "@/i18n";
-import { getUUID, goToPage, showDanger, showSuccess, validateMobile } from "@/utils";
+import { getUUID, goToPage, showDanger, showSuccess, sm2Encrypt, validateMobile } from "@/utils";
 import { mapState } from "vuex";
+import featureManager from "@/utils/featureManager";
 
 export default {
   name: "login",
@@ -188,6 +195,7 @@ export default {
       allowUserRegister: (state) => state.pubConfig.allowUserRegister,
       enableMobileRegister: (state) => state.pubConfig.enableMobileRegister,
       mobileAreaList: (state) => state.pubConfig.mobileAreaList,
+      sm2PublicKey: (state) => state.pubConfig.sm2PublicKey,
     }),
     isMobile() {
       return this.mobileDeviceDetected;
@@ -209,6 +217,10 @@ export default {
           return this.$t("language.zhTW");
         case "en":
           return this.$t("language.en");
+        case "de":
+          return this.$t("language.de");
+        case "vi":
+          return this.$t("language.vi");
         default:
           return this.$t("language.zhCN");
       }
@@ -239,6 +251,13 @@ export default {
     this.$store.dispatch("fetchPubConfig").then(() => {
       // 根据配置决定默认登录方式
       this.isMobileLogin = this.enableMobileRegister;
+
+      // pub-config接口调用完成后，重新初始化featureManager以确保使用最新的配置
+      featureManager.waitForInitialization().then(() => {
+        console.log('featureManager重新初始化完成，使用pub-config配置');
+      }).catch(error => {
+        console.warn('featureManager重新初始化失败:', error);
+      });
     });
   },
   methods: {
@@ -355,10 +374,31 @@ export default {
       if (!this.validateInput(this.form.captcha, 'login.requiredCaptcha')) {
         return;
       }
+      // 加密密码
+      let encryptedPassword;
+      try {
+        // 拼接验证码和密码
+        const captchaAndPassword = this.form.captcha + this.form.password;
+        encryptedPassword = sm2Encrypt(this.sm2PublicKey, captchaAndPassword);
+      } catch (error) {
+        console.error("密码加密失败:", error);
+        showDanger(this.$t('sm2.encryptionFailed'));
+        return;
+      }
+
+      const plainUsername = this.form.username;
 
       this.form.captchaId = this.captchaUuid;
+
+      // 加密
+      const loginData = {
+        username: plainUsername,
+        password: encryptedPassword,
+        captchaId: this.form.captchaId
+      };
+
       Api.user.login(
-        this.form,
+        loginData,
         ({ data }) => {
           showSuccess(this.$t('login.loginSuccess'));
           this.$store.commit("setToken", JSON.stringify(data.data));
@@ -390,7 +430,7 @@ export default {
     },
     goToForgetPassword() {
       goToPage("/retrieve-password");
-    },
+    }
   },
 };
 </script>
@@ -419,8 +459,7 @@ export default {
 .login-type-container {
   margin: 10px 20px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
 }
 
 .title-language-dropdown {

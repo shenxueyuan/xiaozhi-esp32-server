@@ -601,6 +601,8 @@ img[alt="验证码"]:active {
     font-size: 25px;
     text-align: left;
     color: #3d4566;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .login-welcome {

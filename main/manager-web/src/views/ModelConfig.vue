@@ -26,6 +26,40 @@
     <!-- 当前选中的模型配置详情 -->
     <div class="main-wrapper">
       <div class="content-panel">
+        <!-- 左侧导航 -->
+        <el-menu
+          :default-active="activeTab"
+          class="nav-panel"
+          @select="handleMenuSelect"
+          style="background-size: cover; background-position: center"
+        >
+          <el-menu-item index="vad">
+            <span class="menu-text">{{ $t("modelConfig.vad") }}</span>
+          </el-menu-item>
+          <el-menu-item index="asr">
+            <span class="menu-text">{{ $t("modelConfig.asr") }}</span>
+          </el-menu-item>
+          <el-menu-item index="llm">
+            <span class="menu-text">{{ $t("modelConfig.llm") }}</span>
+          </el-menu-item>
+          <el-menu-item index="vllm">
+            <span class="menu-text">{{ $t("modelConfig.vllm") }}</span>
+          </el-menu-item>
+          <el-menu-item index="intent">
+            <span class="menu-text">{{ $t("modelConfig.intent") }}</span>
+          </el-menu-item>
+          <el-menu-item index="tts">
+            <span class="menu-text">{{ $t("modelConfig.tts") }}</span>
+          </el-menu-item>
+          <el-menu-item index="memory">
+            <span class="menu-text">{{ $t("modelConfig.memory") }}</span>
+          </el-menu-item>
+          <el-menu-item index="rag">
+            <span class="menu-text">{{ $t("modelConfig.rag") }}</span>
+          </el-menu-item>
+        </el-menu>
+
+        <!-- 右侧内容 -->
         <div class="content-area">
           <el-card class="model-card" shadow="never">
             <el-table
@@ -65,7 +99,23 @@
               </el-table-column>
               <el-table-column :label="$t('modelConfig.isEnabled')" align="center">
                 <template slot-scope="scope">
+                  <el-tooltip
+                    v-if="scope.row.isDefault === 1 && scope.row.isEnabled === 1"
+                    :content="$t('modelConfig.defaultModelCannotDisable')"
+                    placement="top"
+                    effect="light"
+                  >
+                    <el-switch
+                      v-model="scope.row.isEnabled"
+                      class="custom-switch"
+                      :active-value="1"
+                      :inactive-value="0"
+                      disabled
+                      @change="handleStatusChange(scope.row)"
+                    />
+                  </el-tooltip>
                   <el-switch
+                    v-else
                     v-model="scope.row.isEnabled"
                     class="custom-switch"
                     :active-value="1"
@@ -486,6 +536,7 @@ export default {
       const id = formData.id;
 
       if (this.editModelData.duplicateMode) {
+        formData.id = "";
         Api.model.addModel({ modelType, provideCode, formData }, ({ data }) => {
           if (data.code === 0) {
             this.$message.success(this.$t("modelConfig.duplicateSuccess"));

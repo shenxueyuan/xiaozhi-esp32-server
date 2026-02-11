@@ -68,7 +68,8 @@
                 <div style="display: flex; align-items: center; margin-top: 20px; width: 100%; gap: 10px;">
                   <div class="input-box" style="width: calc(100% - 130px); margin-top: 0;">
                     <img loading="lazy" alt="" class="input-icon" src="@/assets/login/shield.png" />
-                    <el-input v-model="form.captcha" :placeholder="$t('register.captchaPlaceholder')" style="flex: 1;" />
+                    <el-input v-model="form.captcha" :placeholder="$t('register.captchaPlaceholder')"
+                      style="flex: 1;" />
                   </div>
                 <div class="captcha-container">
                   <img loading="lazy" v-if="captchaUrl" :src="captchaUrl" alt="验证码"
@@ -81,7 +82,8 @@
                 <div style="display: flex; align-items: center; margin-top: 20px; width: 100%; gap: 10px;">
                   <div class="input-box" style="width: calc(100% - 130px); margin-top: 0;">
                     <img loading="lazy" alt="" class="input-icon" src="@/assets/login/phone.png" />
-                    <el-input v-model="form.mobileCaptcha" :placeholder="$t('register.mobileCaptchaPlaceholder')" style="flex: 1;" maxlength="6" />
+                    <el-input v-model="form.mobileCaptcha" :placeholder="$t('register.mobileCaptchaPlaceholder')"
+                      style="flex: 1;" maxlength="6" />
                   </div>
                   <el-button type="primary" class="send-captcha-btn" :disabled="!canSendMobileCaptcha"
                     @click="sendMobileCaptcha">
@@ -95,13 +97,15 @@
               <!-- 密码输入框 -->
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/password.png" />
-                <el-input v-model="form.password" :placeholder="$t('register.passwordPlaceholder')" type="password" show-password />
+                <el-input v-model="form.password" :placeholder="$t('register.passwordPlaceholder')" type="password"
+                  show-password />
               </div>
 
               <!-- 新增确认密码 -->
               <div class="input-box">
                 <img loading="lazy" alt="" class="input-icon" src="@/assets/login/password.png" />
-                <el-input v-model="form.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')" type="password" show-password />
+                <el-input v-model="form.confirmPassword" :placeholder="$t('register.confirmPasswordPlaceholder')"
+                  type="password" show-password />
               </div>
 
               <!-- 验证码部分保持相同 -->
@@ -131,7 +135,7 @@
           <div style="font-size: 14px;color: #979db1;">
             {{ $t('register.agreeTo') }}
             <div style="display: inline-block;color: #5778FF;cursor: pointer;">{{ $t('register.userAgreement') }}</div>
-            {{ $t('register.and') }}
+            {{ $t('login.and') }}
             <div style="display: inline-block;color: #5778FF;cursor: pointer;">{{ $t('register.privacyPolicy') }}</div>
           </div>
         </div>
@@ -148,11 +152,11 @@
 <script>
 import Api from '@/apis/api';
 import VersionFooter from '@/components/VersionFooter.vue';
-import { getUUID, goToPage, showDanger, showSuccess, validateMobile } from '@/utils';
+import { getUUID, goToPage, showDanger, showSuccess, sm2Encrypt, validateMobile } from '@/utils';
 import { mapState } from 'vuex';
+import i18n from '@/i18n';
 
 // 导入语言切换功能
-import { changeLanguage } from '@/i18n';
 
 export default {
   name: 'register',
@@ -163,8 +167,31 @@ export default {
     ...mapState({
       allowUserRegister: state => state.pubConfig.allowUserRegister,
       enableMobileRegister: state => state.pubConfig.enableMobileRegister,
-      mobileAreaList: state => state.pubConfig.mobileAreaList
+      mobileAreaList: state => state.pubConfig.mobileAreaList,
+      sm2PublicKey: state => state.pubConfig.sm2PublicKey,
     }),
+    // 获取当前语言
+    currentLanguage() {
+      return i18n.locale || "zh_CN";
+    },
+    // 根据当前语言获取对应的xiaozhi-ai图标
+    xiaozhiAiIcon() {
+      const currentLang = this.currentLanguage;
+      switch (currentLang) {
+        case "zh_CN":
+          return require("@/assets/xiaozhi-ai.png");
+        case "zh_TW":
+          return require("@/assets/xiaozhi-ai_zh_TW.png");
+        case "en":
+          return require("@/assets/xiaozhi-ai_en.png");
+        case "de":
+          return require("@/assets/xiaozhi-ai_de.png");
+        case "vi":
+          return require("@/assets/xiaozhi-ai_vi.png");
+        default:
+          return require("@/assets/xiaozhi-ai.png");
+      }
+    },
     canSendMobileCaptcha() {
       return this.countdown === 0 && validateMobile(this.form.mobile, this.form.areaCode);
     },
@@ -293,7 +320,7 @@ export default {
     },
 
     // 注册逻辑
-    register() {
+    async register() {
       if (this.enableMobileRegister) {
         // 手机号注册验证
         if (!validateMobile(this.form.mobile, this.form.areaCode)) {
@@ -323,12 +350,34 @@ export default {
       if (!this.validateInput(this.form.captcha, this.$t('register.requiredCaptcha'))) {
         return;
       }
-
-      if (this.enableMobileRegister) {
-        this.form.username = this.form.areaCode + this.form.mobile
+      // 加密
+      let encryptedPassword;
+      try {
+        // 拼接验证码和密码
+        const captchaAndPassword = this.form.captcha + this.form.password;
+        encryptedPassword = sm2Encrypt(this.sm2PublicKey, captchaAndPassword);
+      } catch (error) {
+        console.error("密码加密失败:", error);
+        showDanger(this.$t('sm2.encryptionFailed'));
+        return;
       }
 
-      Api.user.register(this.form, ({ data }) => {
+      let plainUsername;
+      if (this.enableMobileRegister) {
+        plainUsername = this.form.areaCode + this.form.mobile;
+      } else {
+        plainUsername = this.form.username;
+      }
+
+      // 准备注册数据
+      const registerData = {
+        username: plainUsername,
+        password: encryptedPassword,
+        captchaId: this.form.captchaId,
+        mobileCaptcha: this.form.mobileCaptcha
+      };
+
+      Api.user.register(registerData, ({ data }) => {
         showSuccess(this.$t('register.registerSuccess'))
         goToPage('/login')
       }, (err) => {
