@@ -19,25 +19,35 @@
 
 set -e
 
-# ========================== 配置区域 ==========================
+# ========================== 配置区域（可通过环境变量覆盖） ==========================
 # 根目录
-BASE_DIR="/root/xiaozhi-server"
+BASE_DIR="${BASE_DIR:-/root/xiaozhi-server}"
 # 主项目目录
-PROJECT_DIR="${BASE_DIR}/xiaozhi-esp32-server"
+PROJECT_DIR="${PROJECT_DIR:-${BASE_DIR}/xiaozhi-esp32-server}"
 # Docker Compose 文件
-COMPOSE_FILE="docker-compose_all_custom.yml"
+COMPOSE_FILE="${COMPOSE_FILE:-docker-compose_all_custom.yml}"
 # MySQL 密码
-MYSQL_ROOT_PASSWORD="qweQWE331792784"
+MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-qweQWE331792784}"
 # 服务器公网 IP（自动检测，也可手动指定）
-SERVER_IP="${SERVER_IP:-$(curl -s ifconfig.me 2>/dev/null || echo '127.0.0.1')}"
-# 服务器局域网 IP（自动检测）
-LAN_IP="${LAN_IP:-$(hostname -I 2>/dev/null | awk '{print $1}' || echo '127.0.0.1')}"
+SERVER_IP="${SERVER_IP:-$(curl -s --connect-timeout 3 ifconfig.me 2>/dev/null || echo '127.0.0.1')}"
+# 服务器局域网 IP（自动检测，兼容 macOS 和 Linux）
+if [ -z "${LAN_IP}" ]; then
+    LAN_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+    [ -z "${LAN_IP}" ] && LAN_IP=$(ipconfig getifaddr en0 2>/dev/null || echo '127.0.0.1')
+fi
 
 # 外部服务目录
-RAGFLOW_DIR="${BASE_DIR}/ragflow"
-VOICEPRINT_DIR="${BASE_DIR}/voiceprint-api"
-MCP_ENDPOINT_DIR="${BASE_DIR}/mcp-endpoint-server"
-MQTT_GATEWAY_DIR="${BASE_DIR}/xiaozhi-mqtt-gateway"
+RAGFLOW_DIR="${RAGFLOW_DIR:-${BASE_DIR}/ragflow}"
+VOICEPRINT_DIR="${VOICEPRINT_DIR:-${BASE_DIR}/voiceprint-api}"
+MCP_ENDPOINT_DIR="${MCP_ENDPOINT_DIR:-${BASE_DIR}/mcp-endpoint-server}"
+MQTT_GATEWAY_DIR="${MQTT_GATEWAY_DIR:-${BASE_DIR}/xiaozhi-mqtt-gateway}"
+
+# 检测操作系统（macOS sed 需要不同参数）
+SED_INPLACE="sed -i"
+if [[ "$(uname)" == "Darwin" ]]; then
+    SED_INPLACE="sed -i ''"
+fi
+sed_inplace() { if [[ "$(uname)" == "Darwin" ]]; then sed -i '' "$@"; else sed -i "$@"; fi; }
 
 # RAGFlow 版本
 RAGFLOW_VERSION="v0.22.0"
@@ -83,6 +93,62 @@ check_prerequisites() {
     log_info "项目根目录: ${BASE_DIR}"
 }
 
+# ========================== 获取主项目 Docker 网络 ==========================
+get_main_network() {
+    # 查找包含 xiaozhi-esp32-server-db 容器的 Docker 网络
+    local net=$(docker inspect xiaozhi-esp32-server-db --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}' 2>/dev/null)
+    if [ -z "$net" ]; then
+        # 回退: 根据 compose 文件所在目录推导网络名
+        local dir_name=$(basename "${PROJECT_DIR}")
+        net="${dir_name}_default"
+    fi
+    echo "$net"
+}
+
+# 修改外部服务的 docker-compose.yml，使其服务加入主项目网络（启动时即可访问 MySQL/Redis）
+# 用法: patch_compose_network <docker-compose文件路径> <服务名>
+patch_compose_network() {
+    local compose_file=$1
+    local service_name=$2
+    local main_net=$(get_main_network)
+
+    if [ ! -f "${compose_file}" ]; then
+        log_error "compose 文件不存在: ${compose_file}"
+        return 1
+    fi
+
+    log_info "将 ${service_name} 加入主网络 ${main_net}..."
+
+    python3 -c "
+import yaml, sys
+
+with open('${compose_file}', 'r') as f:
+    cfg = yaml.safe_load(f)
+
+# 添加顶层 networks 声明（external）
+cfg.setdefault('networks', {})
+cfg['networks']['xiaozhi-main'] = {'external': True, 'name': '${main_net}'}
+
+# 为目标服务添加网络
+svc = cfg.get('services', {}).get('${service_name}', {})
+if svc:
+    existing_nets = svc.get('networks', ['default'])
+    if isinstance(existing_nets, list):
+        if 'xiaozhi-main' not in existing_nets:
+            existing_nets.append('xiaozhi-main')
+        svc['networks'] = existing_nets
+    elif isinstance(existing_nets, dict):
+        existing_nets['xiaozhi-main'] = {}
+        svc['networks'] = existing_nets
+    else:
+        svc['networks'] = ['default', 'xiaozhi-main']
+
+with open('${compose_file}', 'w') as f:
+    yaml.dump(cfg, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+print('patched ${service_name} -> ${main_net}')
+" || log_warn "patch_compose_network 失败，尝试 docker network connect 回退"
+}
+
 # ========================== 等待 MySQL 就绪 ==========================
 wait_for_mysql() {
     log_info "等待 MySQL 就绪..."
@@ -107,8 +173,8 @@ deploy_core() {
     # 确保 Redis 端口对外暴露（外部服务需要访问）
     if grep -q "expose:" "${PROJECT_DIR}/${COMPOSE_FILE}" 2>/dev/null; then
         log_warn "检测到 Redis 使用 expose，修改为 ports 以支持外部服务访问"
-        sed -i 's/    expose:/    ports:/g' "${PROJECT_DIR}/${COMPOSE_FILE}"
-        sed -i 's/      - 6379/      - "6379:6379"/g' "${PROJECT_DIR}/${COMPOSE_FILE}"
+        sed_inplace 's/    expose:/    ports:/g' "${PROJECT_DIR}/${COMPOSE_FILE}"
+        sed_inplace 's/      - 6379/      - "6379:6379"/g' "${PROJECT_DIR}/${COMPOSE_FILE}"
     fi
 
     # 构建并启动
@@ -156,31 +222,31 @@ deploy_ragflow() {
         cp .env .env.bak 2>/dev/null || true
 
         # 修改端口
-        sed -i 's/^SVR_WEB_HTTP_PORT=.*/SVR_WEB_HTTP_PORT=8008/' .env
-        sed -i 's/^SVR_WEB_HTTPS_PORT=.*/SVR_WEB_HTTPS_PORT=8009/' .env
+        sed_inplace 's/^SVR_WEB_HTTP_PORT=.*/SVR_WEB_HTTP_PORT=8008/' .env
+        sed_inplace 's/^SVR_WEB_HTTPS_PORT=.*/SVR_WEB_HTTPS_PORT=8009/' .env
 
-        # 修改 MySQL 配置（使用宿主机 MySQL）
-        sed -i 's/^MYSQL_HOST=.*/MYSQL_HOST=host.docker.internal/' .env
-        sed -i 's/^MYSQL_PORT=.*/MYSQL_PORT=3306/' .env
-        sed -i 's/^MYSQL_PASSWORD=.*/MYSQL_PASSWORD=infini_rag_flow/' .env
-        sed -i 's/^MYSQL_DBNAME=.*/MYSQL_DBNAME=rag_flow/' .env
+        # 修改 MySQL 配置（使用主项目 MySQL 容器名，通过共享网络访问）
+        sed_inplace 's/^MYSQL_HOST=.*/MYSQL_HOST=xiaozhi-esp32-server-db/' .env
+        sed_inplace 's/^MYSQL_PORT=.*/MYSQL_PORT=3306/' .env
+        sed_inplace 's/^MYSQL_PASSWORD=.*/MYSQL_PASSWORD=infini_rag_flow/' .env
+        sed_inplace 's/^MYSQL_DBNAME=.*/MYSQL_DBNAME=rag_flow/' .env
 
         # 确保 MYSQL_USER 存在
         if ! grep -q "^MYSQL_USER=" .env; then
             echo "MYSQL_USER=rag_flow" >> .env
         else
-            sed -i 's/^MYSQL_USER=.*/MYSQL_USER=rag_flow/' .env
+            sed_inplace 's/^MYSQL_USER=.*/MYSQL_USER=rag_flow/' .env
         fi
 
-        # 修改 Redis 配置
-        sed -i 's/^REDIS_HOST=.*/REDIS_HOST=host.docker.internal/' .env
-        sed -i 's/^REDIS_PORT=.*/REDIS_PORT=6379/' .env
-        sed -i 's/^REDIS_PASSWORD=.*/REDIS_PASSWORD=/' .env
+        # 修改 Redis 配置（使用主项目 Redis 容器名）
+        sed_inplace 's/^REDIS_HOST=.*/REDIS_HOST=xiaozhi-esp32-server-redis/' .env
+        sed_inplace 's/^REDIS_PORT=.*/REDIS_PORT=6379/' .env
+        sed_inplace 's/^REDIS_PASSWORD=.*/REDIS_PASSWORD=/' .env
     fi
 
     # 修改 service_conf.yaml.template，清除 Redis 默认密码
     if [ -f "service_conf.yaml.template" ]; then
-        sed -i "s/password: '\${REDIS_PASSWORD:-infini_rag_flow}'/password: '\${REDIS_PASSWORD:-}'/" service_conf.yaml.template
+        sed_inplace "s/password: '\${REDIS_PASSWORD:-infini_rag_flow}'/password: '\${REDIS_PASSWORD:-}'/" service_conf.yaml.template
     fi
 
     # 去掉 docker-compose.yml 中 ragflow 对 mysql 的 depends_on
@@ -216,6 +282,9 @@ with open('docker-compose-base.yml', 'w') as f:
 " 2>/dev/null || log_warn "自动修改 docker-compose-base.yml 失败，请手动移除 mysql/redis"
         fi
     fi
+
+    # 将 RAGFlow 服务加入主项目网络（启动前 patch，使其可访问 MySQL/Redis 容器）
+    patch_compose_network "${RAGFLOW_DIR}/docker/docker-compose.yml" "ragflow-cpu"
 
     # 启动 RAGFlow
     log_info "启动 RAGFlow..."
@@ -262,15 +331,35 @@ deploy_voiceprint() {
         cp voiceprint.yaml data/.voiceprint.yaml
     fi
 
-    # 配置数据库连接（使用宿主机 IP）
+    # 配置数据库连接（使用 python 精确修改 mysql 段，避免误改 server 段）
     if [ -f "data/.voiceprint.yaml" ]; then
         log_info "配置声纹识别数据库连接..."
-        sed -i "s/host: .*/host: \"host.docker.internal\"/" data/.voiceprint.yaml
-        sed -i "s/port: .*/port: 3306/" data/.voiceprint.yaml
-        sed -i "s/user: .*/user: \"root\"/" data/.voiceprint.yaml
-        sed -i "s/password: .*/password: \"${MYSQL_ROOT_PASSWORD}\"/" data/.voiceprint.yaml
-        sed -i "s/database: .*/database: \"voiceprint_db\"/" data/.voiceprint.yaml
+        python3 -c "
+import yaml, sys
+with open('data/.voiceprint.yaml', 'r') as f:
+    cfg = yaml.safe_load(f)
+cfg.setdefault('mysql', {})
+cfg['mysql']['host'] = 'xiaozhi-esp32-server-db'
+cfg['mysql']['port'] = 3306
+cfg['mysql']['user'] = 'root'
+cfg['mysql']['password'] = '${MYSQL_ROOT_PASSWORD}'
+cfg['mysql']['database'] = 'voiceprint_db'
+# 确保 server.host 保持 0.0.0.0
+cfg.setdefault('server', {})
+cfg['server']['host'] = '0.0.0.0'
+with open('data/.voiceprint.yaml', 'w') as f:
+    yaml.dump(cfg, f, default_flow_style=False, allow_unicode=True)
+print('voiceprint config updated')
+" || {
+            log_warn "python3 不可用，使用 sed 回退方案"
+            sed_inplace "s/host: .*/host: \"xiaozhi-esp32-server-db\"/" data/.voiceprint.yaml
+            sed_inplace "s/password: .*/password: \"${MYSQL_ROOT_PASSWORD}\"/" data/.voiceprint.yaml
+            sed_inplace "s/database: .*/database: \"voiceprint_db\"/" data/.voiceprint.yaml
+        }
     fi
+
+    # 将声纹服务加入主项目网络（启动前 patch）
+    patch_compose_network "${VOICEPRINT_DIR}/docker-compose.yml" "voiceprint-api"
 
     # 启动声纹识别
     log_info "启动声纹识别服务..."
@@ -294,6 +383,9 @@ deploy_mcp_endpoint() {
     fi
 
     cd "${MCP_ENDPOINT_DIR}"
+
+    # 将 MCP 接入点加入主项目网络（启动前 patch）
+    patch_compose_network "${MCP_ENDPOINT_DIR}/docker-compose.yml" "mcp-endpoint-server"
 
     # 启动 MCP 接入点
     log_info "启动 MCP 接入点服务..."
@@ -335,7 +427,7 @@ deploy_mqtt_gateway() {
         cp config/mqtt.json.example config/mqtt.json
         log_info "配置 MQTT 网关..."
         # 修改 websocket 地址
-        sed -i "s|ws://.*xiaozhi/v1/|ws://${LAN_IP}:8000/xiaozhi/v1/?from=mqtt_gateway|g" config/mqtt.json 2>/dev/null || true
+        sed_inplace "s|ws://.*xiaozhi/v1/|ws://${LAN_IP}:8000/xiaozhi/v1/?from=mqtt_gateway|g" config/mqtt.json 2>/dev/null || true
     fi
 
     # 使用 PM2 启动
