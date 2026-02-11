@@ -76,7 +76,7 @@ public class MobileAgentController {
     @RequiresPermissions("sys:role:normal")
     public Result<List<AgentDTO>> getUserAgents() {
         UserDetail user = SecurityUser.getUser();
-        List<AgentDTO> agents = agentService.getUserAgents(user.getId());
+        List<AgentDTO> agents = agentService.getUserAgents(user.getId(), null, null);
         return new Result<List<AgentDTO>>().ok(agents);
     }
 
