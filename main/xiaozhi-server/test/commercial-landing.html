@@ -201,7 +201,7 @@
         .str-card p { font-size:.78rem; color:var(--text-2); line-height:1.5; }
 
         /* ===== Pricing ===== */
-        .price-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        .price-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
         .price-card { padding:36px 26px; text-align:center; position:relative; }
         .price-card.feat { border-color:rgba(0,212,255,.2); box-shadow:0 0 40px rgba(0,212,255,.06); }
         .price-card.feat::before { content:'推荐'; position:absolute; top:-11px; left:50%; transform:translateX(-50%); padding:4px 18px; background:var(--g-main); color:#050510; border-radius:6px; font-size:.68rem; font-weight:800; letter-spacing:1px; }
@@ -219,6 +219,49 @@
         .btn-price-fill:hover { box-shadow:0 0 24px rgba(0,212,255,.3); }
         .btn-price-ghost { background:transparent; color:var(--neon-blue); border:1px solid rgba(0,212,255,.2); }
         .btn-price-ghost:hover { background:rgba(0,212,255,.04); }
+
+        /* Pricing enhanced */
+        .price-card { position:relative; }
+        .price-market { font-size:.76rem; color:var(--text-3); margin-bottom:2px; }
+        .price-market del { color:rgba(244,63,94,.5); }
+        .price-save { display:inline-block; padding:3px 10px; border-radius:4px; font-size:.66rem; font-weight:700; background:rgba(16,185,129,.1); color:var(--neon-green); border:1px solid rgba(16,185,129,.15); margin-top:4px; margin-bottom:4px; }
+        .price-scene { margin-top:16px; padding-top:14px; border-top:1px solid var(--glass-border); }
+        .price-scene-title { font-size:.72rem; font-weight:700; color:var(--text-2); margin-bottom:8px; letter-spacing:1px; text-transform:uppercase; }
+        .price-scene-tags { display:flex; flex-wrap:wrap; gap:5px; }
+        .price-scene-tag { padding:3px 9px; border-radius:4px; font-size:.66rem; font-weight:500; border:1px solid var(--glass-border); color:var(--text-2); background:var(--glass); }
+        .price-group { margin-bottom:6px; }
+        .price-group-title { font-size:.7rem; font-weight:700; color:var(--text-2); margin-bottom:4px; padding-bottom:3px; border-bottom:1px dashed rgba(255,255,255,.05); letter-spacing:.5px; }
+        .price-feat li { padding:4px 0; font-size:.8rem; }
+
+        /* ===== Cost Compare ===== */
+        .cost-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start; }
+        .cost-card { padding:32px 28px; }
+        .cost-card h3 { font-size:1.15rem; font-weight:700; margin-bottom:16px; color:var(--text-1); }
+        .cost-table { width:100%; border-collapse:collapse; }
+        .cost-table th { text-align:left; font-size:.72rem; font-weight:700; color:var(--text-2); padding:8px 0; border-bottom:1px solid var(--glass-border); letter-spacing:1px; text-transform:uppercase; }
+        .cost-table td { padding:7px 0; font-size:.8rem; color:var(--text-2); border-bottom:1px solid rgba(255,255,255,.02); }
+        .cost-table td:last-child { text-align:right; font-weight:700; }
+        .cost-table .salary { color:var(--neon-pink); }
+        .cost-total { margin-top:14px; padding:14px 0; border-top:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center; }
+        .cost-total-label { font-size:.82rem; font-weight:700; color:var(--text-2); }
+        .cost-total-val { font-size:1.4rem; font-weight:900; }
+        .cost-vs { display:flex; align-items:center; justify-content:center; padding:20px 0; }
+        .cost-vs-badge { padding:10px 24px; border-radius:8px; font-size:.85rem; font-weight:800; background:rgba(16,185,129,.08); color:var(--neon-green); border:1px solid rgba(16,185,129,.15); }
+
+        /* ===== Deliverables ===== */
+        .dlv-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+        .dlv-card { padding:20px 16px; text-align:center; }
+        .dlv-icon { font-size:1.6rem; margin-bottom:8px; }
+        .dlv-card h4 { font-size:.82rem; font-weight:700; color:var(--text-1); margin-bottom:4px; }
+        .dlv-card p { font-size:.7rem; color:var(--text-2); line-height:1.5; }
+        .dlv-card .dlv-tag { display:inline-block; padding:2px 8px; border-radius:3px; font-size:.6rem; font-weight:600; margin-top:6px; }
+
+        /* ===== Service List ===== */
+        .svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:32px; }
+        .svc-card { padding:18px 16px; display:flex; gap:10px; align-items:flex-start; }
+        .svc-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:6px; }
+        .svc-card h4 { font-size:.8rem; font-weight:700; color:var(--text-1); margin-bottom:2px; }
+        .svc-card p { font-size:.7rem; color:var(--text-2); line-height:1.4; }
 
         /* ===== CTA ===== */
         .cta { padding:100px 0; text-align:center; position:relative; overflow:hidden; }
@@ -252,15 +295,22 @@
             .hw-grid { grid-template-columns:repeat(2,1fr); }
             .tc-grid,.sc-grid { grid-template-columns:1fr; }
             .str-grid { grid-template-columns:repeat(2,1fr); }
-            .price-grid { grid-template-columns:1fr; } .price-card.feat { box-shadow:none; }
+            .price-grid { grid-template-columns:repeat(2,1fr); } .price-card.feat { box-shadow:none; }
             .stats-inner { grid-template-columns:repeat(3,1fr); }
             .footer-grid { grid-template-columns:1fr 1fr; }
+            .cost-grid { grid-template-columns:1fr; }
+            .dlv-grid { grid-template-columns:repeat(3,1fr); }
+            .svc-grid { grid-template-columns:repeat(2,1fr); }
         }
         @media(max-width:600px) {
             .hero h1 { font-size:2rem; }
             .mh-grid,.hw-grid { grid-template-columns:1fr; }
             .emo-channels { grid-template-columns:1fr; }
             .nav-links { display:none; }
+            .price-grid { grid-template-columns:1fr; }
+            .cost-table td,.cost-table th { font-size:.7rem; }
+            .dlv-grid { grid-template-columns:repeat(2,1fr); }
+            .svc-grid { grid-template-columns:1fr; }
             .sh h2 { font-size:1.8rem; } .cta h2 { font-size:1.8rem; }
             .stats-inner { grid-template-columns:repeat(2,1fr); gap:12px; }
             .str-grid { grid-template-columns:1fr 1fr; }
@@ -657,59 +707,393 @@
 
 <div class="section-divider"></div>
 
+<!-- Cost Compare: Team -->
+<section class="section" id="cost">
+    <div class="section-inner">
+        <div class="sh anim">
+            <div class="sh-label sh-label-pink">◉ Cost Analysis</div>
+            <h2>自建 vs 选择我们</h2>
+            <p>同样的产品能力，自建团队需要 11+ 岗位、3-6 个月研发周期</p>
+        </div>
+        <div class="cost-grid">
+            <div class="cost-card glass anim">
+                <h3 style="color:var(--neon-pink);">❌ 自建团队成本</h3>
+                <table class="cost-table">
+                    <tr><th>岗位</th><th style="text-align:right;">3 个月</th><th style="text-align:right;">6 个月</th></tr>
+                    <tr><td>🧠 AI / 算法工程师</td><td class="salary">¥90,000</td><td class="salary">¥180,000</td></tr>
+                    <tr><td>⚙️ 后端工程师</td><td class="salary">¥75,000</td><td class="salary">¥150,000</td></tr>
+                    <tr><td>🖥️ 前端工程师（后台/小程序/H5）</td><td class="salary">¥66,000</td><td class="salary">¥132,000</td></tr>
+                    <tr><td>📱 APP 开发（Android/iOS/鸿蒙）</td><td class="salary">¥75,000</td><td class="salary">¥150,000</td></tr>
+                    <tr><td>🔌 嵌入式软件工程师</td><td class="salary">¥66,000</td><td class="salary">¥132,000</td></tr>
+                    <tr><td>🔧 硬件工程师</td><td class="salary">¥75,000</td><td class="salary">¥150,000</td></tr>
+                    <tr><td>🎨 UI 设计师</td><td class="salary">¥54,000</td><td class="salary">¥108,000</td></tr>
+                    <tr><td>📐 交互设计师 / 产品经理</td><td class="salary">¥60,000</td><td class="salary">¥120,000</td></tr>
+                    <tr><td>�️ 运维工程师</td><td class="salary">¥54,000</td><td class="salary">¥108,000</td></tr>
+                    <tr><td>🧪 测试工程师</td><td class="salary">¥45,000</td><td class="salary">¥90,000</td></tr>
+                    <tr><td>☁️ 服务器 / 云资源</td><td class="salary">¥15,000</td><td class="salary">¥30,000</td></tr>
+                </table>
+                <div class="cost-total" style="flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;width:100%;">
+                        <span class="cost-total-label">11 人团队 · 3 个月</span>
+                        <span style="font-size:1.15rem;font-weight:900;color:var(--neon-pink);text-shadow:0 0 10px rgba(244,63,94,.25);">¥675,000</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;width:100%;">
+                        <span class="cost-total-label">11 人团队 · 6 个月</span>
+                        <span class="cost-total-val" style="color:var(--neon-pink);text-shadow:0 0 12px rgba(244,63,94,.3);">¥1,350,000</span>
+                    </div>
+                </div>
+                <div style="font-size:.7rem;color:var(--text-3);margin-top:6px;">* 未含五险一金（约 +40%）、办公场地、管理成本、试错返工成本</div>
+            </div>
+            <div class="cost-card glass anim">
+                <h3 style="color:var(--neon-green);">✅ 选择 ChatAI</h3>
+                <table class="cost-table">
+                    <tr><th>交付内容</th><th style="text-align:right;">状态</th></tr>
+                    <tr><td>🧠 AI 智能对话引擎（已验证，多模型支持）</td><td style="color:var(--neon-green);white-space:nowrap;">✅ 即时交付</td></tr>
+                    <tr><td>🎭 7 种情绪实时识别 + 用户画像</td><td style="color:var(--neon-green);white-space:nowrap;">✅ 即时交付</td></tr>
+                    <tr><td>💾 长久记忆引擎 + RAG 知识库</td><td style="color:var(--neon-green);white-space:nowrap;">✅ 即时交付</td></tr>
+                    <tr><td>⚙️ Web 可视化管理后台</td><td style="color:var(--neon-green);white-space:nowrap;">✅ 即时交付</td></tr>
+                    <tr><td>🏥 心理健康报告 + 风险预警</td><td style="color:var(--neon-amber);white-space:nowrap;">⭐ 专业版</td></tr>
+                    <tr><td>🎙️ 音色克隆 + 声纹识别 + 视觉理解</td><td style="color:var(--neon-amber);white-space:nowrap;">⭐ 专业版</td></tr>
+                    <tr><td>📱 小程序 / H5 / APP（三端）</td><td style="color:var(--neon-purple);white-space:nowrap;">💎 定制版</td></tr>
+                    <tr><td>🧸 智能硬件定制（ESP32）</td><td style="color:var(--neon-purple);white-space:nowrap;">💎 定制版</td></tr>
+                    <tr><td>🌐 企业官网品牌定制</td><td style="color:var(--neon-purple);white-space:nowrap;">💎 定制版</td></tr>
+                    <tr><td>🚀 私有化部署 + 域名 + SSL</td><td style="color:var(--neon-green);white-space:nowrap;">✅ 全版本</td></tr>
+                    <tr><td>🛡️ 技术支持 + 运维保障</td><td style="color:var(--neon-green);white-space:nowrap;">✅ 全版本</td></tr>
+                </table>
+                <div class="cost-total" style="flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;width:100%;">
+                        <span class="cost-total-label">基础版 · 产品部署即刻上线</span>
+                        <span style="font-size:1.15rem;font-weight:900;color:var(--neon-green);text-shadow:0 0 10px rgba(16,185,129,.25);">¥12,800</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;width:100%;">
+                        <span class="cost-total-label">专业版 · 心理健康完整平台</span>
+                        <span style="font-size:1.15rem;font-weight:900;color:var(--neon-blue);text-shadow:0 0 10px rgba(0,212,255,.25);">¥49,800</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;width:100%;">
+                        <span class="cost-total-label">定制版 · 软硬一体全套交付</span>
+                        <span style="font-size:1.15rem;font-weight:900;color:var(--neon-purple);text-shadow:0 0 10px rgba(168,85,247,.25);">咨询报价</span>
+                    </div>
+                </div>
+                <div style="font-size:.7rem;color:var(--neon-green);margin-top:6px;">成熟产品私有化部署，无需组建团队，无需等待，零风险</div>
+            </div>
+        </div>
+        <div class="cost-vs anim">
+            <div class="cost-vs-badge">💡 自建 3 个月最少 ¥67.5 万 → 选择我们 ¥1.28 万起，节省 95%+，交付周期 1 周内</div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Deliverables -->
+<section class="section">
+    <div class="section-inner">
+        <div class="sh anim">
+            <div class="sh-label sh-label-blue">◉ Deliverables</div>
+            <h2>交付产品清单</h2>
+            <p>不只是一个软件——我们交付的是完整的产品矩阵和专业服务体系</p>
+        </div>
+        <div class="dlv-grid">
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">🌐</div>
+                <h4>企业官网</h4>
+                <p>品牌展示官网，响应式设计，SEO 优化，SSL 安全证书</p>
+                <span class="dlv-tag" style="color:var(--neon-blue);border:1px solid rgba(0,212,255,.15);background:rgba(0,212,255,.04);">Web</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">⚙️</div>
+                <h4>管理后台</h4>
+                <p>可视化配置中心，智能体管理、知识库、用户管理、数据统计</p>
+                <span class="dlv-tag" style="color:var(--neon-purple);border:1px solid rgba(168,85,247,.15);background:rgba(168,85,247,.04);">Web Admin</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">📱</div>
+                <h4>微信小程序</h4>
+                <p>微信生态直达用户，语音交互、情绪检测、心理测评入口</p>
+                <span class="dlv-tag" style="color:var(--neon-green);border:1px solid rgba(16,185,129,.15);background:rgba(16,185,129,.04);">WeChat</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">📲</div>
+                <h4>H5 移动端</h4>
+                <p>免安装 H5 页面，微信/浏览器直接打开，分享即触达</p>
+                <span class="dlv-tag" style="color:var(--neon-amber);border:1px solid rgba(245,158,11,.15);background:rgba(245,158,11,.04);">H5</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">🤖</div>
+                <h4>Android APP</h4>
+                <p>原生 Android 应用，语音交互、情绪分析、推送通知</p>
+                <span class="dlv-tag" style="color:var(--neon-green);border:1px solid rgba(16,185,129,.15);background:rgba(16,185,129,.04);">Android</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">🍎</div>
+                <h4>iOS APP</h4>
+                <p>原生 iOS 应用，Apple 生态适配，Siri 快捷指令集成</p>
+                <span class="dlv-tag" style="color:var(--neon-blue);border:1px solid rgba(0,212,255,.15);background:rgba(0,212,255,.04);">iOS</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">🧸</div>
+                <h4>智能硬件</h4>
+                <p>ESP32 AI 终端/公仔，硬件设计 + PCB + 外壳 + 固件</p>
+                <span class="dlv-tag" style="color:var(--neon-pink);border:1px solid rgba(244,63,94,.15);background:rgba(244,63,94,.04);">Hardware</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">🧠</div>
+                <h4>AI 引擎</h4>
+                <p>LLM 对话 + 情绪识别 + 记忆引擎 + 知识库 + 画像系统</p>
+                <span class="dlv-tag" style="color:var(--neon-purple);border:1px solid rgba(168,85,247,.15);background:rgba(168,85,247,.04);">AI Core</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">📊</div>
+                <h4>心理健康报告</h4>
+                <p>专业 PDF 报告系统，情绪趋势图、风险等级、改善建议</p>
+                <span class="dlv-tag" style="color:var(--neon-pink);border:1px solid rgba(244,63,94,.15);background:rgba(244,63,94,.04);">Report</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">🎙️</div>
+                <h4>音色克隆系统</h4>
+                <p>上传音频一键克隆，多音色管理，专属 TTS 语音合成</p>
+                <span class="dlv-tag" style="color:var(--neon-amber);border:1px solid rgba(245,158,11,.15);background:rgba(245,158,11,.04);">TTS</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">📚</div>
+                <h4>知识库平台</h4>
+                <p>RAGFlow 知识库管理，文档上传、解析、向量检索</p>
+                <span class="dlv-tag" style="color:var(--neon-blue);border:1px solid rgba(0,212,255,.15);background:rgba(0,212,255,.04);">RAG</span>
+            </div>
+            <div class="dlv-card glass anim">
+                <div class="dlv-icon">🔧</div>
+                <h4>API 接口</h4>
+                <p>RESTful + WebSocket API 文档，支持二次开发集成</p>
+                <span class="dlv-tag" style="color:var(--neon-green);border:1px solid rgba(16,185,129,.15);background:rgba(16,185,129,.04);">API</span>
+            </div>
+        </div>
+
+        <!-- Services -->
+        <div style="text-align:center;margin-top:48px;margin-bottom:24px;" class="anim">
+            <div class="sh-label sh-label-green" style="display:inline-flex;">◉ Professional Services</div>
+            <h2 style="font-size:1.8rem;font-weight:800;color:var(--text-1);margin-top:14px;">专业服务清单</h2>
+        </div>
+        <div class="svc-grid">
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-blue);box-shadow:0 0 6px var(--neon-blue);"></div>
+                <div><h4>私有化服务器部署</h4><p>Docker 容器化部署到客户指定服务器，数据不出内网</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></div>
+                <div><h4>域名注册与配置</h4><p>域名购买、DNS 解析、多子域名配置（官网/后台/知识库）</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-purple);box-shadow:0 0 6px var(--neon-purple);"></div>
+                <div><h4>SSL 安全证书</h4><p>HTTPS 证书申请、部署、自动续期，保障数据传输安全</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-pink);box-shadow:0 0 6px var(--neon-pink);"></div>
+                <div><h4>Nginx 反向代理</h4><p>负载均衡、WebSocket 长连接、静态资源缓存加速</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-amber);box-shadow:0 0 6px var(--neon-amber);"></div>
+                <div><h4>数据库架构设计</h4><p>MySQL + Redis + Elasticsearch 高可用集群方案</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-blue);box-shadow:0 0 6px var(--neon-blue);"></div>
+                <div><h4>安全防护配置</h4><p>防火墙规则、安全组策略、端口管控、DDoS 基础防护</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></div>
+                <div><h4>OTA 远程升级</h4><p>硬件固件空中升级通道搭建，版本管理与灰度发布</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-purple);box-shadow:0 0 6px var(--neon-purple);"></div>
+                <div><h4>知识库搭建</h4><p>RAGFlow 知识库部署、文档导入、分块策略优化</p></div>
+            </div>
+            <div class="svc-card glass anim">
+                <div class="svc-dot" style="background:var(--neon-pink);box-shadow:0 0 6px var(--neon-pink);"></div>
+                <div><h4>培训与文档</h4><p>系统使用培训、管理员手册、API 开发文档交付</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
 <!-- Pricing -->
 <section class="section" id="pricing">
     <div class="section-inner">
         <div class="sh anim">
-            <div class="sh-label sh-label-amber">◉ Solutions</div>
+            <div class="sh-label sh-label-amber">◉ Solutions & Pricing</div>
             <h2>解决方案与报价</h2>
+            <p>以上全部产品与服务，打包交付——自建成本超百万，我们只需零头</p>
         </div>
         <div class="price-grid">
+            <!-- 基础版 -->
             <div class="price-card glass anim">
                 <h3>AI 软件基础版</h3>
-                <div class="price-val" style="color:var(--neon-blue);text-shadow:0 0 16px rgba(0,212,255,.2);">¥9,800 <span>/套</span></div>
-                <div class="desc">核心 AI 对话 + 情绪识别</div>
-                <ul class="price-feat">
-                    <li class="li-green">AI 智能对话系统</li>
-                    <li class="li-green">语音情绪识别（7 种）</li>
-                    <li class="li-green">智能长久记忆</li>
-                    <li class="li-green">知识库检索（RAG）</li>
-                    <li class="li-green">用户画像自动生成</li>
-                    <li class="li-green">Web 管理后台</li>
-                </ul>
-                <button class="btn-price btn-price-ghost">咨询详情</button>
+                <div class="price-market">自建同等系统成本 <del>¥15-25万</del></div>
+                <div class="price-val" style="color:var(--neon-blue);text-shadow:0 0 16px rgba(0,212,255,.2);">¥12,800 <span>/套</span></div>
+                <div class="price-save">节省 90%+ 开发成本</div>
+                <div class="desc" style="font-size:.78rem;color:var(--neon-blue);font-weight:600;">成熟 AI 产品私有化部署到您的服务器，即买即用</div>
+                <div class="price-group">
+                    <div class="price-group-title">📦 交付产品</div>
+                    <ul class="price-feat">
+                        <li class="li-green">AI 智能对话引擎（GPT/通义/智谱等多模型）</li>
+                        <li class="li-green">语音情绪实时识别（7 种情绪状态）</li>
+                        <li class="li-green">智能长久记忆引擎（跨会话、毫秒级召回）</li>
+                        <li class="li-green">用户画像自动生成（偏好/性格/关注点）</li>
+                        <li class="li-green">RAG 知识库系统（PDF/Word/Markdown）</li>
+                        <li class="li-green">Web 可视化管理后台</li>
+                        <li class="li-green">多智能体配置管理</li>
+                    </ul>
+                </div>
+                <div class="price-group">
+                    <div class="price-group-title">� 包含服务</div>
+                    <ul class="price-feat">
+                        <li class="li-green">Docker 私有化部署到客户服务器</li>
+                        <li class="li-green">系统初始化与基础配置</li>
+                        <li class="li-green">部署文档 + 使用手册</li>
+                        <li class="li-green">30 天基础技术支持</li>
+                    </ul>
+                </div>
+                <div class="price-scene">
+                    <div class="price-scene-title">适用场景</div>
+                    <div class="price-scene-tags">
+                        <span class="price-scene-tag">企业智能客服</span>
+                        <span class="price-scene-tag">教育培训 AI</span>
+                        <span class="price-scene-tag">MVP 快速验证</span>
+                        <span class="price-scene-tag">知识库问答</span>
+                        <span class="price-scene-tag">个人开发者</span>
+                    </div>
+                </div>
+                <button class="btn-price btn-price-ghost" style="margin-top:18px;">咨询详情</button>
             </div>
+            <!-- 专业版 -->
             <div class="price-card glass feat anim">
                 <h3>心理健康专业版</h3>
-                <div class="price-val" style="color:var(--neon-blue);text-shadow:0 0 16px rgba(0,212,255,.3);">¥39,800 <span>/套</span></div>
-                <div class="desc">多模态情绪 + 心理评估 + 报告</div>
-                <ul class="price-feat">
-                    <li class="li-blue">包含基础版全部功能</li>
-                    <li class="li-blue">多模态情绪识别融合</li>
-                    <li class="li-blue">心理健康报告（PDF）</li>
-                    <li class="li-blue">风险预警系统</li>
-                    <li class="li-blue">音色克隆 TTS</li>
-                    <li class="li-blue">声纹识别</li>
-                    <li class="li-blue">视觉理解能力</li>
-                    <li class="li-blue">90 天技术支持</li>
-                </ul>
-                <button class="btn-price btn-price-fill">立即咨询</button>
+                <div class="price-market">市面心理测评系统 <del>¥20-50万/套</del></div>
+                <div class="price-val" style="color:var(--neon-blue);text-shadow:0 0 16px rgba(0,212,255,.3);">¥49,800 <span>/套</span></div>
+                <div class="price-save">同类产品 1/5 价格，功能更全</div>
+                <div class="desc" style="font-size:.78rem;color:var(--neon-blue);font-weight:600;">基础版全部 + 心理健康全模块 + 高级 AI 交互能力</div>
+                <div class="price-group">
+                    <div class="price-group-title">📦 交付产品（含基础版全部，另增）</div>
+                    <ul class="price-feat">
+                        <li class="li-blue">多模态情绪融合识别（语音+视觉+文本）</li>
+                        <li class="li-blue">AI 心理健康评估与分析系统</li>
+                        <li class="li-blue">专业心理健康报告（PDF 导出）</li>
+                        <li class="li-blue">情绪风险实时预警系统</li>
+                        <li class="li-blue">音色克隆 TTS（含 10 个音色资源）</li>
+                        <li class="li-blue">声纹身份识别（多人场景自动切换）</li>
+                        <li class="li-blue">视觉理解能力（摄像头多模态分析）</li>
+                        <li class="li-blue">MCP 工具调用平台</li>
+                    </ul>
+                </div>
+                <div class="price-group">
+                    <div class="price-group-title">� 包含服务（含基础版全部，另增）</div>
+                    <ul class="price-feat">
+                        <li class="li-blue">域名注册 + DNS 解析配置</li>
+                        <li class="li-blue">SSL 安全证书申请与部署</li>
+                        <li class="li-blue">Nginx 反向代理与安全加固</li>
+                        <li class="li-blue">心理健康知识库内容预置</li>
+                        <li class="li-blue">90 天专属技术支持</li>
+                    </ul>
+                </div>
+                <div class="price-scene">
+                    <div class="price-scene-title">适用场景</div>
+                    <div class="price-scene-tags">
+                        <span class="price-scene-tag">🏫 校园心理健康</span>
+                        <span class="price-scene-tag">🏥 心理咨询机构</span>
+                        <span class="price-scene-tag">🏢 企业员工关怀</span>
+                        <span class="price-scene-tag">👶 儿童情绪陪伴</span>
+                        <span class="price-scene-tag">🏠 养老助老</span>
+                    </div>
+                </div>
+                <button class="btn-price btn-price-fill" style="margin-top:18px;">立即咨询</button>
             </div>
+            <!-- 定制版 -->
             <div class="price-card glass anim">
                 <h3>软硬一体定制版</h3>
-                <div class="price-val" style="color:var(--neon-purple);text-shadow:0 0 16px rgba(168,85,247,.2);">面议</div>
-                <div class="desc">AI 软件 + 智能硬件 + 品牌定制</div>
-                <ul class="price-feat">
-                    <li class="li-green">包含专业版全部功能</li>
-                    <li class="li-green">ESP32 硬件方案设计</li>
-                    <li class="li-green">企业公仔 / 终端定制</li>
-                    <li class="li-green">品牌外观设计与生产</li>
-                    <li class="li-green">OTA 远程固件升级</li>
-                    <li class="li-green">私有化集群部署</li>
-                    <li class="li-green">API 二次开发</li>
-                    <li class="li-green">长期运维升级</li>
-                </ul>
-                <button class="btn-price btn-price-ghost">联系我们</button>
+                <div class="price-market">软件+硬件+多端+品牌全定制</div>
+                <div class="price-val" style="color:var(--neon-purple);text-shadow:0 0 16px rgba(168,85,247,.2);">咨询报价</div>
+                <div class="desc" style="font-size:.78rem;color:var(--neon-purple);font-weight:600;">专业版全部 + 多端开发 + 硬件定制 + 品牌全案</div>
+                <div class="price-group">
+                    <div class="price-group-title">📦 交付产品（含专业版全部，另增）</div>
+                    <ul class="price-feat">
+                        <li class="li-green">🌐 企业品牌官网（定制设计 + SEO）</li>
+                        <li class="li-green">📱 微信小程序（语音交互 + 测评入口）</li>
+                        <li class="li-green">📲 H5 移动端（免安装，分享即触达）</li>
+                        <li class="li-green">🤖 Android APP（原生开发）</li>
+                        <li class="li-green">🍎 iOS APP（原生开发）</li>
+                        <li class="li-green">📟 鸿蒙 APP（HarmonyOS 适配）</li>
+                        <li class="li-green">🧸 智能硬件定制（ESP32 公仔/终端）</li>
+                        <li class="li-green">🎨 品牌 UI 全套设计</li>
+                    </ul>
+                </div>
+                <div class="price-group">
+                    <div class="price-group-title">🔧 包含服务（含专业版全部，另增）</div>
+                    <ul class="price-feat">
+                        <li class="li-green">硬件 PCB + 外壳 + 固件开发</li>
+                        <li class="li-green">OTA 远程固件升级系统</li>
+                        <li class="li-green">私有化集群部署方案</li>
+                        <li class="li-green">API 接口二次开发集成</li>
+                        <li class="li-green">数据库架构设计与优化</li>
+                        <li class="li-green">安全防护与运维保障</li>
+                        <li class="li-green">管理员培训 + 全套文档</li>
+                        <li class="li-green">长期运维与版本升级</li>
+                    </ul>
+                </div>
+                <div class="price-scene">
+                    <div class="price-scene-title">适用场景</div>
+                    <div class="price-scene-tags">
+                        <span class="price-scene-tag">🧸 品牌 AI 公仔</span>
+                        <span class="price-scene-tag">🤖 企业智能终端</span>
+                        <span class="price-scene-tag">🏥 医疗健康设备</span>
+                        <span class="price-scene-tag">🏠 智能家居 IoT</span>
+                        <span class="price-scene-tag">💼 行业解决方案</span>
+                    </div>
+                </div>
+                <button class="btn-price btn-price-ghost" style="margin-top:18px;">联系我们</button>
+            </div>
+            <!-- 源码买断版 -->
+            <div class="price-card glass anim" style="border-color:rgba(245,158,11,.12);">
+                <h3 style="background:linear-gradient(135deg,var(--neon-amber),#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">源码买断版</h3>
+                <div class="price-market">11人团队自建 3-6 个月 <del>¥67-135万</del></div>
+                <div class="price-val" style="color:var(--neon-amber);text-shadow:0 0 16px rgba(245,158,11,.2);">¥198,000 <span>起</span></div>
+                <div class="price-save" style="background:rgba(245,158,11,.1);color:var(--neon-amber);border-color:rgba(245,158,11,.15);">全部源码 + 知识产权 + 永久自主可控</div>
+                <div class="desc" style="font-size:.78rem;color:var(--neon-amber);font-weight:600;">定制版全部 + 源码交付 + 知识产权转让，完全自主</div>
+                <div class="price-group">
+                    <div class="price-group-title">📦 交付产品（含定制版全部，另增）</div>
+                    <ul class="price-feat">
+                        <li class="li-green">全套项目源码（前端/后端/AI/硬件固件）</li>
+                        <li class="li-green">数据库完整设计文档与迁移脚本</li>
+                        <li class="li-green">CI/CD 自动化构建与部署脚本</li>
+                        <li class="li-green">代码架构说明与技术文档</li>
+                    </ul>
+                </div>
+                <div class="price-group">
+                    <div class="price-group-title">📜 知识产权转让</div>
+                    <ul class="price-feat">
+                        <li class="li-green">软件著作权归属客户</li>
+                        <li class="li-green">硬件外观设计专利归属客户</li>
+                        <li class="li-green">品牌 VI / UI 设计稿归属客户</li>
+                        <li class="li-green">签署正式知识产权转让协议</li>
+                    </ul>
+                </div>
+                <div class="price-group">
+                    <div class="price-group-title">🎓 技术赋能</div>
+                    <ul class="price-feat">
+                        <li class="li-green">系统架构培训（面向客户技术团队）</li>
+                        <li class="li-green">二次开发指导与技术答疑</li>
+                        <li class="li-green">180 天深度技术支持</li>
+                    </ul>
+                </div>
+                <div class="price-scene">
+                    <div class="price-scene-title">适用场景</div>
+                    <div class="price-scene-tags">
+                        <span class="price-scene-tag">🏛️ 政府/国企采购</span>
+                        <span class="price-scene-tag">🔐 自主可控要求</span>
+                        <span class="price-scene-tag">🏗️ 自建技术团队</span>
+                        <span class="price-scene-tag">📈 独立商业运营</span>
+                    </div>
+                </div>
+                <button class="btn-price btn-price-ghost" style="margin-top:18px;border-color:rgba(245,158,11,.3);color:var(--neon-amber);">咨询详情</button>
             </div>
         </div>
     </div>
