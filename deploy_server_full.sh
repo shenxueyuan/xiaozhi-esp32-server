@@ -170,26 +170,18 @@ deploy_core() {
 
     cd "${BASE_DIR}"
 
-    # compose 文件路径（服务器上 compose 文件和 data/models/mysql 目录都在 BASE_DIR）
-    local compose_path="${BASE_DIR}/${COMPOSE_FILE}"
-    if [ ! -f "${compose_path}" ]; then
-        # 回退: 尝试在项目目录查找
-        compose_path="${PROJECT_DIR}/${COMPOSE_FILE}"
-    fi
-    log_info "Compose 文件: ${compose_path}"
-
     # 确保 Redis 端口对外暴露（外部服务需要访问）
-    if grep -q "expose:" "${compose_path}" 2>/dev/null; then
+    if grep -q "expose:" "${PROJECT_DIR}/${COMPOSE_FILE}" 2>/dev/null; then
         log_warn "检测到 Redis 使用 expose，修改为 ports 以支持外部服务访问"
-        sed_inplace 's/    expose:/    ports:/g' "${compose_path}"
-        sed_inplace 's/      - 6379/      - "6379:6379"/g' "${compose_path}"
+        sed_inplace 's/    expose:/    ports:/g' "${PROJECT_DIR}/${COMPOSE_FILE}"
+        sed_inplace 's/      - 6379/      - "6379:6379"/g' "${PROJECT_DIR}/${COMPOSE_FILE}"
     fi
 
-    # 构建并启动（从 BASE_DIR 运行，确保卷挂载路径正确）
-    cd "${BASE_DIR}"
-    docker compose -f ${compose_path} build xiaozhi-esp32-server xiaozhi-esp32-server-web
-    docker compose -f ${compose_path} down 2>/dev/null || true
-    docker compose -f ${compose_path} up -d
+    # 构建并启动
+    cd "${PROJECT_DIR}"
+    docker compose -f ${COMPOSE_FILE} build xiaozhi-esp32-server xiaozhi-esp32-server-web
+    docker compose -f ${COMPOSE_FILE} down 2>/dev/null || true
+    docker compose -f ${COMPOSE_FILE} up -d
 
     wait_for_mysql
     log_info "核心服务部署完成"
@@ -545,10 +537,8 @@ update_all() {
 start_all() {
     log_step "启动所有服务"
 
-    cd "${BASE_DIR}"
-    local compose_path="${BASE_DIR}/${COMPOSE_FILE}"
-    [ ! -f "${compose_path}" ] && compose_path="${PROJECT_DIR}/${COMPOSE_FILE}"
-    docker compose -f ${compose_path} up -d
+    cd "${PROJECT_DIR}"
+    docker compose -f ${COMPOSE_FILE} up -d
 
     wait_for_mysql
 
@@ -597,10 +587,8 @@ stop_all() {
         docker compose -f docker-compose.yml down 2>/dev/null || true
     fi
 
-    cd "${BASE_DIR}"
-    local compose_path="${BASE_DIR}/${COMPOSE_FILE}"
-    [ ! -f "${compose_path}" ] && compose_path="${PROJECT_DIR}/${COMPOSE_FILE}"
-    docker compose -f ${compose_path} down
+    cd "${PROJECT_DIR}"
+    docker compose -f ${COMPOSE_FILE} down
 
     log_info "所有服务已停止"
 }

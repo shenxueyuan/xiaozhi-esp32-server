@@ -50,8 +50,8 @@ export default {
   name: 'DeviceItem',
   props: {
     device: { type: Object, required: true },
-    featureStatus: { 
-      type: Object, 
+    featureStatus: {
+      type: Object,
       default: () => ({
         voiceprintRecognition: false,
         voiceClone: false,

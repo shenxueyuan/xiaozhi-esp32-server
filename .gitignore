@@ -185,6 +185,3 @@ xiaozhi-server/models/SenseVoiceSmall/model.pt
 !main/manager-mobile/**/.env*
 !main/manager-mobile/**/*.json
 !main/xiaozhi-server/**/*.json
-
-# 部署测试目录
-.deploy_test/

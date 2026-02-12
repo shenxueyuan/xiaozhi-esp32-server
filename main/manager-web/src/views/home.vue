@@ -39,8 +39,8 @@
           </template>
 
           <template v-else>
-            <DeviceItem v-for="(item, index) in devices" :key="index" :device="item" :feature-status="featureStatus" 
-              @configure="goToRoleConfig" @deviceManage="handleDeviceManage" @delete="handleDeleteAgent" 
+            <DeviceItem v-for="(item, index) in devices" :key="index" :device="item" :feature-status="featureStatus"
+              @configure="goToRoleConfig" @deviceManage="handleDeviceManage" @delete="handleDeleteAgent"
               @chat-history="handleShowChatHistory" />
           </template>
         </div>
@@ -104,7 +104,7 @@ export default {
         knowledgeBase: config.knowledgeBase
       };
     },
-    
+
     showAddDialog() {
       this.addDeviceDialogVisible = true
     },
