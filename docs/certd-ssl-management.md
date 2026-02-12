@@ -19,6 +19,14 @@
 | 镜像 | registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest |
 | 端口 | 7001 (HTTP), 7002 (HTTPS) |
 
+### 登录信息
+
+| 项目 | 值 |
+|---|---|
+| Certd 管理界面 | http://106.15.33.103:7001 |
+| 用户名 | admin |
+| 密码 | 123456（默认，请修改） |
+
 ## 一、部署
 
 ### Docker 部署（已完成）
@@ -53,76 +61,90 @@ curl -sI http://127.0.0.1:7001
 
 ### 1. 登录管理界面
 
-访问 `http://106.15.33.103:7001`，首次访问需注册管理员账号。
+访问 `http://106.15.33.103:7001`，使用默认管理员账号登录：
+
+- **用户名**：`admin`
+- **密码**：`123456`
+
+> ⚠️ **登录后请立即修改密码！**
 
 ### 2. 配置阿里云 DNS 授权
 
 证书申请需要通过 DNS 验证域名所有权，需要配置阿里云 DNS API 授权：
 
-1. 进入 **系统设置 → 授权管理 → 新增授权**
-2. 选择类型：**阿里云 DNS**
+1. 进入左侧菜单 **设置** → **授权管理** → **添加**
+2. 选择类型：**阿里云**
 3. 填写：
-   - AccessKey ID：（阿里云 RAM 子账号的 AK，需要 DNS 管理权限）
-   - AccessKey Secret：对应的 SK
+   - 名称：`aliyun-dns`
+   - AccessKey ID：`<在 Certd 管理界面中查看，或联系管理员获取>`
+   - AccessKey Secret：`<在 Certd 管理界面中查看，或联系管理员获取>`
 
-> **安全建议**：创建 RAM 子账号，仅授予 `AliyunDNSFullAccess` 权限，不要使用主账号 AK。
+> **安全建议**：此 AK 为 RAM 子账号，仅授予 `AliyunDNSFullAccess` 权限。
+
+**已配置 ✅**（2026-02-12）
 
 ### 3. 配置 SSH 部署授权
 
 证书申请成功后需要部署到 Nginx 服务器：
 
-1. 进入 **系统设置 → 授权管理 → 新增授权**
+1. 进入左侧菜单 **设置** → **授权管理** → **添加**
 2. 选择类型：**SSH 主机**
 3. 填写：
-   - 主机地址：`127.0.0.1`（certd 和 Nginx 在同一台服务器）
+   - 名称：`nginx-host`
+   - 主机地址：`172.17.0.1`（Docker 网关 IP，certd 容器内访问宿主机，**不能用 127.0.0.1**）
    - 端口：`22`
    - 用户名：`root`
-   - 认证方式：密码 或 私钥
+   - 认证方式：密码（服务器 root 密码）
+
+**已配置 ✅**（2026-02-12）
 
 ## 三、创建证书流水线
 
-### 1. 新建流水线
+### 流水线名称：`*.chat-ai.cc证书自动化`
 
-进入 **流水线 → 新建流水线**
+### 阶段一：证书申请任务
 
-### 2. 添加证书申请任务
+| 配置项 | 值 |
+|---|---|
+| 证书域名 | `*.chat-ai.cc`、`chat-ai.cc` |
+| 邮箱 | shenxueyuan@vip.qq.com |
+| 域名验证方式 | DNS直接验证 |
+| DNS解析服务商 | 阿里云 |
+| DNS解析授权 | aliyun-dns |
+| 证书颁发机构 | Let's Encrypt（免费） |
+| 加密算法 | RSA 2048 |
 
-- **任务类型**：证书申请
-- **域名列表**：
-  ```
-  *.chat-ai.cc
-  chat-ai.cc
-  ```
-- **验证方式**：DNS-01（阿里云 DNS）
-- **DNS 授权**：选择上面配置的阿里云 DNS 授权
-- **证书机构**：Let's Encrypt（默认，免费）
+### 阶段二：主机-部署证书到SSH主机
 
-### 3. 添加部署任务
+| 配置项 | 值 |
+|---|---|
+| 域名证书 | 域名证书【from: 申请证书】 |
+| 证书格式 | pem/crt |
+| 证书保存路径 | `/etc/nginx/cert/chat-ai.cc.pem` |
+| 私钥保存路径 | `/etc/nginx/cert/chat-ai.cc.key` |
+| 主机登录配置 | nginx-host |
+| 上传方式 | sftp |
+| 自动创建远程目录 | 开启 |
+| 后置命令 | 见下方 |
 
-- **任务类型**：部署到主机
-- **SSH 授权**：选择上面配置的 SSH 授权
-- **证书文件部署路径**：
-  - 证书文件：`/etc/nginx/cert/chat-ai.cc.pem`
-  - 私钥文件：`/etc/nginx/cert/chat-ai.cc.key`
-- **部署后执行命令**：
-  ```bash
-  # 复制泛域名证书给各子域名（它们共享同一张证书）
-  cp /etc/nginx/cert/chat-ai.cc.pem /etc/nginx/cert/admin.chat-ai.cc.pem
-  cp /etc/nginx/cert/chat-ai.cc.key /etc/nginx/cert/admin.chat-ai.cc.key
-  cp /etc/nginx/cert/chat-ai.cc.pem /etc/nginx/cert/rag.chat-ai.cc.pem
-  cp /etc/nginx/cert/chat-ai.cc.key /etc/nginx/cert/rag.chat-ai.cc.key
-  # 重载 Nginx
-  nginx -s reload
-  ```
+**后置命令**：
+```bash
+cp /etc/nginx/cert/chat-ai.cc.pem /etc/nginx/cert/admin.chat-ai.cc.pem && cp /etc/nginx/cert/chat-ai.cc.key /etc/nginx/cert/admin.chat-ai.cc.key && cp /etc/nginx/cert/chat-ai.cc.pem /etc/nginx/cert/rag.chat-ai.cc.pem && cp /etc/nginx/cert/chat-ai.cc.key /etc/nginx/cert/rag.chat-ai.cc.key && nginx -s reload
+```
 
-### 4. 配置定时执行
+### 定时触发
 
-- **定时策略**：每天凌晨 3:00 执行一次
-- Certd 会自动判断证书是否即将过期，仅在需要时才申请新证书
+- **下次执行时间**：每天凌晨 02:14（已由 Certd 自动配置）
+- Certd 会自动判断证书是否即将过期（到期前 30 天），仅在需要时才申请新证书
 
-### 5. 手动执行一次
+### 手动执行验证
 
-点击 **立即执行**，验证整个流程是否正常。
+**已验证通过 ✅**（2026-02-12 16:32）
+
+首次执行结果：
+- 证书申请：✅ 成功
+- 部署到SSH主机：✅ 成功
+- 证书有效期：2026-02-12 ~ 2026-05-13（90天）
 
 ## 四、当前域名证书对应关系
 
