@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  context-provider:
+    build: .
+    container_name: context-provider
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+      - TZ=Asia/Shanghai
