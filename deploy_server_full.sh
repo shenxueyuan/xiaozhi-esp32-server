@@ -7,7 +7,9 @@
 #   2. RAGFlow 知识库
 #   3. 声纹识别 Voiceprint API
 #   4. MCP 接入点
-#   5. MQTT 网关 (可选)
+#   5. Certd SSL 证书自动化
+#   6. Context Provider 上下文源（青少年心理健康）
+#   7. MQTT 网关 (可选)
 #
 # 用法:
 #   首次部署:  bash deploy_server_full.sh install
@@ -41,6 +43,8 @@ RAGFLOW_DIR="${RAGFLOW_DIR:-${BASE_DIR}/ragflow}"
 VOICEPRINT_DIR="${VOICEPRINT_DIR:-${BASE_DIR}/voiceprint-api}"
 MCP_ENDPOINT_DIR="${MCP_ENDPOINT_DIR:-${BASE_DIR}/mcp-endpoint-server}"
 MQTT_GATEWAY_DIR="${MQTT_GATEWAY_DIR:-${BASE_DIR}/xiaozhi-mqtt-gateway}"
+CONTEXT_PROVIDER_DIR="${CONTEXT_PROVIDER_DIR:-${BASE_DIR}/context-provider}"
+CERTD_DATA_DIR="${CERTD_DATA_DIR:-/root/certd-data}"
 
 # 检测操作系统（macOS sed 需要不同参数）
 SED_INPLACE="sed -i"
@@ -166,7 +170,7 @@ wait_for_mysql() {
 
 # ========================== 1. 核心服务 ==========================
 deploy_core() {
-    log_step "1/5 部署核心服务 (Python AI + Web + MySQL + Redis)"
+    log_step "1/7 部署核心服务 (Python AI + Web + MySQL + Redis)"
 
     cd "${BASE_DIR}"
 
@@ -189,7 +193,7 @@ deploy_core() {
 
 # ========================== 2. RAGFlow 知识库 ==========================
 deploy_ragflow() {
-    log_step "2/5 部署 RAGFlow 知识库"
+    log_step "2/7 部署 RAGFlow 知识库"
 
     # 创建 RAGFlow 数据库
     log_info "创建 RAGFlow 数据库..."
@@ -297,7 +301,7 @@ with open('docker-compose-base.yml', 'w') as f:
 
 # ========================== 3. 声纹识别 ==========================
 deploy_voiceprint() {
-    log_step "3/5 部署声纹识别服务"
+    log_step "3/7 部署声纹识别服务"
 
     # 创建声纹数据库
     log_info "创建声纹识别数据库..."
@@ -371,7 +375,7 @@ print('voiceprint config updated')
 
 # ========================== 4. MCP 接入点 ==========================
 deploy_mcp_endpoint() {
-    log_step "4/5 部署 MCP 接入点"
+    log_step "4/7 部署 MCP 接入点"
 
     # 克隆或更新项目
     if [ ! -d "${MCP_ENDPOINT_DIR}" ]; then
@@ -395,9 +399,76 @@ deploy_mcp_endpoint() {
     log_info "MCP 接入点部署完成 → 端口 8004"
 }
 
-# ========================== 5. MQTT 网关（可选） ==========================
+# ========================== 5. Certd SSL 证书自动化 ==========================
+deploy_certd() {
+    log_step "5/7 部署 Certd SSL 证书自动化"
+
+    if docker ps --format '{{.Names}}' | grep -q "^certd$"; then
+        log_info "Certd 已运行，跳过部署"
+        return 0
+    fi
+
+    mkdir -p "${CERTD_DATA_DIR}"
+
+    log_info "启动 Certd 容器..."
+    docker run -d \
+        --name certd \
+        --restart always \
+        -p 7001:7001 \
+        -p 7002:7002 \
+        -v "${CERTD_DATA_DIR}":/app/data \
+        registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest
+
+    log_info "Certd 部署完成 → http://${SERVER_IP}:7001"
+    log_warn "首次登录使用 admin/123456，请立即修改密码"
+    log_warn "后续需手动配置：阿里云 DNS 授权、SSH 主机授权、证书流水线（详见 docs/certd-ssl-management.md）"
+}
+
+# ========================== 6. Context Provider 上下文源 ==========================
+deploy_context_provider() {
+    log_step "6/7 部署 Context Provider 上下文源（青少年心理健康）"
+
+    # 从项目中复制上下文源代码
+    local src_dir="${PROJECT_DIR}/context-provider"
+    if [ ! -d "${src_dir}" ]; then
+        log_error "context-provider 源码目录不存在: ${src_dir}"
+        return 1
+    fi
+
+    # 复制到部署目录
+    if [ ! -d "${CONTEXT_PROVIDER_DIR}" ]; then
+        log_info "复制 Context Provider 到部署目录..."
+        cp -r "${src_dir}" "${CONTEXT_PROVIDER_DIR}"
+    else
+        log_info "更新 Context Provider 代码..."
+        cp "${src_dir}"/*.py "${CONTEXT_PROVIDER_DIR}/"
+        cp "${src_dir}/requirements.txt" "${CONTEXT_PROVIDER_DIR}/"
+        cp "${src_dir}/Dockerfile" "${CONTEXT_PROVIDER_DIR}/"
+        cp "${src_dir}/docker-compose.yml" "${CONTEXT_PROVIDER_DIR}/"
+    fi
+
+    cd "${CONTEXT_PROVIDER_DIR}"
+
+    # 构建并启动
+    log_info "构建并启动 Context Provider..."
+    docker compose down 2>/dev/null || true
+    docker compose up -d --build
+
+    # 等待服务就绪
+    sleep 3
+    if curl -s http://localhost:8081/health | grep -q '"code": 0'; then
+        log_info "Context Provider 健康检查通过 ✅"
+    else
+        log_warn "Context Provider 健康检查未通过，请检查日志: docker logs context-provider"
+    fi
+
+    log_info "Context Provider 部署完成 → 端口 8081"
+    log_info "智控台上下文源地址: http://172.17.0.1:8081/mental-health"
+}
+
+# ========================== 7. MQTT 网关（可选） ==========================
 deploy_mqtt_gateway() {
-    log_step "5/5 部署 MQTT 网关（可选）"
+    log_step "7/7 部署 MQTT 网关（可选）"
 
     # 检查 Node.js
     if ! command -v node &> /dev/null; then
@@ -459,6 +530,8 @@ show_status() {
     echo -e "  ${GREEN}RAGFlow 知识库${NC}     http://${SERVER_IP}:8008"
     echo -e "  ${GREEN}声纹识别${NC}           http://${SERVER_IP}:8005"
     echo -e "  ${GREEN}MCP 接入点${NC}         http://${SERVER_IP}:8004"
+    echo -e "  ${GREEN}Certd SSL 管理${NC}     http://${SERVER_IP}:7001"
+    echo -e "  ${GREEN}Context Provider${NC}   http://${SERVER_IP}:8081/mental-health"
     echo -e "  ${GREEN}MQTT 网关${NC}          端口 1883 (TCP) / 8884 (UDP)"
     echo ""
 
@@ -469,6 +542,8 @@ show_status() {
     echo "  8004  - MCP 接入点"
     echo "  8005  - 声纹识别"
     echo "  8008  - RAGFlow 知识库"
+    echo "  8081  - Context Provider 上下文源"
+    echo "  7001  - Certd SSL 证书管理"
     echo "  3306  - MySQL"
     echo "  6379  - Redis"
     echo "  1883  - MQTT (TCP)"
@@ -481,6 +556,8 @@ show_status() {
     echo "  2. 声纹识别:  参数管理 → 搜索 server.voiceprint → 填 http://${LAN_IP}:8005/voiceprint/health?key=xxx"
     echo "  3. MCP接入点: 参数管理 → 搜索 server.mcp_endpoint → 填 http://${LAN_IP}:8004/mcp_endpoint/health?key=xxx"
     echo "  4. 音色克隆:  模型配置 → TTS → 火山双流式 → 填入火山引擎 app_id/access_token/voice_type"
+    echo "  5. 上下文源: 角色配置 → 上下文源 → 编辑源 → 添加 http://172.17.0.1:8081/mental-health"
+    echo "  6. Certd:    访问 http://${SERVER_IP}:7001 配置 DNS 授权/SSH 授权/证书流水线（详见 docs/certd-ssl-management.md）"
     echo ""
 }
 
@@ -494,6 +571,8 @@ install_all() {
     deploy_ragflow
     deploy_voiceprint
     deploy_mcp_endpoint
+    deploy_certd
+    deploy_context_provider
     deploy_mqtt_gateway
 
     show_status
@@ -529,6 +608,9 @@ update_all() {
         docker compose -f docker-compose.yml restart 2>/dev/null || true
     fi
 
+    # 更新 Context Provider
+    deploy_context_provider
+
     show_status
     log_info "更新完成！"
 }
@@ -557,6 +639,13 @@ start_all() {
         docker compose -f docker-compose.yml up -d 2>/dev/null || true
     fi
 
+    if [ -d "${CONTEXT_PROVIDER_DIR}" ]; then
+        cd "${CONTEXT_PROVIDER_DIR}"
+        docker compose up -d 2>/dev/null || true
+    fi
+
+    # Certd 是 always restart，无需手动启动
+
     if command -v pm2 &> /dev/null; then
         pm2 resurrect 2>/dev/null || true
     fi
@@ -571,6 +660,13 @@ stop_all() {
     if command -v pm2 &> /dev/null; then
         pm2 stop all 2>/dev/null || true
     fi
+
+    if [ -d "${CONTEXT_PROVIDER_DIR}" ]; then
+        cd "${CONTEXT_PROVIDER_DIR}"
+        docker compose down 2>/dev/null || true
+    fi
+
+    docker stop certd 2>/dev/null || true
 
     if [ -d "${MCP_ENDPOINT_DIR}" ]; then
         cd "${MCP_ENDPOINT_DIR}"
