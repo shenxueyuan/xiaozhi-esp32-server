@@ -133,6 +133,42 @@ body {
   flex-shrink: 0;
 }
 
+.nav-group-toggle {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-group-toggle::after {
+  content: '▸';
+  font-size: 10px;
+  margin-left: auto;
+  padding-right: 20px;
+  transition: transform 0.2s;
+}
+.nav-group.expanded .nav-group-toggle::after {
+  transform: rotate(90deg);
+}
+.nav-sub-items { display: none; }
+.nav-group.expanded .nav-sub-items { display: block; }
+
+.nav-sub-item {
+  display: block;
+  padding: 5px 20px 5px 36px;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 13px;
+  transition: all 0.15s;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-sub-item:hover { color: var(--text); background: var(--bg-hover); }
+.nav-sub-item.active { color: var(--accent); border-left-color: var(--accent); }
+
 /* ========== Main Content ========== */
 .main {
   flex: 1;
@@ -549,6 +585,68 @@ body {
         <span class="nav-icon">🔗</span>
         <span class="nav-label">开源项目推荐</span>
       </a>
+      <a class="nav-item" data-file="case-based-learning.md" data-section="">
+        <span class="nav-icon">🚀</span>
+        <span class="nav-label">案例驱动学习</span>
+        <span class="nav-badge">总览</span>
+      </a>
+      <a class="nav-item" data-file="industry-mental-health-k12.md" data-section="">
+        <span class="nav-icon">🏥</span>
+        <span class="nav-label">行业专题总览</span>
+      </a>
+    </div>
+
+    <!-- 实战案例 -->
+    <div class="nav-group" id="navCases">
+      <div class="nav-group-title nav-group-toggle" onclick="toggleNavGroup('navCases')">🚀 实战案例</div>
+      <div class="nav-sub-items">
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例1电影评分预测推荐系统入门">① 电影评分预测</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例2信用卡欺诈检测不平衡分类">② 信用卡欺诈检测</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例3二手房价预测特征工程实战">③ 二手房价预测</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例4电商用户流失预测业务分析">④ 电商用户流失</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例5垃圾短信分类NLP入门">⑤ 垃圾短信分类</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例6手写数字识别CNN入门">⑥ 手写数字识别</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例7试卷区域检测目标定位">⑦ 试卷区域检测</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例8商品评论情感分析BERT微调">⑧ 商品评论情感</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例9Kaggle表格竞赛通杀方案竞赛实战">⑨ 竞赛通杀方案</a>
+        <a class="nav-sub-item" data-file="case-based-learning.md" data-section="案例10车牌识别系统端到端CV项目">⑩ 车牌识别系统</a>
+      </div>
+    </div>
+
+    <!-- 心理健康 -->
+    <div class="nav-group" id="navMental">
+      <div class="nav-group-title nav-group-toggle" onclick="toggleNavGroup('navMental')">💚 青少年心理健康</div>
+      <div class="nav-sub-items">
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M1社交媒体抑郁焦虑文本检测">M1 抑郁文本检测</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M2自杀自伤风险文本预警">M2 自杀风险预警</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M3情绪日记智能分析">M3 情绪日记分析</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M4语音情绪识别">M4 语音情绪识别</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M5面部表情情绪识别">M5 表情情绪识别</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M6多模态情绪分析">M6 多模态情绪</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M7心理健康对话机器人">M7 心理对话机器人</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M8校园霸凌文本检测">M8 校园霸凌检测</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M9睡眠质量与心理健康关联分析">M9 睡眠与心理</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="M10心理测评智能化">M10 智能心理测评</a>
+      </div>
+    </div>
+
+    <!-- K12 教育 -->
+    <div class="nav-group" id="navK12">
+      <div class="nav-group-title nav-group-toggle" onclick="toggleNavGroup('navK12')">🎓 K12 教育</div>
+      <div class="nav-sub-items">
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E1试卷作业OCR识别">E1 试卷OCR</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E2手写数学公式识别">E2 数学公式识别</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E3作文自动评分">E3 作文自动评分</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E4选择题答题卡自动批改">E4 答题卡批改</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E5知识追踪与学情分析">E5 知识追踪</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E6智能出题与自动组卷">E6 智能出题</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E7课堂专注度检测">E7 课堂专注度</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E8个性化学习路径推荐">E8 个性化学习</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E9试卷区域检测与矫正">E9 试卷区域检测</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="E10错题本自动生成">E10 错题本生成</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="X1学生心理状态早期预测">X1 心理状态预测</a>
+        <a class="nav-sub-item" data-file="industry-mental-health-k12.md" data-section="X2青少年网络行为风险监测">X2 网络行为监测</a>
+      </div>
     </div>
 
     <!-- 练习手册 -->
@@ -671,6 +769,16 @@ body {
             <div class="card-title">开源项目推荐</div>
             <div class="card-desc">18个精选项目 · 功能点分析 · 学习方法论</div>
           </div>
+          <div class="card" onclick="loadDoc('case-based-learning.md')">
+            <div class="card-icon">🚀</div>
+            <div class="card-title">案例驱动学习</div>
+            <div class="card-desc">10个实战案例 · 真实行业问题 · 完整技术方案</div>
+          </div>
+          <div class="card" onclick="loadDoc('industry-mental-health-k12.md')">
+            <div class="card-icon">🏥</div>
+            <div class="card-title">心理健康×K12教育</div>
+            <div class="card-desc">青少年心理健康10项 · K12教育10项 · 交叉领域2项</div>
+          </div>
         </div>
       </div>
 
@@ -710,7 +818,16 @@ marked.setOptions({
 
 // ========== Load Document ==========
 async function loadDoc(filename, section) {
-  if (currentFile === filename && !section) {
+  if (currentFile === filename) {
+    if (section) {
+      const target = document.getElementById(section);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.nav-item, .nav-sub-item').forEach(el => {
+        const isMatch = el.dataset.file === filename && (el.dataset.section || '') === (section || '');
+        el.classList.toggle('active', isMatch);
+        if (isMatch && el.classList.contains('nav-sub-item')) el.closest('.nav-group').classList.add('expanded');
+      });
+    }
     return;
   }
 
@@ -743,8 +860,10 @@ async function loadDoc(filename, section) {
   mdEl.innerHTML = html;
 
   // Update active nav
-  document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.file === filename && !section);
+  document.querySelectorAll('.nav-item, .nav-sub-item').forEach(el => {
+    const isMatch = el.dataset.file === filename && (el.dataset.section || '') === (section || '');
+    el.classList.toggle('active', isMatch);
+    if (isMatch && el.classList.contains('nav-sub-item')) el.closest('.nav-group').classList.add('expanded');
   });
 
   // Update topbar title
@@ -757,6 +876,8 @@ async function loadDoc(filename, section) {
     'stage4-kaggle.md': '➍ 阶段四：Kaggle 实战',
     'stage5-advanced.md': '➎ 阶段五：进阶技能',
     'stage6-deeplearning.md': '➏ 阶段六：深度学习',
+    'case-based-learning.md': '🚀 案例驱动学习',
+    'industry-mental-health-k12.md': '🏥 心理健康×K12教育',
   };
   document.getElementById('topbarTitle').textContent = titles[filename] || filename;
 
@@ -796,7 +917,7 @@ function buildTOC() {
   let html = '';
   headings.forEach(h => {
     const level = h.tagName === 'H3' ? 'toc-h3' : '';
-    const id = h.id || h.textContent.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '');
+    const id = h.textContent.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '');
     h.id = id;
     html += `<a class="toc-link ${level}" href="#${id}" onclick="smoothScroll(event,'${id}')">${h.textContent}</a>`;
   });
@@ -821,12 +942,17 @@ function copyCode(btn) {
 // ========== Search ==========
 document.getElementById('searchInput').addEventListener('input', function(e) {
   const q = e.target.value.toLowerCase().trim();
-  document.querySelectorAll('.nav-item').forEach(item => {
+  document.querySelectorAll('.nav-item, .nav-sub-item').forEach(item => {
     const label = item.querySelector('.nav-label');
-    if (!label) return;
-    const match = !q || label.textContent.toLowerCase().includes(q);
+    const text = label ? label.textContent : item.textContent;
+    const match = !q || text.toLowerCase().includes(q);
     item.style.display = match ? '' : 'none';
   });
+  if (q) {
+    document.querySelectorAll('.nav-group[id]').forEach(g => {
+      if (g.querySelector('.nav-sub-item:not([style*="display: none"])')) g.classList.add('expanded');
+    });
+  }
 });
 
 // ========== Toggle Sidebar (mobile) ==========
@@ -843,8 +969,13 @@ function updateProgress() {
   document.getElementById('progressText').textContent = `已浏览 ${visited}/6 阶段`;
 }
 
+// ========== Toggle Nav Group ==========
+function toggleNavGroup(id) {
+  document.getElementById(id).classList.toggle('expanded');
+}
+
 // ========== Nav Click ==========
-document.querySelectorAll('.nav-item').forEach(item => {
+document.querySelectorAll('.nav-item, .nav-sub-item').forEach(item => {
   item.addEventListener('click', () => {
     const file = item.dataset.file;
     const section = item.dataset.section || '';

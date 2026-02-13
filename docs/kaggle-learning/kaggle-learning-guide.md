@@ -24,6 +24,8 @@
 
 > 📝 **练习手册总目录**：[README.md](./README.md) — 每个知识点都有 Demo + 练习 + 答案
 > 🔗 **开源项目学习指南**：[kaggle-opensource-projects.md](./kaggle-opensource-projects.md) — 18 个精选项目 + 功能点 + 学习方法
+> 🚀 **案例驱动学习**：[case-based-learning.md](./case-based-learning.md) — 10 个实战案例 + 真实行业问题 + 完整技术方案
+> 🏥 **行业专题**：[industry-mental-health-k12.md](./industry-mental-health-k12.md) — 青少年心理健康 × K12 教育 AI 应用全景（22个项目）
 
 ---
 

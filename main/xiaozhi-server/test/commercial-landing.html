@@ -306,6 +306,30 @@
         .footer-btm { padding-top:20px; border-top:1px solid var(--glass-border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
         .footer-btm p { color:var(--text-3); font-size:.72rem; }
 
+        /* ===== Solutions Matrix ===== */
+        .sol-stats { display:flex; justify-content:center; gap:48px; margin-bottom:48px; }
+        .sol-stat { text-align:center; font-size:2rem; font-weight:900; }
+        .sol-stat span { display:block; font-size:.72rem; font-weight:500; color:var(--text-2); margin-top:2px; letter-spacing:1px; }
+        .sol-tabs { display:flex; justify-content:center; gap:8px; margin-bottom:36px; }
+        .sol-tab { padding:10px 24px; border-radius:8px; border:1px solid var(--glass-border); background:var(--glass); color:var(--text-2); font-size:.85rem; font-weight:600; cursor:pointer; transition:all .3s; backdrop-filter:blur(8px); }
+        .sol-tab:hover { border-color:rgba(0,212,255,.2); color:var(--text-1); }
+        .sol-tab.active { background:var(--g-main); color:#050510; border-color:transparent; box-shadow:0 0 20px rgba(0,212,255,.2); }
+        .sol-panel { display:none; }
+        .sol-panel.active { display:block; }
+        .sol-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+        .sol-card { padding:20px; position:relative; overflow:hidden; }
+        .sol-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--sol-c,var(--neon-blue)),transparent); opacity:0; transition:opacity .3s; }
+        .sol-card:hover::before { opacity:1; }
+        .sol-card-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+        .sol-id { display:inline-flex; align-items:center; justify-content:center; min-width:36px; height:24px; border-radius:5px; font-size:.68rem; font-weight:800; letter-spacing:.5px; flex-shrink:0; }
+        .sol-card h4 { font-size:.92rem; font-weight:700; color:var(--text-1); }
+        .sol-card>p { font-size:.78rem; color:var(--text-2); line-height:1.6; margin-bottom:10px; }
+        .sol-tags { display:flex; flex-wrap:wrap; gap:5px; }
+        .sol-tags span { padding:2px 8px; border-radius:4px; font-size:.62rem; font-weight:600; border:1px solid; }
+        .sol-summary { margin-top:36px; padding:24px; text-align:center; }
+        .sol-summary h3 { font-size:1.1rem; font-weight:700; color:var(--text-1); margin-bottom:6px; }
+        .sol-summary p { font-size:.82rem; color:var(--text-2); }
+
         /* ===== Responsive ===== */
         @media(max-width:960px) {
             .hero-inner { grid-template-columns:1fr; text-align:center; }
@@ -314,7 +338,9 @@
             .emo-grid { grid-template-columns:1fr; }
             .mh-grid { grid-template-columns:repeat(2,1fr); }
             .hw-grid { grid-template-columns:repeat(2,1fr); }
-            .tc-grid,.sc-grid { grid-template-columns:1fr; }
+            .tc-grid,.sc-grid,.sol-grid { grid-template-columns:1fr; }
+            .sol-stats { gap:24px; flex-wrap:wrap; } .sol-stat { font-size:1.5rem; }
+            .sol-tabs { flex-wrap:wrap; }
             .str-grid { grid-template-columns:repeat(2,1fr); }
             .price-grid { grid-template-columns:repeat(2,1fr); } .price-card.feat { box-shadow:none; }
             .stats-inner { grid-template-columns:repeat(3,1fr); }
@@ -354,6 +380,7 @@
             <a href="#mental-health">心理健康</a>
             <a href="#hardware">智能硬件</a>
             <a href="#tech">AI 技术</a>
+            <a href="#solutions">行业方案</a>
             <a href="#llm-service">大模型服务</a>
             <a href="#pricing">方案报价</a>
             <a href="#contact" class="nav-cta">联系我们</a>
@@ -691,6 +718,324 @@
             <div class="sc-card glass anim">
                 <div class="sc-icon" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.12);">💼</div>
                 <div><h4>企业品牌 AI 定制</h4><p>定制品牌公仔/终端——外观 + 知识库 + 音色。展厅讲解、前台接待、活动互动。</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Industry AI Solutions -->
+<section class="section" id="solutions">
+    <div class="section-inner">
+        <div class="sh anim">
+            <div class="sh-label sh-label-green">◉ Industry AI Solutions</div>
+            <h2>行业 AI 解决方案全景</h2>
+            <p>深耕青少年心理健康与 K12 智慧教育，22+ 项深度 AI 解决方案覆盖行业核心痛点</p>
+        </div>
+        <div class="sol-stats anim">
+            <div class="sol-stat" style="color:var(--neon-blue);text-shadow:0 0 12px rgba(0,212,255,.3);">22+ <span>AI 解决方案</span></div>
+            <div class="sol-stat" style="color:var(--neon-purple);text-shadow:0 0 12px rgba(168,85,247,.3);">15+ <span>核心 AI 技术</span></div>
+            <div class="sol-stat" style="color:var(--neon-green);text-shadow:0 0 12px rgba(16,185,129,.3);">2 <span>深耕行业</span></div>
+            <div class="sol-stat" style="color:var(--neon-pink);text-shadow:0 0 12px rgba(244,63,94,.3);">50+ <span>开源项目整合</span></div>
+        </div>
+        <div class="sol-tabs anim">
+            <button class="sol-tab active" onclick="switchSolTab('mental')">💚 青少年心理健康</button>
+            <button class="sol-tab" onclick="switchSolTab('k12')">🎓 K12 智慧教育</button>
+            <button class="sol-tab" onclick="switchSolTab('cross')">🔗 交叉创新</button>
+        </div>
+
+        <!-- Mental Health Panel -->
+        <div class="sol-panel active" id="sol-mental">
+            <div class="sol-grid">
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-pink);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(244,63,94,.1);color:var(--neon-pink);">M1</span>
+                        <h4>抑郁/焦虑文本检测</h4>
+                    </div>
+                    <p>基于 NLP 与 BERT 微调，识别社交媒体、日记、对话中的抑郁/焦虑信号，早期发现心理危机</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">NLP</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">BERT 微调</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">文本分类</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-pink);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(244,63,94,.1);color:var(--neon-pink);">M2</span>
+                        <h4>自杀/自伤风险预警</h4>
+                    </div>
+                    <p>关键词触发 + NLP 语义分析 + 三级预警机制，实时监测高危文本，自动推送干预通知</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">风险检测</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">三级预警</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">实时监控</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-purple);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(168,85,247,.1);color:var(--neon-purple);">M3</span>
+                        <h4>情绪日记智能分析</h4>
+                    </div>
+                    <p>对学生情绪日记进行情感分类与时序趋势分析，自动检测情绪异常波动并触发关怀提醒</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">情感分类</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">时序分析</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">异常检测</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-blue);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(0,212,255,.1);color:var(--neon-blue);">M4</span>
+                        <h4>语音情绪识别</h4>
+                    </div>
+                    <p>提取 MFCC / Mel 频谱等声学特征，CNN/Transformer 模型识别语音中的情绪状态</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">MFCC</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">SpeechBrain</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">声学分析</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-blue);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(0,212,255,.1);color:var(--neon-blue);">M5</span>
+                        <h4>面部表情情绪识别</h4>
+                    </div>
+                    <p>DeepFace + MediaPipe 面部关键点检测与表情分类，实时视觉情绪感知</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">DeepFace</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">MediaPipe</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">CNN</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-purple);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(168,85,247,.1);color:var(--neon-purple);">M6</span>
+                        <h4>多模态情绪融合</h4>
+                    </div>
+                    <p>文本 + 语音 + 视觉三通道情绪信号加权融合，交叉验证输出综合情绪评估</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">多模态融合</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">注意力机制</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">跨模态</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-green);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(16,185,129,.1);color:var(--neon-green);">M7</span>
+                        <h4>心理健康对话机器人</h4>
+                    </div>
+                    <p>LLM + 心理学知识库 + RAG 检索，提供专业的心理支持对话，情绪自适应回复策略</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">LLM 微调</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">RAG</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">心理咨询</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-amber);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(245,158,11,.1);color:var(--neon-amber);">M8</span>
+                        <h4>校园霸凌文本检测</h4>
+                    </div>
+                    <p>BERT 多标签分类检测校园社交平台中的欺凌、歧视、威胁等有害内容</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">多标签分类</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">内容审核</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">BERT</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-green);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(16,185,129,.1);color:var(--neon-green);">M9</span>
+                        <h4>睡眠与心理健康关联</h4>
+                    </div>
+                    <p>可穿戴设备采集睡眠数据，时序分析关联心理健康状态，异常睡眠模式自动预警</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">时序分析</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">IoT 数据</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">关联分析</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-amber);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(245,158,11,.1);color:var(--neon-amber);">M10</span>
+                        <h4>心理测评智能化</h4>
+                    </div>
+                    <p>IRT 自适应测评引擎，根据学生作答动态调整题目难度，用更少的题目达到更精准的评估</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">IRT 模型</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">自适应算法</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">精准评估</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sol-summary glass anim">
+                <h3>💚 10 项心理健康 AI 能力，覆盖"检测 → 预警 → 评估 → 干预"全链路</h3>
+                <p>从文本、语音、视觉多通道感知情绪，到专业心理评估报告输出，形成完整的 AI 心理健康闭环</p>
+            </div>
+        </div>
+
+        <!-- K12 Panel -->
+        <div class="sol-panel" id="sol-k12">
+            <div class="sol-grid">
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-blue);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(0,212,255,.1);color:var(--neon-blue);">E1</span>
+                        <h4>试卷/作业 OCR 识别</h4>
+                    </div>
+                    <p>PaddleOCR 高精度文字识别，支持手写体、印刷体混合识别，将纸质试卷数字化</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">PaddleOCR</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">手写识别</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">文档数字化</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-purple);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(168,85,247,.1);color:var(--neon-purple);">E2</span>
+                        <h4>手写数学公式识别</h4>
+                    </div>
+                    <p>CNN + Transformer Seq2Seq 架构，将手写数学公式图片转换为 LaTeX 代码</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">LaTeX-OCR</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">Seq2Seq</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">Transformer</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-pink);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(244,63,94,.1);color:var(--neon-pink);">E3</span>
+                        <h4>作文自动评分</h4>
+                    </div>
+                    <p>BERT 回归模型从语法、词汇、逻辑、内容多维度自动评分，辅助教师批改作文</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">BERT 回归</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">多维评分</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">NLP</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-green);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(16,185,129,.1);color:var(--neon-green);">E4</span>
+                        <h4>答题卡自动批改</h4>
+                    </div>
+                    <p>OpenCV 纯计算机视觉方案，透视校正 + 涂卡区域检测 + 自动判分，无需深度学习</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">OpenCV</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">透视变换</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">轻量级</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-amber);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(245,158,11,.1);color:var(--neon-amber);">E5</span>
+                        <h4>知识追踪与学情分析</h4>
+                    </div>
+                    <p>LSTM / Transformer 序列模型，追踪学生知识点掌握状态，预测答题正确率</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">知识追踪</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">LSTM</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">学情画像</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-blue);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(0,212,255,.1);color:var(--neon-blue);">E6</span>
+                        <h4>智能出题与自动组卷</h4>
+                    </div>
+                    <p>整数规划 + LLM 生成，按知识点覆盖、难度分布、题型比例自动组装试卷</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">LLM 生成</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">约束优化</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">知识图谱</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-purple);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(168,85,247,.1);color:var(--neon-purple);">E7</span>
+                        <h4>课堂专注度检测</h4>
+                    </div>
+                    <p>YOLOv8 目标检测 + 姿态估计，实时分析学生课堂行为（抬头/低头/侧脸/举手）</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">YOLOv8</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">姿态估计</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">行为分析</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-green);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(16,185,129,.1);color:var(--neon-green);">E8</span>
+                        <h4>个性化学习路径推荐</h4>
+                    </div>
+                    <p>知识图谱 + 协同过滤推荐算法，根据学生薄弱点推荐最优学习路径和练习题目</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">知识图谱</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">推荐算法</span>
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">自适应学习</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-pink);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(244,63,94,.1);color:var(--neon-pink);">E9</span>
+                        <h4>试卷区域检测与矫正</h4>
+                    </div>
+                    <p>关键点回归定位试卷四角，透视变换矫正倾斜/畸变，为后续 OCR 提供标准化输入</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">关键点回归</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">透视校正</span>
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">MobileNet</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-amber);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:rgba(245,158,11,.1);color:var(--neon-amber);">E10</span>
+                        <h4>错题本自动生成</h4>
+                    </div>
+                    <p>OCR + 答题卡批改 + 区域检测多模型串联，自动归集错题、分析错因、生成复习材料</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">多模型串联</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">综合应用</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">端到端</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sol-summary glass anim">
+                <h3>🎓 10 项 K12 教育 AI 能力，覆盖"教 → 学 → 练 → 测 → 评"全流程</h3>
+                <p>从试卷数字化、智能批改到知识追踪、个性化推荐，用 AI 重塑教育每一个环节</p>
+            </div>
+        </div>
+
+        <!-- Cross Panel -->
+        <div class="sol-panel" id="sol-cross">
+            <div class="sol-grid">
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-blue);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(168,85,247,.15));color:var(--neon-blue);">X1</span>
+                        <h4>学生心理状态早期预测</h4>
+                    </div>
+                    <p>融合学业数据（成绩波动、出勤率）+ 行为数据（社交活跃度、作业提交），多维度特征预测心理健康状态</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-green);border-color:rgba(16,185,129,.2);">多维特征</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">XGBoost</span>
+                        <span style="color:var(--neon-blue);border-color:rgba(0,212,255,.2);">早期预警</span>
+                    </div>
+                </div>
+                <div class="sol-card glass anim" style="--sol-c:var(--neon-pink);">
+                    <div class="sol-card-head">
+                        <span class="sol-id" style="background:linear-gradient(135deg,rgba(244,63,94,.15),rgba(245,158,11,.15));color:var(--neon-pink);">X2</span>
+                        <h4>青少年网络行为风险监测</h4>
+                    </div>
+                    <p>分析上网时长、浏览内容、社交行为模式，NLP 检测网络霸凌与不良信息暴露风险</p>
+                    <div class="sol-tags">
+                        <span style="color:var(--neon-pink);border-color:rgba(244,63,94,.2);">行为分析</span>
+                        <span style="color:var(--neon-amber);border-color:rgba(245,158,11,.2);">NLP 审核</span>
+                        <span style="color:var(--neon-purple);border-color:rgba(168,85,247,.2);">风险评级</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sol-summary glass anim">
+                <h3>🔗 教育 × 心理健康交叉创新，数据驱动的全方位学生关怀</h3>
+                <p>打破数据孤岛，将学业表现、行为数据与心理状态关联分析，实现真正的"一个都不能少"</p>
             </div>
         </div>
     </div>
@@ -1335,9 +1680,9 @@
                 <h4>产品与方案</h4>
                 <a href="#hardware">AI 情绪公仔</a>
                 <a href="#hardware">企业 AI 终端</a>
-                <a href="#hardware">心理健康终端</a>
-                <a href="#pricing">软件方案</a>
-                <a href="#pricing">软硬一体方案</a>
+                <a href="#solutions">心理健康 AI 方案</a>
+                <a href="#solutions">K12 智慧教育方案</a>
+                <a href="#pricing">解决方案报价</a>
             </div>
             <div class="footer-col">
                 <h4>联系我们</h4>
@@ -1463,6 +1808,16 @@ const obs = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
 document.querySelectorAll('.anim').forEach(el => obs.observe(el));
+
+// ===== Solution Tabs =====
+function switchSolTab(tab) {
+    document.querySelectorAll('.sol-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sol-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('sol-' + tab).classList.add('active');
+    event.target.classList.add('active');
+    // Re-observe animations for newly visible panel
+    document.querySelectorAll('#sol-' + tab + ' .anim:not(.visible)').forEach(el => obs.observe(el));
+}
 
 // ===== Smooth scroll =====
 document.querySelectorAll('a[href^="#"]').forEach(a => {
