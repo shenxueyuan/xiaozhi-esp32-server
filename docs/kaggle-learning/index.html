@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaggle 数据科学学习中心</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+:root {
+  --bg: #0f1117;
+  --bg-card: #1a1d2e;
+  --bg-sidebar: #141620;
+  --bg-hover: #252840;
+  --bg-active: #2d3154;
+  --bg-code: #1e2030;
+  --text: #e0e0e8;
+  --text-dim: #8b8fa3;
+  --text-heading: #ffffff;
+  --accent: #6c8aff;
+  --accent-hover: #8ba4ff;
+  --accent-dim: rgba(108,138,255,0.15);
+  --border: #2a2d40;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --radius: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ========== Sidebar ========== */
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sidebar-header h1 {
+  font-size: 18px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.sidebar-header p {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.nav-group {
+  margin-bottom: 6px;
+}
+
+.nav-group-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  padding: 8px 20px 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-heading);
+}
+
+.nav-item.active {
+  background: var(--bg-active);
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+
+.nav-icon {
+  font-size: 16px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.nav-label { flex: 1; }
+
+.nav-badge {
+  font-size: 10px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+/* ========== Main Content ========== */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  height: 52px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  flex-shrink: 0;
+  background: var(--bg-sidebar);
+}
+
+.topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-heading);
+  flex: 1;
+}
+
+.topbar-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.progress-bar {
+  width: 120px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.btn-toggle-sidebar {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.content-area::-webkit-scrollbar { width: 6px; }
+.content-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.content-wrap {
+  max-width: 100%;
+  padding: 32px 48px 80px;
+}
+
+/* ========== Markdown Rendered Content ========== */
+.md-content h1 {
+  font-size: 28px;
+  color: var(--text-heading);
+  margin: 40px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent-dim);
+}
+
+.md-content h1:first-child { margin-top: 0; }
+
+.md-content h2 {
+  font-size: 22px;
+  color: var(--text-heading);
+  margin: 36px 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.md-content h3 {
+  font-size: 18px;
+  color: var(--accent);
+  margin: 28px 0 10px;
+}
+
+.md-content h4 {
+  font-size: 15px;
+  color: var(--text-heading);
+  margin: 20px 0 8px;
+}
+
+.md-content p { margin: 10px 0; }
+
+.md-content a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.md-content a:hover { text-decoration: underline; }
+
+.md-content strong { color: var(--text-heading); }
+
+.md-content blockquote {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-dim);
+  padding: 12px 16px;
+  margin: 14px 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.md-content blockquote p { margin: 4px 0; }
+
+.md-content ul, .md-content ol {
+  padding-left: 24px;
+  margin: 10px 0;
+}
+
+.md-content li { margin: 4px 0; }
+
+.md-content code {
+  background: var(--bg-code);
+  color: #e8b4ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.9em;
+}
+
+.md-content pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 14px 0;
+  overflow-x: auto;
+  position: relative;
+}
+
+.md-content pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.md-content pre .copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.md-content pre:hover .copy-btn { opacity: 1; }
+.md-content pre .copy-btn:hover { color: var(--text-heading); background: var(--bg-active); }
+
+.md-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 14px;
+}
+
+.md-content th {
+  background: var(--bg-card);
+  color: var(--text-heading);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+}
+
+.md-content td {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+}
+
+.md-content tr:hover td { background: var(--bg-hover); }
+
+.md-content details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 14px 0;
+  overflow: hidden;
+}
+
+.md-content summary {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.md-content summary:hover { background: var(--bg-hover); }
+
+.md-content details[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.md-content details > :not(summary) {
+  padding: 0 16px;
+}
+
+.md-content details pre {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.md-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+
+.md-content img {
+  max-width: 100%;
+  border-radius: var(--radius);
+}
+
+/* ========== Loading & Empty States ========== */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--text-dim);
+  gap: 16px;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ========== Welcome Page ========== */
+.welcome {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.welcome h2 {
+  font-size: 32px;
+  color: var(--text-heading);
+  margin-bottom: 12px;
+  border: none;
+}
+
+.welcome p {
+  color: var(--text-dim);
+  font-size: 16px;
+  margin-bottom: 40px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.card-icon { font-size: 28px; margin-bottom: 10px; }
+.card-title { font-size: 15px; font-weight: 600; color: var(--text-heading); margin-bottom: 4px; }
+.card-desc { font-size: 13px; color: var(--text-dim); }
+
+/* ========== TOC floating ========== */
+.toc-panel {
+  position: fixed;
+  right: 16px;
+  top: 60px;
+  width: 210px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  font-size: 12px;
+  display: none;
+  z-index: 10;
+}
+
+.toc-panel.visible { display: block; }
+.toc-panel::-webkit-scrollbar { width: 3px; }
+.toc-panel::-webkit-scrollbar-thumb { background: var(--border); }
+
+.toc-title {
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+
+.toc-link {
+  display: block;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 3px 0;
+  padding-left: 0;
+  transition: color 0.15s;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toc-link:hover, .toc-link.active { color: var(--accent); }
+.toc-link.toc-h3 { padding-left: 12px; }
+
+/* ========== Search ========== */
+.search-box {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-dim); }
+
+/* ========== Responsive ========== */
+@media (max-width: 900px) {
+  .sidebar { position: fixed; left: -300px; z-index: 100; transition: left 0.3s; }
+  .sidebar.open { left: 0; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .btn-toggle-sidebar { display: block; }
+  .toc-panel { display: none !important; }
+  .content-wrap { padding: 24px 16px 60px; }
+}
+
+@media (min-width: 1200px) {
+  .content-wrap { padding-right: 260px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>🎯 Kaggle 学习中心</h1>
+    <p>从零到 Expert 的完整学习路线</p>
+  </div>
+
+  <div class="search-box">
+    <input type="text" class="search-input" id="searchInput" placeholder="搜索内容...">
+  </div>
+
+  <nav class="sidebar-nav" id="sidebarNav">
+    <!-- 主文档 -->
+    <div class="nav-group">
+      <div class="nav-group-title">📖 学习指南</div>
+      <a class="nav-item" data-file="kaggle-learning-guide.md" data-section="">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">完整学习指南</span>
+      </a>
+      <a class="nav-item" data-file="kaggle-opensource-projects.md" data-section="">
+        <span class="nav-icon">🔗</span>
+        <span class="nav-label">开源项目推荐</span>
+      </a>
+    </div>
+
+    <!-- 练习手册 -->
+    <div class="nav-group">
+      <div class="nav-group-title">📝 练习手册</div>
+      <a class="nav-item" data-file="stage1-math.md">
+        <span class="nav-icon">➊</span>
+        <span class="nav-label">数学基础</span>
+        <span class="nav-badge">阶段一</span>
+      </a>
+      <a class="nav-item" data-file="stage2-tools.md">
+        <span class="nav-icon">➋</span>
+        <span class="nav-label">Python 工具链</span>
+        <span class="nav-badge">阶段二</span>
+      </a>
+      <a class="nav-item" data-file="stage3-ml.md">
+        <span class="nav-icon">➌</span>
+        <span class="nav-label">机器学习</span>
+        <span class="nav-badge">阶段三</span>
+      </a>
+      <a class="nav-item" data-file="stage4-kaggle.md">
+        <span class="nav-icon">➍</span>
+        <span class="nav-label">Kaggle 实战</span>
+        <span class="nav-badge">阶段四</span>
+      </a>
+      <a class="nav-item" data-file="stage5-advanced.md">
+        <span class="nav-icon">➎</span>
+        <span class="nav-label">进阶技能</span>
+        <span class="nav-badge">阶段五</span>
+      </a>
+      <a class="nav-item" data-file="stage6-deeplearning.md">
+        <span class="nav-icon">➏</span>
+        <span class="nav-label">深度学习</span>
+        <span class="nav-badge">阶段六</span>
+      </a>
+    </div>
+
+    <!-- 快速跳转（主文档章节） -->
+    <div class="nav-group">
+      <div class="nav-group-title">⚡ 快速跳转</div>
+      <a class="nav-item" data-file="kaggle-learning-guide.md" data-section="零准备工作开始学习前必读">
+        <span class="nav-icon">🛠</span>
+        <span class="nav-label">准备工作</span>
+      </a>
+      <a class="nav-item" data-file="kaggle-learning-guide.md" data-section="一知识图谱总览">
+        <span class="nav-icon">🗺</span>
+        <span class="nav-label">知识图谱</span>
+      </a>
+      <a class="nav-item" data-file="kaggle-learning-guide.md" data-section="十英文应对策略">
+        <span class="nav-icon">🌐</span>
+        <span class="nav-label">英文应对策略</span>
+      </a>
+      <a class="nav-item" data-file="kaggle-learning-guide.md" data-section="十一推荐资源清单中文优先">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">推荐资源</span>
+      </a>
+      <a class="nav-item" data-file="kaggle-learning-guide.md" data-section="十二学习进度追踪表">
+        <span class="nav-icon">✅</span>
+        <span class="nav-label">进度追踪</span>
+      </a>
+    </div>
+  </nav>
+</aside>
+
+<!-- Main -->
+<div class="main">
+  <header class="topbar">
+    <button class="btn-toggle-sidebar" id="btnToggle" onclick="toggleSidebar()">☰</button>
+    <div class="topbar-title" id="topbarTitle">Kaggle 数据科学学习中心</div>
+    <div class="topbar-progress">
+      <span id="progressText">学习进度</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </header>
+
+  <div class="content-area" id="contentArea">
+    <div class="content-wrap" id="contentWrap">
+      <!-- Welcome page (default) -->
+      <div class="welcome" id="welcomePage">
+        <h2>🚀 欢迎来到 Kaggle 学习中心</h2>
+        <p>系统化的数据科学学习路线，从零基础到 Kaggle Expert</p>
+        <div class="card-grid">
+          <div class="card" onclick="loadDoc('kaggle-learning-guide.md')">
+            <div class="card-icon">📖</div>
+            <div class="card-title">完整学习指南</div>
+            <div class="card-desc">知识图谱 · 学习路线 · 6阶段技术大纲 · 资源推荐</div>
+          </div>
+          <div class="card" onclick="loadDoc('stage1-math.md')">
+            <div class="card-icon">🔢</div>
+            <div class="card-title">阶段一：数学基础</div>
+            <div class="card-desc">向量 · 矩阵 · 概率统计 · 梯度下降 · 12个知识点</div>
+          </div>
+          <div class="card" onclick="loadDoc('stage2-tools.md')">
+            <div class="card-icon">🐍</div>
+            <div class="card-title">阶段二：Python 工具链</div>
+            <div class="card-desc">NumPy · Pandas · Matplotlib · Seaborn · 完整EDA</div>
+          </div>
+          <div class="card" onclick="loadDoc('stage3-ml.md')">
+            <div class="card-icon">🤖</div>
+            <div class="card-title">阶段三：机器学习</div>
+            <div class="card-desc">决策树 · 随机森林 · XGBoost · 特征工程 · 模型评估</div>
+          </div>
+          <div class="card" onclick="loadDoc('stage4-kaggle.md')">
+            <div class="card-icon">🏆</div>
+            <div class="card-title">阶段四：Kaggle 实战</div>
+            <div class="card-desc">Titanic · House Prices · 完整竞赛流程</div>
+          </div>
+          <div class="card" onclick="loadDoc('stage5-advanced.md')">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">阶段五：进阶技能</div>
+            <div class="card-desc">Optuna调参 · Stacking融合 · 高级特征工程</div>
+          </div>
+          <div class="card" onclick="loadDoc('stage6-deeplearning.md')">
+            <div class="card-icon">🧠</div>
+            <div class="card-title">阶段六：深度学习</div>
+            <div class="card-desc">PyTorch · CNN · Transformer · 图像分类</div>
+          </div>
+          <div class="card" onclick="loadDoc('kaggle-opensource-projects.md')">
+            <div class="card-icon">🔗</div>
+            <div class="card-title">开源项目推荐</div>
+            <div class="card-desc">18个精选项目 · 功能点分析 · 学习方法论</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Markdown rendered here -->
+      <div class="md-content" id="mdContent" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC Panel -->
+<div class="toc-panel" id="tocPanel">
+  <div class="toc-title">本页目录</div>
+  <div id="tocLinks"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+<script>
+// ========== State ==========
+let currentFile = null;
+let fileCache = {};
+let completedSections = JSON.parse(localStorage.getItem('kaggle_progress') || '{}');
+
+// ========== Marked Config ==========
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      return hljs.highlight(code, { language: lang }).value;
+    }
+    return hljs.highlightAuto(code).value;
+  },
+  breaks: false,
+  gfm: true
+});
+
+// ========== Load Document ==========
+async function loadDoc(filename, section) {
+  if (currentFile === filename && !section) {
+    return;
+  }
+
+  // Show loading
+  const mdEl = document.getElementById('mdContent');
+  const welcomeEl = document.getElementById('welcomePage');
+  welcomeEl.style.display = 'none';
+  mdEl.style.display = 'block';
+
+  if (!fileCache[filename]) {
+    mdEl.innerHTML = '<div class="loading"><div class="spinner"></div><span>加载中...</span></div>';
+    try {
+      const resp = await fetch('./' + filename);
+      if (!resp.ok) throw new Error('File not found');
+      fileCache[filename] = await resp.text();
+    } catch(e) {
+      mdEl.innerHTML = `<div class="loading"><span>⚠️ 无法加载 ${filename}</span><br><span style="font-size:13px;margin-top:8px">请确保通过 HTTP 服务器访问（不能直接打开文件）</span></div>`;
+      return;
+    }
+  }
+
+  currentFile = filename;
+
+  // Render markdown
+  let html = marked.parse(fileCache[filename]);
+
+  // Add copy buttons to code blocks
+  html = html.replace(/<pre><code/g, '<pre><button class="copy-btn" onclick="copyCode(this)">复制</button><code');
+
+  mdEl.innerHTML = html;
+
+  // Update active nav
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.file === filename && !section);
+  });
+
+  // Update topbar title
+  const titles = {
+    'kaggle-learning-guide.md': '📖 完整学习指南',
+    'kaggle-opensource-projects.md': '🔗 开源项目推荐',
+    'stage1-math.md': '➊ 阶段一：数学基础',
+    'stage2-tools.md': '➋ 阶段二：Python 工具链',
+    'stage3-ml.md': '➌ 阶段三：机器学习',
+    'stage4-kaggle.md': '➍ 阶段四：Kaggle 实战',
+    'stage5-advanced.md': '➎ 阶段五：进阶技能',
+    'stage6-deeplearning.md': '➏ 阶段六：深度学习',
+  };
+  document.getElementById('topbarTitle').textContent = titles[filename] || filename;
+
+  // Build TOC
+  buildTOC();
+
+  // Scroll to section if specified
+  if (section) {
+    setTimeout(() => {
+      const target = document.getElementById(section);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  } else {
+    document.getElementById('contentArea').scrollTop = 0;
+  }
+
+  // Close sidebar on mobile
+  document.getElementById('sidebar').classList.remove('open');
+
+  updateProgress();
+}
+
+// ========== Build TOC ==========
+function buildTOC() {
+  const tocLinks = document.getElementById('tocLinks');
+  const tocPanel = document.getElementById('tocPanel');
+  const headings = document.querySelectorAll('#mdContent h2, #mdContent h3');
+
+  if (headings.length === 0) {
+    tocPanel.classList.remove('visible');
+    return;
+  }
+
+  tocPanel.classList.add('visible');
+  let html = '';
+  headings.forEach(h => {
+    const level = h.tagName === 'H3' ? 'toc-h3' : '';
+    const id = h.id || h.textContent.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '');
+    h.id = id;
+    html += `<a class="toc-link ${level}" href="#${id}" onclick="smoothScroll(event,'${id}')">${h.textContent}</a>`;
+  });
+  tocLinks.innerHTML = html;
+}
+
+function smoothScroll(e, id) {
+  e.preventDefault();
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ========== Copy Code ==========
+function copyCode(btn) {
+  const code = btn.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '已复制 ✓';
+    setTimeout(() => btn.textContent = '复制', 1500);
+  });
+}
+
+// ========== Search ==========
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const label = item.querySelector('.nav-label');
+    if (!label) return;
+    const match = !q || label.textContent.toLowerCase().includes(q);
+    item.style.display = match ? '' : 'none';
+  });
+});
+
+// ========== Toggle Sidebar (mobile) ==========
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ========== Progress Tracking ==========
+function updateProgress() {
+  const stageFiles = ['stage1-math.md','stage2-tools.md','stage3-ml.md','stage4-kaggle.md','stage5-advanced.md','stage6-deeplearning.md'];
+  const visited = stageFiles.filter(f => fileCache[f]).length;
+  const pct = Math.round((visited / stageFiles.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `已浏览 ${visited}/6 阶段`;
+}
+
+// ========== Nav Click ==========
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const file = item.dataset.file;
+    const section = item.dataset.section || '';
+    if (file) loadDoc(file, section);
+  });
+});
+
+// ========== Scroll spy for TOC ==========
+document.getElementById('contentArea').addEventListener('scroll', function() {
+  const headings = document.querySelectorAll('#mdContent h2, #mdContent h3');
+  let current = '';
+  headings.forEach(h => {
+    const rect = h.getBoundingClientRect();
+    if (rect.top < 120) current = h.id;
+  });
+  document.querySelectorAll('.toc-link').forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+});
+
+// ========== Keyboard shortcuts ==========
+document.addEventListener('keydown', function(e) {
+  // Cmd/Ctrl + K to focus search
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+  // Escape to close sidebar on mobile
+  if (e.key === 'Escape') {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
