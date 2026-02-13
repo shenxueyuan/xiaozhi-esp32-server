@@ -26,6 +26,56 @@
             --max-w:1200px;
         }
 
+        /* ===== Light Theme ===== */
+        [data-theme="light"] {
+            --glass:rgba(0,0,0,.02); --glass-border:rgba(0,0,0,.08);
+            --glass-hover:rgba(0,0,0,.04);
+            --text-1:#1a1a2e; --text-2:rgba(26,26,46,.6); --text-3:rgba(26,26,46,.35);
+            --neon-blue:#0099cc; --neon-purple:#7c3aed; --neon-pink:#e11d48;
+            --neon-green:#059669; --neon-amber:#d97706;
+        }
+        [data-theme="light"] body { background:#f5f7fa; color:#1a1a2e; }
+        [data-theme="light"] #particles { opacity:.15; }
+        [data-theme="light"] .nav.scrolled { background:rgba(245,247,250,.9); border-bottom-color:rgba(0,0,0,.08); }
+        [data-theme="light"] .nav-links a { color:var(--text-2); }
+        [data-theme="light"] .nav-logo { color:var(--text-1); }
+        [data-theme="light"] .nav-cta { color:#fff!important; -webkit-text-fill-color:#fff!important; }
+        [data-theme="light"] .btn-neon { color:#fff; }
+        [data-theme="light"] .hero-orb-1 { background:rgba(0,153,204,.06); }
+        [data-theme="light"] .hero-orb-2 { background:rgba(124,58,237,.06); }
+        [data-theme="light"] .hero-orb-3 { background:rgba(225,29,72,.04); }
+        [data-theme="light"] .hero-grid-bg { background-image:linear-gradient(rgba(0,0,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.03) 1px,transparent 1px); }
+        [data-theme="light"] .hero h1 { color:var(--text-1); }
+        [data-theme="light"] .hero h1 .glow-text { filter:drop-shadow(0 0 12px rgba(0,153,204,.2)); }
+        [data-theme="light"] .glass { background:rgba(255,255,255,.6); border-color:rgba(0,0,0,.08); backdrop-filter:blur(12px); }
+        [data-theme="light"] .glass:hover { background:rgba(255,255,255,.8); border-color:rgba(0,153,204,.15); box-shadow:0 4px 24px rgba(0,0,0,.06); }
+        [data-theme="light"] .section-divider { background:linear-gradient(90deg,transparent,rgba(0,153,204,.2),transparent); }
+        [data-theme="light"] .sol-tab { background:rgba(255,255,255,.6); border-color:rgba(0,0,0,.1); color:var(--text-2); }
+        [data-theme="light"] .sol-tab.active { color:#fff; }
+        [data-theme="light"] .price-card.feat::before { color:#fff; }
+        [data-theme="light"] .btn-price-fill { color:#fff; }
+        [data-theme="light"] .btn-price-ghost { border-color:rgba(0,153,204,.3); }
+        [data-theme="light"] .emo-meter-bar { background:rgba(0,0,0,.06); }
+        [data-theme="light"] .emo-alert { background:rgba(225,29,72,.05); }
+        [data-theme="light"] .case-metric { background:rgba(0,0,0,.02); border-color:rgba(0,0,0,.06); }
+        [data-theme="light"] .cost-table td { border-bottom-color:rgba(0,0,0,.04); }
+        [data-theme="light"] .price-group-title { border-bottom-color:rgba(0,0,0,.06); }
+        [data-theme="light"] .hw-img::after { background:linear-gradient(180deg,transparent 60%,rgba(245,247,250,.9)); }
+        [data-theme="light"] .hw-img-1 { background:linear-gradient(135deg,rgba(225,29,72,.06),rgba(124,58,237,.06)); }
+        [data-theme="light"] .hw-img-2 { background:linear-gradient(135deg,rgba(0,153,204,.06),rgba(124,58,237,.06)); }
+        [data-theme="light"] .hw-img-3 { background:linear-gradient(135deg,rgba(5,150,105,.06),rgba(0,153,204,.06)); }
+        [data-theme="light"] .cta-orb-1 { background:rgba(0,153,204,.06); }
+        [data-theme="light"] .cta-orb-2 { background:rgba(225,29,72,.04); }
+        [data-theme="light"] .footer { border-top-color:rgba(0,0,0,.08); }
+        [data-theme="light"] .brand-slogan .slogan-dim { color:rgba(26,26,46,.25); -webkit-text-fill-color:rgba(26,26,46,.25); }
+        [data-theme="light"] .stats-inner { background:rgba(255,255,255,.7)!important; border-color:rgba(0,0,0,.08)!important; }
+        [data-theme="light"] .radar-ring { border-color:rgba(0,153,204,.1)!important; }
+        [data-theme="light"] .float-stat { background:rgba(255,255,255,.85)!important; border-color:rgba(0,0,0,.08)!important; box-shadow:0 4px 16px rgba(0,0,0,.08)!important; }
+        [data-theme="light"] .llm-pipe-step { background:rgba(255,255,255,.6); }
+        /* Theme toggle btn */
+        .theme-toggle { width:36px; height:36px; border-radius:8px; border:1px solid var(--glass-border); background:var(--glass); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; transition:all .3s; flex-shrink:0; }
+        .theme-toggle:hover { border-color:rgba(0,212,255,.2); background:var(--glass-hover); }
+
         /* ===== Animations ===== */
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
         @keyframes pulse-neon { 0%,100%{opacity:.6} 50%{opacity:1} }
@@ -431,6 +481,7 @@
             <a href="#cases">落地案例</a>
             <a href="#llm-service">大模型服务</a>
             <a href="#pricing">方案报价</a>
+            <button class="theme-toggle" id="themeToggle" title="切换亮色/暗色主题" onclick="toggleTheme()">🌙</button>
             <a href="#contact" class="nav-cta">联系我们</a>
         </div>
     </div>
@@ -2130,6 +2181,25 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 });
+
+// ===== Theme Toggle =====
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('chatai-theme', next);
+    updateThemeIcon(next);
+}
+function updateThemeIcon(theme) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
+}
+(function initTheme() {
+    const saved = localStorage.getItem('chatai-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    updateThemeIcon(saved);
+})();
 </script>
 </body>
 </html>
